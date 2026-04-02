@@ -98,7 +98,7 @@ final class PushNotificationService: NSObject, ObservableObject {
 
     /// Sets the badge count on the app icon.
     func setBadgeCount(_ count: Int) {
-        MainActor.run {
+        Task { @MainActor in
             self.badgeCount = count
             UIApplication.shared.applicationIconBadgeNumber = count
         }
@@ -235,26 +235,3 @@ struct DeviceTokenRequest: Codable {
     let deviceToken: String
 }
 
-// MARK: - Deep Link Extensions
-
-enum DeepLink {
-    case product(id: UUID)
-    case dailyDrop
-    case dresserSaleFilter(retailerId: UUID)
-    case swipeFeed
-
-    func universalURL() -> URL? {
-        let scheme = "rosier://"
-
-        switch self {
-        case .product(let id):
-            return URL(string: "\(scheme)product/\(id.uuidString)")
-        case .dailyDrop:
-            return URL(string: "\(scheme)daily-drop")
-        case .dresserSaleFilter(let retailerId):
-            return URL(string: "\(scheme)dresser?retailer=\(retailerId.uuidString)")
-        case .swipeFeed:
-            return URL(string: "\(scheme)swipe")
-        }
-    }
-}
