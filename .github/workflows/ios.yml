@@ -261,26 +261,31 @@ jobs:
           mkdir -p ~/.appstoreconnect/private_keys
           echo "$APP_STORE_CONNECT_API_KEY" > ~/.appstoreconnect/private_keys/AuthKey_${APP_STORE_CONNECT_API_KEY_ID}.p8
 
+          # Create Fastlane API key JSON (key_filepath format)
           cat > /tmp/api_key.json << APIEOF
           {
             "key_id": "$APP_STORE_CONNECT_API_KEY_ID",
             "issuer_id": "$APP_STORE_CONNECT_API_ISSUER_ID",
-            "key": $(python3 -c "import json; print(json.dumps(open('/Users/runner/.appstoreconnect/private_keys/AuthKey_${APP_STORE_CONNECT_API_KEY_ID}.p8').read()))"),
+            "key_filepath": "$HOME/.appstoreconnect/private_keys/AuthKey_${APP_STORE_CONNECT_API_KEY_ID}.p8",
             "in_house": false
           }
           APIEOF
+
+          echo "API key JSON created:"
+          cat /tmp/api_key.json | sed 's/key_filepath.*/key_filepath: [REDACTED]/'
 
           # --- 3. Download provisioning profile from Apple using Fastlane sigh ---
           echo "Downloading provisioning profile from Apple..."
           fastlane sigh \
             --app_identifier "com.rosier.app" \
             --api_key_path /tmp/api_key.json \
-            --force \
-            --platform ios \
-            --readonly false 2>&1 || {
-            echo "sigh failed, trying with --adhoc false..."
-            fastlane sigh download_all \
-              --api_key_path /tmp/api_key.json 2>&1 || true
+            --platform ios 2>&1 || {
+            echo "sigh with default options failed, trying --skip_install false..."
+            fastlane sigh \
+              --app_identifier "com.rosier.app" \
+              --api_key_path /tmp/api_key.json \
+              --platform ios \
+              --force 2>&1 || true
           }
 
           # Verify profile installed
@@ -288,7 +293,7 @@ jobs:
           ls -la ~/Library/MobileDevice/Provisioning\ Profiles/ 2>/dev/null || echo "No profiles dir"
 
           # Extract profile name for xcodebuild
-          PROFILE_PATH=$(ls -t ~/Library/MobileDevice/Provisioning\ Profiles/*.mobileprovision 2>/dev/null | head -1)
+          PROFILE_PATH=$(find ~/Library/MobileDevice/Provisioning\ Profiles/ -name "*.mobileprovision" -type f 2>/dev/null | head -1 || true)
           if [ -n "$PROFILE_PATH" ]; then
             PROFILE_UUID=$(security cms -D -i "$PROFILE_PATH" 2>/dev/null | plutil -extract UUID raw - 2>/dev/null || true)
             PROFILE_NAME=$(security cms -D -i "$PROFILE_PATH" 2>/dev/null | plutil -extract Name raw - 2>/dev/null || true)
