@@ -29,9 +29,8 @@ INFOPLIST_OUTPUT_FORMAT = xml
 CODE_SIGN_ENTITLEMENTS = Sources/App/Rosier.entitlements
 
 // MARK: - Signing
-DEVELOPMENT_TEAM =
-// NOTE: Set DEVELOPMENT_TEAM to your Team ID before building
-// Example: DEVELOPMENT_TEAM = ABC123XYZ9
+DEVELOPMENT_TEAM = 52SKBHZK3L
+// Charlie's Apple Developer Team ID
 
 // MARK: - Architecture
 ARCHS = arm64

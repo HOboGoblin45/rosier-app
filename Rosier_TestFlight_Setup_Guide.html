@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rosier - TestFlight Deployment Guide (Windows)</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, 'Segoe UI', sans-serif; background: #F3F3F3; color: #1A1A2E; line-height: 1.7; padding: 40px 20px; }
+        .container { max-width: 720px; margin: 0 auto; }
+        h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; color: #1A1A2E; }
+        .subtitle { color: #666; margin-bottom: 32px; font-size: 14px; }
+        .step { background: white; border-radius: 12px; padding: 24px; margin-bottom: 16px; }
+        .step-number { display: inline-block; width: 28px; height: 28px; background: #F3CBF0; color: #1A1A2E; border-radius: 50%; text-align: center; line-height: 28px; font-weight: 700; font-size: 14px; margin-right: 8px; }
+        .step h2 { font-size: 18px; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .step p { margin-bottom: 12px; }
+        .step ul { margin-left: 20px; margin-bottom: 12px; }
+        .step li { margin-bottom: 6px; }
+        code { background: #F3F3F3; padding: 2px 6px; border-radius: 4px; font-size: 13px; font-family: 'Consolas', monospace; }
+        pre { background: #1A1A2E; color: #F3CBF0; padding: 16px; border-radius: 8px; overflow-x: auto; margin: 12px 0; font-size: 13px; line-height: 1.5; }
+        .alert { background: #FFF0F0; border-left: 4px solid #FE6F6F; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 12px 0; font-size: 14px; }
+        .success { background: #F0FFF0; border-left: 4px solid #43A047; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 12px 0; font-size: 14px; }
+        .info { background: #F0F0FF; border-left: 4px solid #1A1A2E; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 12px 0; font-size: 14px; }
+        a { color: #1A1A2E; font-weight: 600; }
+        .checklist { list-style: none; margin-left: 0; }
+        .checklist li::before { content: "\2610 "; font-size: 16px; margin-right: 4px; }
+        .time { color: #FE6F6F; font-weight: 600; font-size: 13px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Rosier TestFlight Setup Guide</h1>
+    <p class="subtitle">Deploy to TestFlight from your Windows PC using GitHub Actions. Total time: ~20 minutes.</p>
+
+    <div class="step">
+        <h2><span class="step-number">1</span> Install OpenSSL on Windows <span class="time">~3 min</span></h2>
+        <p>You need OpenSSL to create a signing certificate. Open PowerShell as Administrator and run:</p>
+        <pre>winget install ShiningLight.OpenSSL</pre>
+        <p>After install, close and reopen PowerShell. Verify it works:</p>
+        <pre>openssl version</pre>
+        <div class="info">If <code>winget</code> doesn't work, download from <a href="https://slproweb.com/products/Win32OpenSSL.html" target="_blank">slproweb.com</a> (Win64 OpenSSL Light).</div>
+    </div>
+
+    <div class="step">
+        <h2><span class="step-number">2</span> Create a Distribution Certificate <span class="time">~5 min</span></h2>
+        <p><strong>Step 2a:</strong> Generate a private key and Certificate Signing Request in PowerShell:</p>
+        <pre>mkdir C:\Users\ccres\RosierCerts
+cd C:\Users\ccres\RosierCerts
+
+openssl genrsa -out rosier_private.key 2048
+
+openssl req -new -key rosier_private.key -out CertificateSigningRequest.certSigningRequest -subj "/CN=Charles Cresci/O=Rosier/C=US"</pre>
+
+        <p><strong>Step 2b:</strong> Go to <a href="https://developer.apple.com/account/resources/certificates/add" target="_blank">Apple Developer &rarr; Certificates</a> in your browser:</p>
+        <ul>
+            <li>Click <strong>"+"</strong> to create a new certificate</li>
+            <li>Select <strong>"Apple Distribution"</strong></li>
+            <li>Click Continue</li>
+            <li>Upload the <code>CertificateSigningRequest.certSigningRequest</code> file from <code>C:\Users\ccres\RosierCerts\</code></li>
+            <li>Click Continue, then <strong>Download</strong> the <code>.cer</code> file</li>
+            <li>Save it to <code>C:\Users\ccres\RosierCerts\</code></li>
+        </ul>
+
+        <p><strong>Step 2c:</strong> Convert to P12 format in PowerShell:</p>
+        <pre>cd C:\Users\ccres\RosierCerts
+
+openssl x509 -inform DER -in distribution.cer -out distribution.pem
+
+openssl pkcs12 -export -inkey rosier_private.key -in distribution.pem -out rosier_distribution.p12 -name "Rosier Distribution"</pre>
+        <div class="alert">When prompted for an export password, choose something memorable. You'll need it as a GitHub secret.</div>
+    </div>
+
+    <div class="step">
+        <h2><span class="step-number">3</span> Create App ID &amp; Provisioning Profile <span class="time">~3 min</span></h2>
+        <p>Go to <a href="https://developer.apple.com/account/resources/identifiers/list" target="_blank">Apple Developer &rarr; Identifiers</a>:</p>
+        <ul>
+            <li>If <code>com.rosier.app</code> doesn't exist yet, click <strong>"+"</strong>, select <strong>"App IDs"</strong>, choose <strong>"App"</strong></li>
+            <li>Description: <strong>Rosier</strong>, Bundle ID: <strong>com.rosier.app</strong> (Explicit)</li>
+            <li>Enable capabilities: Push Notifications, Sign In with Apple</li>
+        </ul>
+
+        <p>Then go to <a href="https://developer.apple.com/account/resources/profiles/add" target="_blank">Apple Developer &rarr; Profiles</a>:</p>
+        <ul>
+            <li>Click <strong>"+"</strong></li>
+            <li>Select <strong>"App Store Connect"</strong> (under Distribution)</li>
+            <li>Select App ID: <strong>com.rosier.app</strong></li>
+            <li>Select the Distribution Certificate you just created</li>
+            <li>Name it: <strong>Rosier App Store</strong></li>
+            <li><strong>Download</strong> the <code>.mobileprovision</code> file to <code>C:\Users\ccres\RosierCerts\</code></li>
+        </ul>
+    </div>
+
+    <div class="step">
+        <h2><span class="step-number">4</span> Create App Store Connect API Key <span class="time">~2 min</span></h2>
+        <p>Go to <a href="https://appstoreconnect.apple.com/access/integrations/api" target="_blank">App Store Connect &rarr; Users and Access &rarr; Integrations &rarr; App Store Connect API</a>:</p>
+        <ul>
+            <li>Click <strong>"Generate API Key"</strong> (or "+" if you have keys already)</li>
+            <li>Name: <strong>Rosier CI/CD</strong></li>
+            <li>Access: <strong>Admin</strong></li>
+            <li>Click <strong>Generate</strong></li>
+        </ul>
+        <p>Copy and save these three values:</p>
+        <ul>
+            <li><strong>Issuer ID</strong> (shown at the top of the keys page)</li>
+            <li><strong>Key ID</strong> (shown next to your key name)</li>
+            <li><strong>Download the .p8 file</strong> (can only download ONCE — save it to <code>C:\Users\ccres\RosierCerts\</code>)</li>
+        </ul>
+        <div class="alert">The .p8 private key file can only be downloaded once. Do NOT lose it.</div>
+    </div>
+
+    <div class="step">
+        <h2><span class="step-number">5</span> Base64 Encode &amp; Add GitHub Secrets <span class="time">~5 min</span></h2>
+        <p>Run these in PowerShell to encode your certificate and profile:</p>
+        <pre>cd C:\Users\ccres\RosierCerts
+
+# Encode the P12 certificate
+$cert = [Convert]::ToBase64String([IO.File]::ReadAllBytes("rosier_distribution.p12"))
+Set-Clipboard -Value $cert
+Write-Host "Certificate copied to clipboard"
+
+# Paste into GitHub secret, then encode the provisioning profile:
+$profile = [Convert]::ToBase64String([IO.File]::ReadAllBytes("Rosier_App_Store.mobileprovision"))
+Set-Clipboard -Value $profile
+Write-Host "Profile copied to clipboard"
+
+# Read the API key content:
+$key = Get-Content "AuthKey_XXXXXXXXXX.p8" -Raw
+Set-Clipboard -Value $key
+Write-Host "API key copied to clipboard"</pre>
+
+        <p>Go to <a href="https://github.com/HOboGoblin45/rosier-app/settings/secrets/actions" target="_blank">GitHub &rarr; Settings &rarr; Secrets &rarr; Actions</a> and add these 7 secrets:</p>
+        <table style="width:100%; border-collapse: collapse; margin: 12px 0;">
+            <tr style="background: #F3F3F3;"><th style="text-align:left; padding:8px; border-bottom:2px solid #ddd;">Secret Name</th><th style="text-align:left; padding:8px; border-bottom:2px solid #ddd;">Value</th></tr>
+            <tr><td style="padding:8px; border-bottom:1px solid #eee;"><code>APPLE_DEVELOPER_ID</code></td><td style="padding:8px; border-bottom:1px solid #eee;">52SKBHZK3L</td></tr>
+            <tr><td style="padding:8px; border-bottom:1px solid #eee;"><code>IOS_CERTIFICATE_BASE64</code></td><td style="padding:8px; border-bottom:1px solid #eee;">Paste the P12 base64 string</td></tr>
+            <tr><td style="padding:8px; border-bottom:1px solid #eee;"><code>IOS_CERT_PASSWORD</code></td><td style="padding:8px; border-bottom:1px solid #eee;">The password you set when exporting P12</td></tr>
+            <tr><td style="padding:8px; border-bottom:1px solid #eee;"><code>IOS_PROVISIONING_PROFILE_BASE64</code></td><td style="padding:8px; border-bottom:1px solid #eee;">Paste the provisioning profile base64 string</td></tr>
+            <tr><td style="padding:8px; border-bottom:1px solid #eee;"><code>APP_STORE_CONNECT_KEY_ID</code></td><td style="padding:8px; border-bottom:1px solid #eee;">The Key ID from App Store Connect</td></tr>
+            <tr><td style="padding:8px; border-bottom:1px solid #eee;"><code>APP_STORE_CONNECT_ISSUER_ID</code></td><td style="padding:8px; border-bottom:1px solid #eee;">The Issuer ID from App Store Connect</td></tr>
+            <tr><td style="padding:8px; border-bottom:1px solid #eee;"><code>APP_STORE_CONNECT_PRIVATE_KEY</code></td><td style="padding:8px; border-bottom:1px solid #eee;">Full contents of the .p8 file (including BEGIN/END lines)</td></tr>
+        </table>
+    </div>
+
+    <div class="step">
+        <h2><span class="step-number">6</span> Create App in App Store Connect <span class="time">~2 min</span></h2>
+        <p>Go to <a href="https://appstoreconnect.apple.com/apps" target="_blank">App Store Connect &rarr; My Apps</a>:</p>
+        <ul>
+            <li>Click <strong>"+"</strong> &rarr; <strong>"New App"</strong></li>
+            <li>Platform: <strong>iOS</strong></li>
+            <li>Name: <strong>Rosier</strong></li>
+            <li>Primary Language: <strong>English (U.S.)</strong></li>
+            <li>Bundle ID: <strong>com.rosier.app</strong></li>
+            <li>SKU: <strong>rosier-app-001</strong></li>
+            <li>Full Access: your user</li>
+        </ul>
+    </div>
+
+    <div class="step">
+        <h2><span class="step-number">7</span> Deploy to TestFlight</h2>
+        <p>Once all secrets are set, trigger a TestFlight build by creating a version tag. You can do this from the GitHub web UI or PowerShell:</p>
+        <pre># Option A: From GitHub.com
+# Go to your repo → Releases → "Create a new release"
+# Tag: v1.0.0, Target: main, Title: "Rosier v1.0.0"
+# Click "Publish release"
+
+# Option B: From PowerShell (if you have git installed)
+git tag v1.0.0
+git push origin v1.0.0</pre>
+        <p>This automatically triggers the <strong>deploy-testflight</strong> job in GitHub Actions, which builds the app on a macOS runner, signs it with your certificate, and uploads it to TestFlight.</p>
+        <div class="success">Monitor progress at: <a href="https://github.com/HOboGoblin45/rosier-app/actions" target="_blank">GitHub Actions</a></div>
+    </div>
+
+    <div class="step">
+        <h2><span class="step-number">8</span> Test on Your iPhone</h2>
+        <ul>
+            <li>Download <strong>TestFlight</strong> from the App Store on your iPhone</li>
+            <li>Sign in with the same Apple ID used for App Store Connect</li>
+            <li>After the build processes (~10-15 min after upload), Rosier will appear in TestFlight</li>
+            <li>Tap <strong>Install</strong> to test the app on your device</li>
+        </ul>
+        <div class="info">First-time TestFlight builds may take up to 30 minutes for Apple to process before they appear.</div>
+    </div>
+
+    <div class="step" style="background: #F3CBF0;">
+        <h2>Checklist</h2>
+        <ul class="checklist">
+            <li>OpenSSL installed on Windows</li>
+            <li>Distribution certificate created and converted to P12</li>
+            <li>App ID (com.rosier.app) registered</li>
+            <li>Provisioning profile downloaded</li>
+            <li>App Store Connect API key created and .p8 saved</li>
+            <li>All 7 GitHub secrets added</li>
+            <li>App created in App Store Connect</li>
+            <li>Version tag pushed to trigger build</li>
+            <li>TestFlight installed on iPhone</li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>
