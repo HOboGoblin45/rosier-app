@@ -40,7 +40,6 @@ settings:
   CLANG_WARN_EMPTY_BODY: 'YES'
   OTHER_LDFLAGS: '$(inherited) -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __entitlements -Xlinker $(BUILT_PRODUCTS_DIR)/$(EXECUTABLE_PATH)entitlements'
   LD_RUNPATH_SEARCH_PATHS: '$(inherited) @executable_path/Frameworks'
-  DEFINES_MODULE: 'YES'
 
 buildSettings:
   Debug:
@@ -65,6 +64,8 @@ targets:
     type: framework
     platform: iOS
     deploymentTarget: '17.0'
+    settings:
+      DEFINES_MODULE: 'YES'
     sources:
       - path: Sources
         includes:
@@ -95,6 +96,8 @@ targets:
     type: framework
     platform: iOS
     deploymentTarget: '17.0'
+    settings:
+      DEFINES_MODULE: 'YES'
     sources:
       - path: Sources
         includes:
