@@ -55,8 +55,20 @@ final class AppCoordinator: BaseCoordinator<MainScreen, SheetType, FullScreenCov
             // Handle invite code
             print("Handling invite: \(code)")
 
-        case .sale:
+        case .sale(let id):
             // Handle sale navigation
+            push(.productDetail(productId: id))
+
+        case .dailyDrop:
+            // Handle daily drop
+            break
+
+        case .dresserSaleFilter(let retailerId):
+            // Handle dresser sale filter
+            break
+
+        case .swipeFeed:
+            // Handle swipe feed
             break
 
         case .unknown:
