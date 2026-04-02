@@ -312,7 +312,7 @@ extension View {
         self.onAppear {
             // Announce status change to VoiceOver
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                UIAccessibility.post(notification: UIAccessibility.layoutChangedNotification, argument: message)
+                UIAccessibility.post(notification: .layoutChanged, argument: message)
             }
         }
     }
@@ -373,7 +373,7 @@ extension View {
     func announceFocusChange(_ message: String) -> some View {
         self.onAppear {
             DispatchQueue.main.async {
-                UIAccessibility.post(notification: UIAccessibility.announcementNotification, argument: message)
+                UIAccessibility.post(notification: .announcement, argument: message)
             }
         }
     }
