@@ -22,7 +22,7 @@ protocol Coordinator: AnyObject, ObservableObject {
 }
 
 /// Default implementation of Coordinator protocol.
-class BaseCoordinator<Screen: Hashable, Sheet, FullScreenCover>: Coordinator {
+class BaseCoordinator<Screen: Hashable, Sheet: Hashable, FullScreenCover: Hashable>: Coordinator {
     @Published var navigationPath = NavigationPath()
     @Published var sheet: Sheet?
     @Published var fullScreenCover: FullScreenCover?
