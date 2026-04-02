@@ -106,7 +106,7 @@ struct Product: Identifiable, Codable, Hashable {
             return nil
         }
         let discount = ((original - currentPrice) / original) * 100
-        return Int(discount.rounded())
+        return NSDecimalNumber(decimal: discount).rounding(accordingToBehavior: nil).intValue
     }
 
     /// Whether the product has multiple images.
