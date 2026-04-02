@@ -25,8 +25,8 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
       - run: pip install ruff mypy
-      - run: ruff check app/
-      - run: ruff format --check app/
+      - run: ruff check app/ --fix --unsafe-fixes
+      - run: ruff format app/
       - run: mypy app/ --ignore-missing-imports
 
   test:

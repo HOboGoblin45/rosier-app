@@ -8,9 +8,8 @@ from sqlalchemy import select, func, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core import get_db, verify_access_token
-from app.models import Brand, Product, Retailer, SwipeEvent, User, BrandCandidate, BrandDiscoveryCard, Commission
+from app.models import Brand, Product, SwipeEvent, BrandCandidate, BrandDiscoveryCard
 from app.models.brand import BrandTier
-from app.models.brand_candidate import BrandCandidateStatus
 from app.models.swipe_event import SwipeAction
 from app.schemas.user import UserResponse
 from app.services import BrandDiscoveryService, AmbassadorTrackerService
