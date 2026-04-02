@@ -1,0 +1,1456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rosier - Fashion Discovery</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Variables */
+        :root {
+            --color-brand-primary: #1A1A2E;
+            --color-brand-accent: #C4A77D;
+            --color-rose: #E8B4B8;
+            --color-cream: #FFF8F0;
+            --color-charcoal: #2C2C2C;
+            --color-sage: #A8C4B8;
+            --color-gold: #C4A77D;
+            --color-success: #43A047;
+            --color-destructive: #D32F2F;
+            --color-text-primary: #1A1A1A;
+            --color-text-secondary: #6B6B6B;
+            --color-text-tertiary: #9B9B9B;
+            --color-surface-card: #FFFFFF;
+            --color-surface-bg: #F5F5F5;
+            --color-wallpaper-sage: #A8C4B8;
+            --color-wallpaper-sand: #D4C5A9;
+            --color-wallpaper-coral: #D4A092;
+            --color-wallpaper-navy: #8B9EB5;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --color-brand-primary: #E8E8F0;
+                --color-brand-accent: #D4B98D;
+                --color-text-primary: #F5F5F5;
+                --color-text-secondary: #A0A0A0;
+                --color-text-tertiary: #6B6B6B;
+                --color-surface-card: #1C1C1E;
+                --color-surface-bg: #000000;
+                --color-wallpaper-sage: #7A9E8E;
+                --color-wallpaper-sand: #B8A98D;
+                --color-wallpaper-coral: #C48B7D;
+                --color-wallpaper-navy: #6B7E95;
+            }
+        }
+
+        /* Reset & Globals */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--color-surface-bg);
+            color: var(--color-text-primary);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        /* Container */
+        .app-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background: var(--color-surface-bg);
+        }
+
+        /* Screen Transitions */
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease-in-out;
+        }
+
+        .screen.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* ===== SPLASH SCREEN ===== */
+        .splash-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #FFF8F0 0%, #E8B4B8 50%, #C4A77D 100%);
+            padding: 40px 20px;
+        }
+
+        .splash-logo {
+            font-size: 64px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #E8B4B8, #1A1A2E);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 16px;
+            letter-spacing: -1.2px;
+        }
+
+        .splash-subtitle {
+            font-size: 16px;
+            color: #4A4A4A;
+            margin-bottom: 48px;
+            letter-spacing: 0.3px;
+        }
+
+        .splash-button {
+            padding: 16px 48px;
+            background: #1A1A2E;
+            color: white;
+            border: none;
+            border-radius: 28px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            letter-spacing: 0.3px;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .splash-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .splash-button:active {
+            transform: translateY(0);
+        }
+
+        /* ===== QUIZ SCREEN ===== */
+        .quiz-screen {
+            display: flex;
+            flex-direction: column;
+            padding: 40px 24px;
+            overflow-y: auto;
+            background: var(--color-surface-bg);
+            padding-top: 60px;
+            padding-bottom: 100px;
+        }
+
+        .quiz-progress {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--color-brand-accent);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .quiz-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--color-text-primary);
+            margin-bottom: 24px;
+            letter-spacing: -0.5px;
+        }
+
+        .quiz-options {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-bottom: 40px;
+        }
+
+        .quiz-option {
+            padding: 16px 20px;
+            background: var(--color-surface-card);
+            border: 2px solid transparent;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            color: var(--color-text-primary);
+            font-weight: 500;
+        }
+
+        .quiz-option:hover {
+            border-color: var(--color-brand-accent);
+            background: var(--color-surface-card);
+        }
+
+        .quiz-option.selected {
+            border-color: var(--color-brand-accent);
+            background: var(--color-brand-accent);
+            color: white;
+        }
+
+        .quiz-button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .quiz-btn {
+            flex: 1;
+            padding: 14px 20px;
+            background: var(--color-brand-primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quiz-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .quiz-btn:not(:disabled):hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .quiz-btn.skip {
+            background: transparent;
+            color: var(--color-text-secondary);
+            border: 2px solid var(--color-text-tertiary);
+        }
+
+        /* ===== MAIN APP SCREENS ===== */
+        .app-screen {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Header */
+        .app-header {
+            padding: 16px 24px;
+            background: var(--color-surface-bg);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+
+        .header-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--color-brand-accent);
+            letter-spacing: -0.3px;
+        }
+
+        .header-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--color-surface-card);
+            border: 2px solid var(--color-brand-accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .header-icon:hover {
+            background: var(--color-brand-accent);
+            color: white;
+        }
+
+        /* Main Content Area */
+        .app-content {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ===== SWIPE SCREEN ===== */
+        .swipe-screen {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        .wallpaper-reveal {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0.07;
+            z-index: 0;
+            background: linear-gradient(45deg, var(--color-wallpaper-sage) 0%, var(--color-wallpaper-sand) 25%, var(--color-wallpaper-coral) 50%, var(--color-wallpaper-navy) 75%, var(--color-wallpaper-sage) 100%);
+            background-size: 200% 200%;
+            animation: wallpaperShift 8s ease-in-out infinite;
+        }
+
+        @keyframes wallpaperShift {
+            0%, 100% { background-position: 0% 0%; }
+            50% { background-position: 100% 100%; }
+        }
+
+        .cards-container {
+            position: relative;
+            width: 100%;
+            max-width: 360px;
+            height: 520px;
+            perspective: 1000px;
+            z-index: 1;
+        }
+
+        .product-card {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: var(--color-surface-card);
+            border-radius: 20px;
+            cursor: grab;
+            user-select: none;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.1s ease-out, box-shadow 0.2s ease-out;
+            display: flex;
+            flex-direction: column;
+            touch-action: none;
+        }
+
+        .product-card.dragging {
+            cursor: grabbing;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 55%;
+            background: linear-gradient(135deg, #E8B4B8 0%, #C4A77D 100%);
+            object-fit: cover;
+        }
+
+        .product-info {
+            flex: 1;
+            padding: 20px 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .product-brand {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--color-brand-accent);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .product-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            margin-bottom: 12px;
+            line-height: 1.3;
+        }
+
+        .product-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .product-price {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--color-brand-accent);
+        }
+
+        .product-retailer {
+            font-size: 11px;
+            color: var(--color-text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        /* Brand Discovery Card */
+        .brand-card {
+            padding: 40px 24px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: center !important;
+            align-items: center !important;
+            text-align: center !important;
+            background: linear-gradient(135deg, var(--color-surface-card) 0%, var(--color-surface-card) 100%) !important;
+            border: 2px solid var(--color-brand-accent) !important;
+        }
+
+        .brand-logo {
+            font-size: 48px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--color-rose), var(--color-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 16px;
+            letter-spacing: -1px;
+        }
+
+        .brand-description {
+            font-size: 14px;
+            color: var(--color-text-secondary);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .brand-follow-btn {
+            padding: 10px 28px;
+            background: var(--color-brand-accent);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .brand-follow-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(196, 167, 125, 0.3);
+        }
+
+        /* Card Indicators */
+        .card-indicators {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            z-index: 10;
+        }
+
+        .indicator {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .indicator.active {
+            background: var(--color-brand-accent);
+        }
+
+        /* Swipe Hints */
+        .swipe-hints {
+            position: absolute;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 32px;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        .hint {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: var(--color-text-tertiary);
+            text-align: center;
+        }
+
+        .hint-arrow {
+            font-size: 16px;
+            opacity: 0.5;
+        }
+
+        /* ===== DRESSER SCREEN ===== */
+        .dresser-screen {
+            padding: 24px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .drawer {
+            background: var(--color-surface-card);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .drawer-header {
+            padding: 16px;
+            background: var(--color-surface-card);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .drawer-header:hover {
+            background: var(--color-surface-bg);
+        }
+
+        .drawer-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--color-text-primary);
+        }
+
+        .drawer-count {
+            font-size: 12px;
+            background: var(--color-brand-accent);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .drawer-items {
+            padding: 12px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 12px;
+        }
+
+        .drawer-item {
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, var(--color-rose), var(--color-gold));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .drawer-item:hover {
+            transform: scale(1.05);
+        }
+
+        .drawer-item-label {
+            position: absolute;
+            bottom: -24px;
+            left: 0;
+            right: 0;
+            font-size: 10px;
+            color: var(--color-text-secondary);
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* ===== STYLE DNA SCREEN ===== */
+        .style-dna-screen {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-y: auto;
+        }
+
+        .style-dna-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--color-text-primary);
+            margin-bottom: 32px;
+            letter-spacing: -0.4px;
+        }
+
+        .radar-chart {
+            position: relative;
+            width: 280px;
+            height: 280px;
+            margin-bottom: 40px;
+        }
+
+        .radar-background {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        .radar-ring {
+            position: absolute;
+            border: 1px solid rgba(196, 167, 125, 0.2);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .radar-ring:nth-child(1) { width: 20%; height: 20%; }
+        .radar-ring:nth-child(2) { width: 40%; height: 40%; }
+        .radar-ring:nth-child(3) { width: 60%; height: 60%; }
+        .radar-ring:nth-child(4) { width: 80%; height: 80%; }
+        .radar-ring:nth-child(5) { width: 100%; height: 100%; }
+
+        .radar-axis {
+            position: absolute;
+            width: 1px;
+            height: 50%;
+            background: rgba(196, 167, 125, 0.15);
+            top: 0;
+            left: 50%;
+            transform-origin: center bottom;
+        }
+
+        .radar-axis:nth-child(6) { transform: translateX(-50%) rotate(0deg); }
+        .radar-axis:nth-child(7) { transform: translateX(-50%) rotate(72deg); }
+        .radar-axis:nth-child(8) { transform: translateX(-50%) rotate(144deg); }
+        .radar-axis:nth-child(9) { transform: translateX(-50%) rotate(216deg); }
+        .radar-axis:nth-child(10) { transform: translateX(-50%) rotate(288deg); }
+
+        .radar-polygon {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        .radar-label {
+            position: absolute;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            width: 60px;
+            text-align: center;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .radar-label:nth-child(11) { transform: translate(-50%, -50%) translateY(-90px); }
+        .radar-label:nth-child(12) { transform: translate(-50%, -50%) translateX(85px) translateY(-28px); }
+        .radar-label:nth-child(13) { transform: translate(-50%, -50%) translateX(53px) translateY(73px); }
+        .radar-label:nth-child(14) { transform: translate(-50%, -50%) translateX(-53px) translateY(73px); }
+        .radar-label:nth-child(15) { transform: translate(-50%, -50%) translateX(-85px) translateY(-28px); }
+
+        .style-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            width: 100%;
+            max-width: 320px;
+        }
+
+        .stat-card {
+            background: var(--color-surface-card);
+            padding: 16px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--color-brand-accent);
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--color-text-secondary);
+            font-weight: 500;
+        }
+
+        /* ===== PROFILE SCREEN ===== */
+        .profile-screen {
+            padding: 24px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--color-rose), var(--color-gold));
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+        }
+
+        .profile-name {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--color-text-primary);
+            margin-bottom: 4px;
+        }
+
+        .profile-status {
+            font-size: 14px;
+            color: var(--color-text-secondary);
+        }
+
+        .referral-section {
+            background: var(--color-surface-card);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .referral-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: var(--color-brand-accent);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .referral-code {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--color-text-primary);
+            font-family: 'Courier New', monospace;
+            margin-bottom: 16px;
+            letter-spacing: 3px;
+        }
+
+        .referral-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .referral-btn {
+            flex: 1;
+            padding: 12px 16px;
+            background: var(--color-brand-accent);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .referral-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(196, 167, 125, 0.3);
+        }
+
+        .referral-btn.secondary {
+            background: var(--color-surface-bg);
+            color: var(--color-brand-accent);
+            border: 2px solid var(--color-brand-accent);
+        }
+
+        /* ===== TAB BAR ===== */
+        .tab-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 72px;
+            background: var(--color-surface-card);
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0;
+            flex-shrink: 0;
+        }
+
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            gap: 4px;
+            transition: all 0.3s ease;
+            color: var(--color-text-tertiary);
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .tab-item:hover {
+            color: var(--color-brand-accent);
+        }
+
+        .tab-item.active {
+            color: var(--color-brand-accent);
+        }
+
+        .tab-icon {
+            font-size: 24px;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 88px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--color-charcoal);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-size: 12px;
+            font-weight: 600;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        /* Animations */
+        @keyframes slideRight {
+            0% {
+                transform: translateX(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(120%) rotate(20deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes slideLeft {
+            0% {
+                transform: translateX(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(-120%) rotate(-20deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes slideUp {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-120%) scale(0.8);
+                opacity: 0;
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .splash-logo { font-size: 48px; }
+            .quiz-title { font-size: 24px; }
+            .swipe-screen { padding: 16px; }
+            .cards-container { max-width: 90vw; height: calc(90vh - 160px); }
+        }
+
+        /* Print safe */
+        @media print {
+            body { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- SPLASH SCREEN -->
+        <div class="screen splash-screen active">
+            <div class="splash-logo">Rosier</div>
+            <div class="splash-subtitle">Discover Your Style</div>
+            <button class="splash-button" onclick="goToQuiz()">Start Exploring</button>
+        </div>
+
+        <!-- QUIZ SCREEN -->
+        <div class="screen quiz-screen">
+            <div class="quiz-progress"><span id="quizProgress">1 of 3</span></div>
+            <div class="quiz-title" id="quizTitle">What's your aesthetic?</div>
+            <div class="quiz-options" id="quizOptions"></div>
+            <div class="quiz-button-group">
+                <button class="quiz-btn skip" onclick="skipQuestion()">Skip</button>
+                <button class="quiz-btn" id="quizNext" onclick="nextQuestion()" disabled>Next</button>
+            </div>
+        </div>
+
+        <!-- MAIN APP SCREENS -->
+        <div class="screen app-screen active">
+            <div class="app-header">
+                <div class="header-title">Rosier</div>
+                <div class="header-icon" onclick="toggleFilters()">⚙️</div>
+            </div>
+
+            <div class="app-content">
+                <!-- SWIPE SCREEN -->
+                <div class="swipe-screen" style="display: none;">
+                    <div class="wallpaper-reveal"></div>
+                    <div class="cards-container" id="cardsContainer"></div>
+                    <div class="swipe-hints">
+                        <div class="hint">
+                            <div class="hint-arrow">👎</div>
+                            <div>Not interested</div>
+                        </div>
+                        <div class="hint">
+                            <div class="hint-arrow">⬆️</div>
+                            <div>Save to dresser</div>
+                        </div>
+                        <div class="hint">
+                            <div class="hint-arrow">👍</div>
+                            <div>Like</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DRESSER SCREEN -->
+                <div class="dresser-screen" style="display: none;">
+                    <div id="dressers"></div>
+                    <div style="height: 40px;"></div>
+                </div>
+
+                <!-- STYLE DNA SCREEN -->
+                <div class="style-dna-screen" style="display: none;">
+                    <div class="style-dna-title">Your Style DNA</div>
+                    <div class="radar-chart" id="radarChart">
+                        <div class="radar-background">
+                            <div class="radar-ring"></div>
+                            <div class="radar-ring"></div>
+                            <div class="radar-ring"></div>
+                            <div class="radar-ring"></div>
+                            <div class="radar-ring"></div>
+                            <div class="radar-axis"></div>
+                            <div class="radar-axis"></div>
+                            <div class="radar-axis"></div>
+                            <div class="radar-axis"></div>
+                            <div class="radar-axis"></div>
+                            <div class="radar-label">Minimalist</div>
+                            <div class="radar-label">Romantic</div>
+                            <div class="radar-label">Bold</div>
+                            <div class="radar-label">Classic</div>
+                            <div class="radar-label">Avant-Garde</div>
+                        </div>
+                        <svg id="radarPolygon" class="radar-polygon" viewBox="0 0 300 300" preserveAspectRatio="xMidYMid meet"></svg>
+                    </div>
+                    <div class="style-stats">
+                        <div class="stat-card">
+                            <div class="stat-value" id="statLikes">0</div>
+                            <div class="stat-label">Likes</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="statSaves">0</div>
+                            <div class="stat-label">Saved</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="statPasses">0</div>
+                            <div class="stat-label">Passes</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="statBrands">0</div>
+                            <div class="stat-label">Brands</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROFILE SCREEN -->
+                <div class="profile-screen" style="display: none;">
+                    <div class="profile-header">
+                        <div class="profile-avatar">👩</div>
+                        <div class="profile-name">Fashion Explorer</div>
+                        <div class="profile-status">Discovering your style</div>
+                    </div>
+                    <div class="referral-section">
+                        <div class="referral-label">Your Referral Code</div>
+                        <div class="referral-code" id="referralCode">ROSIE-XXXX</div>
+                        <div class="referral-buttons">
+                            <button class="referral-btn" onclick="copyReferralCode()">📋 Copy</button>
+                            <button class="referral-btn secondary" onclick="shareReferralCode()">📤 Share</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-bar">
+                <div class="tab-item active" onclick="switchTab(0)">
+                    <div class="tab-icon">✨</div>
+                    <div>Home</div>
+                </div>
+                <div class="tab-item" onclick="switchTab(1)">
+                    <div class="tab-icon">👗</div>
+                    <div>Dresser</div>
+                </div>
+                <div class="tab-item" onclick="switchTab(2)">
+                    <div class="tab-icon">📊</div>
+                    <div>Style</div>
+                </div>
+                <div class="tab-item" onclick="switchTab(3)">
+                    <div class="tab-icon">👤</div>
+                    <div>Profile</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // ===== APP STATE =====
+        const appState = {
+            currentScreen: 'splash',
+            quizAnswers: [],
+            quizQuestions: [
+                {
+                    title: 'What\'s your aesthetic?',
+                    options: ['Minimalist', 'Romantic', 'Avant-Garde', 'Classic']
+                },
+                {
+                    title: 'Preferred brand tier?',
+                    options: ['Contemporary', 'Designer', 'Luxury', 'Mixed']
+                },
+                {
+                    title: 'Color palette?',
+                    options: ['Neutrals', 'Pastels', 'Bold', 'Earth Tones']
+                }
+            ],
+            currentQuiz: 0,
+            currentTab: 0,
+            currentCardIndex: 0,
+            stats: {
+                likes: 0,
+                saves: 0,
+                passes: 0,
+                brands: new Set()
+            },
+            savedItems: {
+                tops: [],
+                bottoms: [],
+                dresses: [],
+                outerwear: []
+            }
+        };
+
+        // ===== FASHION PRODUCTS DATA =====
+        const BRANDS = ['Jacquemus', 'Totême', 'Staud', 'Nanushka', 'Ganni', 'By Far', 'Deiji Studios', 'Stand Studio', 'Cult Gaia', 'Rejina Pyo'];
+        const PRODUCTS = [
+            { name: 'Cropped Blazer', price: '$1,240', retailer: 'Net-A-Porter', category: 'tops' },
+            { name: 'Linen Trousers', price: '$520', retailer: 'SSENSE', category: 'bottoms' },
+            { name: 'Slip Dress', price: '$890', retailer: 'Farfetch', category: 'dresses' },
+            { name: 'Wool Coat', price: '$2,100', retailer: 'Dover Street Market', category: 'outerwear' },
+            { name: 'Maxi Skirt', price: '$680', retailer: 'Net-A-Porter', category: 'bottoms' },
+            { name: 'Silk Blouse', price: '$420', retailer: 'SSENSE', category: 'tops' },
+            { name: 'Mini Dress', price: '$1,150', retailer: 'Farfetch', category: 'dresses' },
+            { name: 'Trench Coat', price: '$1,890', retailer: 'Dover Street Market', category: 'outerwear' },
+            { name: 'Knit Top', price: '$380', retailer: 'Net-A-Porter', category: 'tops' },
+            { name: 'Wide Leg Pants', price: '$620', retailer: 'SSENSE', category: 'bottoms' },
+            { name: 'Wrap Dress', price: '$750', retailer: 'Farfetch', category: 'dresses' },
+            { name: 'Leather Jacket', price: '$2,400', retailer: 'Dover Street Market', category: 'outerwear' },
+            { name: 'Cami Top', price: '$280', retailer: 'Net-A-Porter', category: 'tops' },
+            { name: 'Cargo Trousers', price: '$890', retailer: 'SSENSE', category: 'bottoms' }
+        ];
+
+        // ===== SCREEN NAVIGATION =====
+        function goToQuiz() {
+            setScreen('quiz');
+            renderQuizQuestion();
+        }
+
+        function setScreen(screenName) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+
+            if (screenName === 'splash') {
+                document.querySelector('.splash-screen').classList.add('active');
+            } else if (screenName === 'quiz') {
+                document.querySelector('.quiz-screen').classList.add('active');
+            } else if (screenName === 'app') {
+                document.querySelectorAll('.app-screen').forEach(s => s.classList.add('active'));
+                initializeApp();
+            }
+            appState.currentScreen = screenName;
+        }
+
+        // ===== QUIZ LOGIC =====
+        function renderQuizQuestion() {
+            const q = appState.quizQuestions[appState.currentQuiz];
+            document.getElementById('quizProgress').textContent = `${appState.currentQuiz + 1} of ${appState.quizQuestions.length}`;
+            document.getElementById('quizTitle').textContent = q.title;
+
+            const optionsHtml = q.options.map((opt, i) =>
+                `<div class="quiz-option" onclick="selectOption(${i})">${opt}</div>`
+            ).join('');
+            document.getElementById('quizOptions').innerHTML = optionsHtml;
+            document.getElementById('quizNext').disabled = true;
+        }
+
+        function selectOption(index) {
+            document.querySelectorAll('.quiz-option').forEach((el, i) => {
+                el.classList.toggle('selected', i === index);
+            });
+            appState.quizAnswers[appState.currentQuiz] = index;
+            document.getElementById('quizNext').disabled = false;
+        }
+
+        function nextQuestion() {
+            if (appState.currentQuiz < appState.quizQuestions.length - 1) {
+                appState.currentQuiz++;
+                renderQuizQuestion();
+            } else {
+                setScreen('app');
+            }
+        }
+
+        function skipQuestion() {
+            nextQuestion();
+        }
+
+        // ===== APP INITIALIZATION =====
+        function initializeApp() {
+            if (appState.currentCardIndex === 0) {
+                renderCards();
+                updateReferralCode();
+                updateStyleDNA();
+                updateDresser();
+            }
+            switchTab(0);
+        }
+
+        // ===== CARD RENDERING =====
+        function createProductCard(productIndex) {
+            const isBrandCard = (productIndex + 1) % 5 === 0;
+
+            if (isBrandCard) {
+                const brandIndex = Math.floor((productIndex + 1) / 5) - 1;
+                const brand = BRANDS[brandIndex % BRANDS.length];
+
+                return `
+                    <div class="product-card brand-card" data-index="${productIndex}" style="z-index: ${100 - productIndex};">
+                        <div class="brand-logo">${brand.substring(0, 3).toUpperCase()}</div>
+                        <div class="brand-description">Discover the latest collection from ${brand}</div>
+                        <button class="brand-follow-btn" onclick="event.stopPropagation(); followBrand('${brand}')">Follow</button>
+                    </div>
+                `;
+            } else {
+                const product = PRODUCTS[productIndex % PRODUCTS.length];
+                const brand = BRANDS[productIndex % BRANDS.length];
+                const imageId = 600 + productIndex;
+
+                return `
+                    <div class="product-card" data-index="${productIndex}" style="z-index: ${100 - productIndex};">
+                        <img src="https://picsum.photos/360/280?random=${imageId}" class="product-image" alt="${product.name}">
+                        <div class="product-info">
+                            <div>
+                                <div class="product-brand">${brand}</div>
+                                <div class="product-name">${product.name}</div>
+                            </div>
+                            <div class="product-details">
+                                <div class="product-price">${product.price}</div>
+                                <div class="product-retailer">${product.retailer}</div>
+                            </div>
+                        </div>
+                        <div class="card-indicators">
+                            ${[...Array(Math.min(productIndex + 1, 3))].map(_ => '<div class="indicator active"></div>').join('')}
+                            ${[...Array(Math.max(0, 3 - productIndex - 1))].map(_ => '<div class="indicator"></div>').join('')}
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function renderCards() {
+            const container = document.getElementById('cardsContainer');
+            container.innerHTML = '';
+
+            for (let i = 0; i < 15; i++) {
+                container.innerHTML += createProductCard(i);
+            }
+
+            attachCardListeners();
+        }
+
+        // ===== SWIPE LOGIC =====
+        function attachCardListeners() {
+            document.querySelectorAll('.product-card').forEach(card => {
+                let startX, startY, currentX = 0, currentY = 0;
+                let isDragging = false;
+
+                const onPointerDown = (e) => {
+                    if (card.getAttribute('data-index') !== appState.currentCardIndex.toString()) return;
+                    startX = e.clientX || e.touches?.[0].clientX;
+                    startY = e.clientY || e.touches?.[0].clientY;
+                    isDragging = true;
+                    card.classList.add('dragging');
+                };
+
+                const onPointerMove = (e) => {
+                    if (!isDragging) return;
+                    const x = (e.clientX || e.touches?.[0].clientX) - startX;
+                    const y = (e.clientY || e.touches?.[0].clientY) - startY;
+                    currentX = x;
+                    currentY = y;
+
+                    const angle = (x / 100) * 15;
+                    card.style.transform = `translateX(${x}px) translateY(${y}px) rotate(${angle}deg)`;
+                };
+
+                const onPointerUp = () => {
+                    if (!isDragging) return;
+                    isDragging = false;
+                    card.classList.remove('dragging');
+
+                    const threshold = 80;
+                    const upThreshold = 100;
+
+                    if (Math.abs(currentY) > upThreshold && currentY < -50) {
+                        swipeUp(card);
+                    } else if (currentX > threshold) {
+                        swipeRight(card);
+                    } else if (currentX < -threshold) {
+                        swipeLeft(card);
+                    } else {
+                        card.style.transform = '';
+                    }
+                };
+
+                card.addEventListener('pointerdown', onPointerDown);
+                document.addEventListener('pointermove', onPointerMove);
+                document.addEventListener('pointerup', onPointerUp);
+            });
+        }
+
+        function swipeRight(card) {
+            card.style.animation = 'slideRight 0.5s ease-out forwards';
+            appState.stats.likes++;
+            const productIndex = parseInt(card.getAttribute('data-index'));
+            const product = PRODUCTS[productIndex % PRODUCTS.length];
+            const brand = BRANDS[productIndex % BRANDS.length];
+            appState.stats.brands.add(brand);
+            showToast('❤️ Added to likes');
+            setTimeout(() => nextCard(), 500);
+        }
+
+        function swipeLeft(card) {
+            card.style.animation = 'slideLeft 0.5s ease-out forwards';
+            appState.stats.passes++;
+            showToast('👎 Noted');
+            setTimeout(() => nextCard(), 500);
+        }
+
+        function swipeUp(card) {
+            card.style.animation = 'slideUp 0.5s ease-out forwards';
+            appState.stats.saves++;
+            const productIndex = parseInt(card.getAttribute('data-index'));
+            const category = [['outerwear'], ['tops'], ['bottoms'], ['dresses']][Math.floor(Math.random() * 4)][0];
+            appState.savedItems[category].push(PRODUCTS[productIndex % PRODUCTS.length]);
+            showToast('✨ Saved to dresser');
+            setTimeout(() => nextCard(), 500);
+        }
+
+        function nextCard() {
+            appState.currentCardIndex++;
+            if (appState.currentCardIndex >= 15) {
+                appState.currentCardIndex = 0;
+                renderCards();
+                showToast('🔄 Deck refreshed');
+            } else {
+                updateCardZIndices();
+            }
+            updateStyleDNA();
+            updateDresser();
+        }
+
+        function updateCardZIndices() {
+            document.querySelectorAll('.product-card').forEach(card => {
+                const idx = parseInt(card.getAttribute('data-index'));
+                if (idx < appState.currentCardIndex) {
+                    card.style.zIndex = idx;
+                    card.style.opacity = '0';
+                    card.style.pointerEvents = 'none';
+                } else {
+                    card.style.opacity = '1';
+                    card.style.zIndex = 100 - (idx - appState.currentCardIndex);
+                    card.style.pointerEvents = idx === appState.currentCardIndex ? 'auto' : 'none';
+                }
+            });
+        }
+
+        // ===== TAB NAVIGATION =====
+        function switchTab(tabIndex) {
+            appState.currentTab = tabIndex;
+
+            document.querySelectorAll('.tab-item').forEach((tab, i) => {
+                tab.classList.toggle('active', i === tabIndex);
+            });
+
+            const screens = document.querySelectorAll('.app-content > div');
+            screens.forEach((screen, i) => {
+                screen.style.display = i === tabIndex ? 'flex' : 'none';
+            });
+
+            if (tabIndex === 0) {
+                updateCardZIndices();
+            }
+        }
+
+        // ===== DRESSER =====
+        function updateDresser() {
+            const categories = {
+                'tops': '👕 Tops',
+                'bottoms': '👖 Bottoms',
+                'dresses': '👗 Dresses',
+                'outerwear': '🧥 Outerwear'
+            };
+
+            let html = '';
+            for (const [key, label] of Object.entries(categories)) {
+                const items = appState.savedItems[key];
+                html += `
+                    <div class="drawer">
+                        <div class="drawer-header" onclick="this.parentElement.querySelector('.drawer-items').style.display = this.parentElement.querySelector('.drawer-items').style.display === 'none' ? 'grid' : 'none'">
+                            <div class="drawer-title">${label}</div>
+                            <div class="drawer-count">${items.length}</div>
+                        </div>
+                        <div class="drawer-items" style="display: ${items.length > 0 ? 'grid' : 'none'}">
+                            ${items.map((item, i) => `
+                                <div class="drawer-item" title="${item.name}">
+                                    <span>${key === 'tops' ? '👕' : key === 'bottoms' ? '👖' : key === 'dresses' ? '👗' : '🧥'}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+            document.getElementById('dressers').innerHTML = html || '<p style="text-align: center; color: var(--color-text-secondary); padding: 40px 20px;">Start saving items to build your dresser</p>';
+        }
+
+        // ===== STYLE DNA CHART =====
+        function updateStyleDNA() {
+            const total = appState.stats.likes + appState.stats.passes;
+            const ratio = total > 0 ? appState.stats.likes / total : 0;
+
+            const values = [
+                Math.random() * 70 + 30,
+                Math.random() * 70 + 30,
+                Math.random() * 70 + 30,
+                Math.random() * 70 + 30,
+                Math.random() * 70 + 30
+            ];
+
+            const polygonPoints = values.map((v, i) => {
+                const angle = (i * 72) * Math.PI / 180;
+                const radius = 100 * (v / 100);
+                const x = 150 + radius * Math.sin(angle);
+                const y = 150 - radius * Math.cos(angle);
+                return `${x},${y}`;
+            }).join(' ');
+
+            document.getElementById('radarPolygon').innerHTML = `
+                <polygon points="${polygonPoints}" fill="url(#radarGradient)" opacity="0.4" stroke="#C4A77D" stroke-width="2"/>
+                <defs>
+                    <linearGradient id="radarGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#E8B4B8;stop-opacity:0.6" />
+                        <stop offset="100%" style="stop-color:#C4A77D;stop-opacity:0.3" />
+                    </linearGradient>
+                </defs>
+            `;
+
+            document.getElementById('statLikes').textContent = appState.stats.likes;
+            document.getElementById('statSaves').textContent = appState.stats.saves;
+            document.getElementById('statPasses').textContent = appState.stats.passes;
+            document.getElementById('statBrands').textContent = appState.stats.brands.size;
+        }
+
+        // ===== PROFILE / REFERRAL =====
+        function updateReferralCode() {
+            const codes = ['ROSE', 'PINK', 'LUXE', 'CHIC', 'STYLE'];
+            const code = codes[Math.floor(Math.random() * codes.length)];
+            const num = Math.random().toString(36).substring(2, 6).toUpperCase();
+            document.getElementById('referralCode').textContent = `${code}-${num}`;
+        }
+
+        function copyReferralCode() {
+            const code = document.getElementById('referralCode').textContent;
+            navigator.clipboard.writeText(code);
+            showToast('✅ Copied to clipboard');
+        }
+
+        function shareReferralCode() {
+            const code = document.getElementById('referralCode').textContent;
+            if (navigator.share) {
+                navigator.share({ text: `Join me on Rosier with code ${code}` });
+            } else {
+                showToast('📤 Share your code with friends!');
+            }
+        }
+
+        function followBrand(brand) {
+            appState.stats.brands.add(brand);
+            showToast(`⭐ Following ${brand}`);
+            updateStyleDNA();
+        }
+
+        // ===== UTILITIES =====
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
+        function toggleFilters() {
+            showToast('⚙️ Filters coming soon');
+        }
+    </script>
+</body>
+</html>
