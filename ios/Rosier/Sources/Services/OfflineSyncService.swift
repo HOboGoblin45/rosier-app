@@ -57,6 +57,58 @@ final class OfflineSyncService: NSObject, ObservableObject {
         }
 
         do {
+            // Phase 1: Fetch unsynced events from Core Data
+            let swipeEvents: [SwipeEvent] = await persistenceController.performBackgroundTask { context in
+                do {
+                    let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CachedSwipeEvent")
+                    fetchRequest.predicate = NSPredicate(format: "isSynced == false")
+
+                    guard let events = try context.fetch(fetchRequest) as? [NSManagedObject] else {
+                        return []
+                    }
+
+                    return events.compactMap { object -> SwipeEvent? in
+                        guard
+                            let id = object.value(forKey: "id") as? UUID,
+                            let productId = object.value(forKey: "productId") as? UUID,
+                            let actionString = object.value(forKey: "action") as? String,
+                            let action = SwipeAction(rawValue: actionString),
+                            let dwellTime = object.value(forKey: "dwellTimeMs") as? Int,
+                            let position = object.value(forKey: "sessionPosition") as? Int,
+                            let expanded = object.value(forKey: "expanded") as? Bool,
+                            let createdAt = object.value(forKey: "createdAt") as? Date
+                        else {
+                            return nil
+                        }
+
+                        return SwipeEvent(
+                            action: action,
+                            productId: productId,
+                            externalProductId: "",
+                            brandId: UUID(),
+                            category: .clothing,
+                            sessionPosition: position,
+                            dwellTimeMs: dwellTime,
+                            expanded: expanded
+                        )
+                    }
+                } catch {
+                    print("Failed to fetch unsynced events: \(error)")
+                    return []
+                }
+            }
+
+            guard !swipeEvents.isEmpty else { return }
+
+            // Phase 2: Upload to backend
+            let request = SwipeEventBatchRequest(events: swipeEvents)
+            try await networkService.requestEmpty(
+                "analytics/swipes",
+                method: .post,
+                body: request
+            )
+
+            // Phase 3: Mark as synced in Core Data
             try await persistenceController.performBackgroundTaskWithSave { context in
                 let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CachedSwipeEvent")
                 fetchRequest.predicate = NSPredicate(format: "isSynced == false")
@@ -65,54 +117,8 @@ final class OfflineSyncService: NSObject, ObservableObject {
                     return
                 }
 
-                if events.isEmpty {
-                    return
-                }
-
-                // Convert to SwipeEvent models
-                let swipeEvents = events.compactMap { object -> SwipeEvent? in
-                    guard
-                        let id = object.value(forKey: "id") as? UUID,
-                        let productId = object.value(forKey: "productId") as? UUID,
-                        let actionString = object.value(forKey: "action") as? String,
-                        let action = SwipeAction(rawValue: actionString),
-                        let dwellTime = object.value(forKey: "dwellTimeMs") as? Int,
-                        let position = object.value(forKey: "sessionPosition") as? Int,
-                        let expanded = object.value(forKey: "expanded") as? Bool,
-                        let createdAt = object.value(forKey: "createdAt") as? Date
-                    else {
-                        return nil
-                    }
-
-                    // Note: Creating a minimal SwipeEvent for upload
-                    // In production, store full event data or reconstruct from JSON
-                    let event = SwipeEvent(
-                        action: action,
-                        productId: productId,
-                        externalProductId: "",
-                        brandId: UUID(),
-                        category: .clothing,
-                        sessionPosition: position,
-                        dwellTimeMs: dwellTime,
-                        expanded: expanded
-                    )
-                    // Note: event.id is generated fresh; cached id from Core Data differs
-                    return event
-                }
-
-                // Upload to backend
-                if !swipeEvents.isEmpty {
-                    let request = SwipeEventBatchRequest(events: swipeEvents)
-                    try await self.networkService.requestEmpty(
-                        "analytics/swipes",
-                        method: .post,
-                        body: request
-                    )
-
-                    // Mark as synced
-                    for object in events {
-                        object.setValue(true, forKey: "isSynced")
-                    }
+                for object in events {
+                    object.setValue(true, forKey: "isSynced")
                 }
             }
         } catch {
