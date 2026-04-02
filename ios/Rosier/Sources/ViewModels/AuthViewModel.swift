@@ -1,7 +1,6 @@
 import Foundation
 import AuthenticationServices
 import SwiftUI
-import RosierCore
 
 /// ViewModel managing authentication flows including Apple Sign-In, email, and Google.
 @Observable final class AuthViewModel: NSObject, ASAuthorizationControllerDelegate {
@@ -236,9 +235,3 @@ enum PasswordStrength {
     }
 }
 
-// Extension to AuthService for sessionId access
-extension AuthService {
-    var sessionId: String {
-        UUID().uuidString // In production, expose the actual session ID
-    }
-}

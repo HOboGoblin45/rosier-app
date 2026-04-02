@@ -1,6 +1,5 @@
 import Foundation
 import SwiftUI
-import RosierCore
 
 /// Represents a known sale event from a retailer.
 struct SaleEvent: Identifiable, Hashable {

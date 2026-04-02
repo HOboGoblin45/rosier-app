@@ -1,5 +1,4 @@
 import SwiftUI
-import RosierCore
 
 /// Reusable error state view for displaying user-friendly error messages.
 /// Supports optional "Try Again" and "Contact Support" actions.

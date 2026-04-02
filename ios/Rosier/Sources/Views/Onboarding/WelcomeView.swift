@@ -1,5 +1,4 @@
 import SwiftUI
-import RosierCore
 
 /// Welcome screen with parallax product collage and entry actions.
 struct WelcomeView: View {

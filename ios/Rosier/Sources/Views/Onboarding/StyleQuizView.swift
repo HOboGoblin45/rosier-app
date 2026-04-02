@@ -1,5 +1,4 @@
 import SwiftUI
-import RosierCore
 
 /// Interactive style quiz with 5 visual questions.
 struct StyleQuizView: View {

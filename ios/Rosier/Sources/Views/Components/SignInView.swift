@@ -1,6 +1,5 @@
 import SwiftUI
 import AuthenticationServices
-import RosierCore
 
 /// Authentication sheet with Apple Sign-In, email/password, and Google options.
 struct SignInView: View {

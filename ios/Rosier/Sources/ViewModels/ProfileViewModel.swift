@@ -1,6 +1,5 @@
 import Foundation
 import SwiftUI
-import RosierCore
 
 /// ViewModel managing user profile and style DNA data.
 @Observable final class ProfileViewModel {

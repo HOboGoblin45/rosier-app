@@ -1,6 +1,5 @@
 import SwiftUI
 import Network
-import RosierCore
 
 /// Reusable offline banner that slides down from the top when the device loses internet.
 /// Automatically dismisses when connectivity is restored.

@@ -1,6 +1,5 @@
 import UIKit
 import SwiftUI
-import RosierCore
 
 /// Handles the signature dresser fold animation for super-like swipe-up gesture.
 final class DresserFoldAnimationController {

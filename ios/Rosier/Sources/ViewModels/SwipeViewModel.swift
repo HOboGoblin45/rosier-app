@@ -1,6 +1,5 @@
 import Foundation
 import SwiftUI
-import RosierCore
 
 /// ViewModel for the swipe interface, managing card queue, events, and state.
 @Observable

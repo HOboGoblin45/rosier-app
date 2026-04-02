@@ -105,47 +105,6 @@ struct OnboardingFlowContainer: View {
     }
 }
 
-// MARK: - Main Tab View
-
-struct MainTabView: View {
-    @ObservedObject var coordinator: AppCoordinator
-
-    var body: some View {
-        TabView(selection: $coordinator.selectedTab) {
-            // Swipe Tab
-            Text("Swipe View")
-                .tabItem {
-                    Label(
-                        MainCoordinator.Tab.swipe.displayName,
-                        systemImage: MainCoordinator.Tab.swipe.systemImage
-                    )
-                }
-                .tag(MainCoordinator.Tab.swipe)
-
-            // Dresser Tab
-            Text("Dresser View")
-                .tabItem {
-                    Label(
-                        MainCoordinator.Tab.dresser.displayName,
-                        systemImage: MainCoordinator.Tab.dresser.systemImage
-                    )
-                }
-                .tag(MainCoordinator.Tab.dresser)
-
-            // Profile Tab
-            Text("Profile View")
-                .tabItem {
-                    Label(
-                        MainCoordinator.Tab.profile.displayName,
-                        systemImage: MainCoordinator.Tab.profile.systemImage
-                    )
-                }
-                .tag(MainCoordinator.Tab.profile)
-        }
-        .background(Color.surfaceBackground)
-    }
-}
-
 // MARK: - Splash Screen
 
 struct SplashScreenView: View {
@@ -169,17 +128,3 @@ struct SplashScreenView: View {
     }
 }
 
-// MARK: - Extension for Deep Link Service Access
-
-extension AppCoordinator {
-    var deepLinkService: DeepLinkService {
-        DeepLinkService.shared
-    }
-}
-
-// Note: The extension for AppCoordinator to access NetworkService
-extension AuthService {
-    var networkService: NetworkService {
-        NetworkService.shared
-    }
-}

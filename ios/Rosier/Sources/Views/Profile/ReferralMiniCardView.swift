@@ -1,5 +1,4 @@
 import SwiftUI
-import RosierCore
 
 /// Compact referral card for embedding in profile or home screen.
 /// Shows quick stats and action buttons.

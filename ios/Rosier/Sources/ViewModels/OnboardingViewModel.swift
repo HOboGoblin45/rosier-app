@@ -1,6 +1,5 @@
 import Foundation
 import SwiftUI
-import RosierCore
 
 /// ViewModel managing the onboarding quiz state and submission.
 @Observable final class OnboardingViewModel {

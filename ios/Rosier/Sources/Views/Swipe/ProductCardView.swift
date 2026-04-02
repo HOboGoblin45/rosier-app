@@ -1,5 +1,4 @@
 import SwiftUI
-import RosierCore
 
 /// Individual product card view with image, pricing, and sale information.
 struct ProductCardView: View {

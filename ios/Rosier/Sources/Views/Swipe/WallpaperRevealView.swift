@@ -1,6 +1,5 @@
 import UIKit
 import CoreImage
-import RosierCore
 
 /// A UIView that renders a luxury wallpaper pattern with parallax effect.
 /// As cards are dragged, the pattern beneath is revealed with subtle inverse motion.
@@ -248,25 +247,3 @@ final class WallpaperRevealView: UIView {
     }
 }
 
-// MARK: - StyleArchetype Enum
-
-/// Represents the user's style archetype, mapping to luxury wallpaper houses.
-enum StyleArchetype: String, CaseIterable {
-    case deGournay = "de_gournay"
-    case phillipJeffries = "phillip_jeffries"
-    case schumacher = "schumacher"
-    case scalamandre = "scalamandre"
-}
-
-// MARK: - UIColor Extension for Hex Initialization
-
-extension UIColor {
-    /// Creates a UIColor from a hex value.
-    /// - Parameter hex: Hex color value (e.g., 0xA8C4B8)
-    convenience init(hex: UInt32) {
-        let red = CGFloat((hex >> 16) & 0xFF) / 255.0
-        let green = CGFloat((hex >> 8) & 0xFF) / 255.0
-        let blue = CGFloat(hex & 0xFF) / 255.0
-        self.init(red: red, green: green, blue: blue, alpha: 1.0)
-    }
-}

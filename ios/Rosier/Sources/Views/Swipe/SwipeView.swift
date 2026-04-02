@@ -1,5 +1,4 @@
 import SwiftUI
-import RosierCore
 
 /// Main swipe interface view containing the card stack, dresser icon, and controls.
 struct SwipeView: View {
