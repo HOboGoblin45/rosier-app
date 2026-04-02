@@ -1,5 +1,6 @@
 import UIKit
 import CoreImage
+import RosierCore
 
 /// A UIView that renders a luxury wallpaper pattern with parallax effect.
 /// As cards are dragged, the pattern beneath is revealed with subtle inverse motion.

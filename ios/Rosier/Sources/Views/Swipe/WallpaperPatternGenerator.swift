@@ -1,4 +1,5 @@
 import UIKit
+import RosierCore
 
 /// Generates procedural wallpaper patterns for the card reveal effect.
 /// Each pattern is designed to be subtle, elegant, and tileable for background rendering.

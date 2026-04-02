@@ -1,4 +1,5 @@
 import SwiftUI
+import RosierCore
 
 /// Main referral dashboard showing code, stats, and reward tiers.
 struct ReferralDashboardView: View {

@@ -1,4 +1,5 @@
 import SwiftUI
+import RosierCore
 
 /// Settings screen with notification, feed, and account preferences.
 struct SettingsView: View {

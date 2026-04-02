@@ -1,4 +1,5 @@
 import SwiftUI
+import RosierCore
 
 /// Reusable empty state view for various scenarios throughout the app.
 /// Supports custom icons, titles, subtitles, and optional action buttons.

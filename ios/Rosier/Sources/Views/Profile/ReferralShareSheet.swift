@@ -1,4 +1,5 @@
 import SwiftUI
+import RosierCore
 
 /// Native iOS Share Sheet wrapper for referral code sharing.
 /// Presents the system share sheet with pre-populated referral message and link.

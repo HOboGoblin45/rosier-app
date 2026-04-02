@@ -1,5 +1,6 @@
 import SwiftUI
 import UIKit
+import RosierCore
 
 /// SwiftUI wrapper around custom UIView for card stack with gesture handling.
 struct CardStackView: UIViewRepresentable {

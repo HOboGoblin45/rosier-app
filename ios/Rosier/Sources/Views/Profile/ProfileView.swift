@@ -1,4 +1,5 @@
 import SwiftUI
+import RosierCore
 
 /// User profile tab showing profile info and style DNA.
 struct ProfileView: View {
