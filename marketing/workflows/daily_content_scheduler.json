@@ -1,0 +1,193 @@
+{
+  "name": "Daily Content Scheduler",
+  "description": "Runs every morning at 8am. Fetches trending products from API, generates social captions, schedules posts to Instagram and TikTok via Mixpost.",
+  "active": true,
+  "nodes": [
+    {
+      "parameters": {
+        "trigger": "every",
+        "unit": "day",
+        "value": 1,
+        "hoursInterval": 8,
+        "minutesInterval": 0
+      },
+      "name": "Daily Schedule Trigger",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [50, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://rosier-api:8000/api/v1/trending/products?limit=3&period=day&sort=trending",
+        "authentication": "bearerToken",
+        "nodeCredentialType": "httpBearer"
+      },
+      "name": "Get Today's Trending Products",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Generate engaging social media captions from trending products\nconst products = $node['Get Today\\'s Trending Products'].json.data;\n\nconst captions = {\n  instagram: [],\n  tiktok: []\n};\n\nproducts.forEach((product, index) => {\n  // Instagram captions (max 2200 chars, but keep under 1000)\n  const igCaption = `✨ Day ${index + 1} of trending finds! \\n\\n${product.name} is giving ${product.vibe || 'MAIN CHARACTER ENERGY'} and we're here for it. 🔥\\n\\nBrand: ${product.brand}\\nStyle DNA Match: ${product.style_dna_match || '85%'}\\n\\nDo you love it? Swipe it on Rosier and get personalized recommendations based on your style! \\n\\n#Fashion #Styling #${product.category || 'FashionFinds'} #RosierApp #StyleInspiration #TrendingNow`;\n  \n  // TikTok captions (more casual, emoji-heavy)\n  const ttCaption = `POV: You're about to find your new favorite ${product.category || 'piece'} 👀✨\\n\\n${product.name} by ${product.brand}\\n\\nDownload Rosier to discover more hidden gems! 💎\\n\\n#FYP #Fashion #Styling #Trends #FashionTok #ShoppingHaul #StyleCheck`;\n  \n  captions.instagram.push({ product: product.id, caption: igCaption });\n  captions.tiktok.push({ product: product.id, caption: ttCaption });\n});\n\nreturn { captions, productCount: products.length, products };"
+      },
+      "name": "Generate Social Captions",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://mixpost:80/api/posts",
+        "authentication": "generic",
+        "genericAuthType": "bearerToken",
+        "nodeCredentialType": "httpBearer",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "",
+              "value": "{\"content\": \"{{ $node['Generate Social Captions'].json.captions.instagram[0].caption }}\", \"accounts\": [\"instagram\"], \"scheduleDate\": \"{{ now.toISO() }}\", \"media\": {\"product_id\": \"{{ $node['Generate Social Captions'].json.products[0].id }}\"}}"
+            }
+          ]
+        }
+      },
+      "name": "Schedule Instagram Post",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [650, 200]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://mixpost:80/api/posts",
+        "authentication": "generic",
+        "genericAuthType": "bearerToken",
+        "nodeCredentialType": "httpBearer",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "",
+              "value": "{\"content\": \"{{ $node['Generate Social Captions'].json.captions.tiktok[0].caption }}\", \"accounts\": [\"tiktok\"], \"scheduleDate\": \"{{ now.toISO() }}\", \"media\": {\"product_id\": \"{{ $node['Generate Social Captions'].json.products[0].id }}\"}}"
+            }
+          ]
+        }
+      },
+      "name": "Schedule TikTok Post",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [650, 400]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://plausible:8000/api/event",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "",
+              "value": "{\"name\": \"daily_posts_scheduled\", \"url\": \"https://rosier.app/daily\", \"domain\": \"rosier.app\", \"props\": {\"posts_scheduled\": 2, \"products_featured\": {{ $node['Generate Social Captions'].json.productCount }}}}"
+            }
+          ]
+        }
+      },
+      "name": "Log Daily Schedule Event",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [850, 300]
+    },
+    {
+      "parameters": {},
+      "name": "Success Completion",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [1050, 300]
+    }
+  ],
+  "connections": {
+    "Daily Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Today's Trending Products",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Today's Trending Products": {
+      "main": [
+        [
+          {
+            "node": "Generate Social Captions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Social Captions": {
+      "main": [
+        [
+          {
+            "node": "Schedule Instagram Post",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Schedule TikTok Post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Instagram Post": {
+      "main": [
+        [
+          {
+            "node": "Log Daily Schedule Event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule TikTok Post": {
+      "main": [
+        [
+          {
+            "node": "Log Daily Schedule Event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Daily Schedule Event": {
+      "main": [
+        [
+          {
+            "node": "Success Completion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

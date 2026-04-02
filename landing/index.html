@@ -1,0 +1,1368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Discover niche designer fashion through swipes. Your personal dresser. Style DNA. Never miss a sale. Rosier is the fashion discovery app for women who follow micro-influencers.">
+    <meta name="keywords" content="fashion discovery app, niche fashion, micro-influencer style, swipe to shop, contemporary brands, style DNA">
+    <meta name="theme-color" content="#1A1A2E">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- Open Graph Tags -->
+    <meta property="og:title" content="Rosier - Your taste. Your brands. Your feed.">
+    <meta property="og:description" content="The fashion discovery app for women who live on fashion TikTok. Swipe through niche designer pieces from 50+ curated retailers. Coming Summer 2026.">
+    <meta property="og:image" content="https://rosier.app/og-image.png">
+    <meta property="og:url" content="https://rosier.app">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Rosier">
+
+    <!-- Twitter Card Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Rosier - Fashion Discovery App for Niche Brands">
+    <meta name="twitter:description" content="Discover your next favorite niche brand through swipes. Style DNA powered by micro-influencer taste.">
+    <meta name="twitter:image" content="https://rosier.app/og-image.png">
+    <meta name="twitter:site" content="@rosier_app">
+
+    <title>Rosier - Fashion Discovery App | Niche Brands, Swipe to Shop</title>
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Rosier",
+      "description": "Fashion discovery app for women 18-35 interested in niche designer brands and micro-influencer fashion",
+      "applicationCategory": "Shopping",
+      "url": "https://rosier.app",
+      "image": "https://rosier.app/og-image.png",
+      "operatingSystem": "iOS, Android",
+      "offers": {
+        "@type": "Offer",
+        "priceCurrency": "USD",
+        "price": "0",
+        "category": "Free"
+      },
+      "author": {
+        "@type": "Organization",
+        "name": "Rosier"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "ratingCount": "2000"
+      }
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is Rosier?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Rosier is a fashion discovery app that uses swipe-based UX to help women 18-35 discover niche designer brands and contemporary fashion. It's powered by AI that learns your style DNA with every swipe."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How does Rosier work?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Simply swipe through curated niche fashion pieces from 50+ contemporary retailers. Save items you love, and Rosier's AI learns your taste. Get price alerts on your saved items and never miss a sale."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What brands will I find on Rosier?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Rosier features contemporary and niche brands like Ganni, Khaite, The Row, Jacquemus, Staud, Nanushka, Reformation, and 40+ more curated from SSENSE, Farfetch, Browns Fashion, and other premium retailers."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "When does Rosier launch?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Rosier is coming Summer 2026. Join our waitlist today for early access and exclusive launch day perks."
+          }
+        }
+      ]
+    }
+    </script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @import url('https://rsms.me/inter/inter.css');
+
+        :root {
+            --primary: #1a1a2e;
+            --accent: #c4a77d;
+            --surface: #f8f6f3;
+            --text: #1a1a1a;
+            --text-secondary: #6b6b6b;
+            --text-tertiary: #9b9b9b;
+            --border: #e8e8e8;
+            --success: #10b981;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: var(--text);
+            background: white;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* HEADER NAV */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: white;
+            border-bottom: 1px solid var(--border);
+            padding: 16px 20px;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+        }
+
+        /* HERO SECTION */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 60px 20px 80px;
+            background: linear-gradient(135deg, var(--primary) 0%, #2a2a4e 50%, var(--accent) 100%);
+            color: white;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 50%, rgba(196, 167, 125, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(196, 167, 125, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 700px;
+            text-align: center;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero h1 {
+            font-size: clamp(36px, 8vw, 64px);
+            font-weight: 700;
+            margin-bottom: 16px;
+            line-height: 1.2;
+            letter-spacing: -1px;
+        }
+
+        .hero > .hero-content > p {
+            font-size: clamp(16px, 4vw, 20px);
+            margin-bottom: 48px;
+            line-height: 1.6;
+            opacity: 0.95;
+            font-weight: 400;
+        }
+
+        /* FORM */
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 24px;
+            max-width: 100%;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .input-field {
+            flex: 1;
+            min-width: 200px;
+            padding: 14px 16px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            background: white;
+            color: var(--text);
+        }
+
+        .input-field::placeholder {
+            color: var(--text-tertiary);
+        }
+
+        .input-field:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px var(--accent);
+        }
+
+        .button-primary {
+            padding: 14px 28px;
+            background: var(--accent);
+            color: var(--primary);
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+        }
+
+        .button-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .button-primary:active {
+            transform: translateY(0);
+        }
+
+        /* APP STORE BUTTONS */
+        .app-store-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 32px;
+        }
+
+        .app-store-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 24px;
+            background: white;
+            color: var(--primary);
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            gap: 8px;
+        }
+
+        .app-store-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+        }
+
+        .app-store-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* WALLPAPER REVEAL SECTION */
+        .wallpaper-reveal {
+            padding: 100px 20px;
+            background: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .wallpaper-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .wallpaper-content h2 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--text);
+        }
+
+        .wallpaper-content p {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+
+        .wallpaper-visual {
+            background: linear-gradient(135deg, #E8B4B8 0%, #FFF8F0 50%, #A8C4B8 100%);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .wallpaper-preview {
+            width: 100%;
+            height: 100%;
+            background: white;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .wallpaper-pattern {
+            font-size: 80px;
+            opacity: 0.3;
+            position: absolute;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .wallpaper-text {
+            position: relative;
+            z-index: 2;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        /* REFERRAL SECTION */
+        .referral-section {
+            padding: 100px 20px;
+            background: var(--surface);
+        }
+
+        .referral-container {
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .referral-content h2 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--text);
+        }
+
+        .referral-content p {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            line-height: 1.8;
+        }
+
+        .referral-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 32px;
+            margin-top: 40px;
+        }
+
+        .referral-card {
+            background: white;
+            padding: 32px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+        }
+
+        .referral-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .referral-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .referral-description {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .social-proof {
+            font-size: 13px;
+            opacity: 0.85;
+            margin-top: 12px;
+        }
+
+        .form-success {
+            display: none;
+            text-align: center;
+            color: white;
+        }
+
+        .form-success.show {
+            display: block;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .success-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .success-message {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        /* HOW IT WORKS SECTION */
+        .how-it-works {
+            padding: 100px 20px;
+            background: white;
+        }
+
+        .section-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--text);
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin-bottom: 60px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 48px;
+            margin-top: 60px;
+        }
+
+        .step-card {
+            text-align: center;
+            animation: fadeIn 0.8s ease-out;
+            animation-fill-mode: both;
+        }
+
+        .step-card:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .step-card:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--surface);
+            border: 2px solid var(--accent);
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 20px;
+        }
+
+        .step-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--text);
+        }
+
+        .step-description {
+            font-size: 15px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* FEATURES SECTION */
+        .features {
+            padding: 100px 20px;
+            background: var(--surface);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 48px;
+            margin-top: 60px;
+        }
+
+        .feature-card {
+            text-align: center;
+            animation: fadeIn 0.8s ease-out;
+            animation-fill-mode: both;
+        }
+
+        .feature-card:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .feature-card:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        .feature-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
+        .feature-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--text);
+        }
+
+        .feature-description {
+            font-size: 15px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* BRANDS SECTION */
+        .brands-section {
+            padding: 80px 20px;
+            background: white;
+        }
+
+        .brands-title {
+            text-align: center;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+
+        .brands-subtitle {
+            text-align: center;
+            font-size: 15px;
+            color: var(--text-secondary);
+            margin-bottom: 48px;
+        }
+
+        .brands-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 24px;
+        }
+
+        .brand-logo {
+            height: 60px;
+            background: var(--surface);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 13px;
+            border: 1px solid var(--border);
+            transition: all 0.2s;
+        }
+
+        .brand-logo:hover {
+            border-color: var(--accent);
+            background: linear-gradient(135deg, rgba(196, 167, 125, 0.05) 0%, transparent 100%);
+        }
+
+        /* STYLE DNA SECTION */
+        .style-dna {
+            padding: 100px 20px;
+            background: var(--surface);
+        }
+
+        .style-dna-container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .style-dna-content h2 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--text);
+        }
+
+        .style-dna-content p {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+
+        .style-dna-content ul {
+            list-style: none;
+            margin-bottom: 30px;
+        }
+
+        .style-dna-content li {
+            font-size: 15px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            padding-left: 24px;
+            position: relative;
+        }
+
+        .style-dna-content li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .style-dna-visual {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+
+        .style-dna-visual h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: var(--text);
+        }
+
+        .style-icons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .style-icon {
+            padding: 20px;
+            background: var(--surface);
+            border-radius: 12px;
+            font-size: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .style-icon p {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+
+        /* SOCIAL PROOF SECTION */
+        .testimonials {
+            padding: 100px 20px;
+            background: white;
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 32px;
+            margin-top: 60px;
+        }
+
+        .testimonial-card {
+            padding: 32px;
+            background: var(--surface);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+        }
+
+        .testimonial-stars {
+            color: #fbbf24;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .testimonial-text {
+            font-size: 15px;
+            color: var(--text);
+            line-height: 1.8;
+            margin-bottom: 16px;
+            font-style: italic;
+        }
+
+        .testimonial-author {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .testimonial-role {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* CTA SECTION */
+        .cta-section {
+            padding: 80px 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, #2a2a4e 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .cta-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .launch-badge {
+            display: inline-block;
+            background: var(--accent);
+            color: var(--primary);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            letter-spacing: 0.3px;
+        }
+
+        .cta-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .cta-subtitle {
+            font-size: 15px;
+            opacity: 0.9;
+            margin-bottom: 32px;
+        }
+
+        /* FOOTER */
+        footer {
+            padding: 40px 20px;
+            background: var(--primary);
+            color: white;
+            text-align: center;
+            border-top: 1px solid rgba(196, 167, 125, 0.1);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .footer-text {
+            font-size: 13px;
+            opacity: 0.8;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .social-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 13px;
+            transition: opacity 0.2s;
+        }
+
+        .social-link:hover {
+            opacity: 0.8;
+        }
+
+        .footer-logo {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        /* SCROLL ANIMATIONS */
+        .scroll-fade {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease-out;
+        }
+
+        .scroll-fade.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .hero {
+                padding: 40px 20px 60px;
+            }
+
+            .hero h1 {
+                margin-bottom: 12px;
+            }
+
+            .input-row {
+                flex-direction: column;
+            }
+
+            .input-field {
+                min-width: 100%;
+            }
+
+            .section-title {
+                font-size: 28px;
+            }
+
+            .steps-grid,
+            .features-grid {
+                gap: 32px;
+            }
+
+            .brands-grid {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                gap: 16px;
+            }
+
+            .style-dna-container {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .style-icons {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .wallpaper-container {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .app-store-buttons {
+                gap: 8px;
+            }
+
+            .app-store-btn {
+                flex: 1;
+                min-width: 150px;
+                padding: 10px 16px;
+                font-size: 13px;
+            }
+
+            .referral-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-content {
+                gap: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER NAV -->
+    <header>
+        <div class="header-container">
+            <div class="logo">✦ Rosier</div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="#how-it-works">How It Works</a></li>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="/blog/">Blog</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Your taste. Your brands. Your feed.</h1>
+            <p>The fashion discovery app for women who live on fashion TikTok. Swipe through niche designer pieces from 50+ curated retailers. Never miss a sale.</p>
+
+            <div class="form-container" id="form-container">
+                <div class="input-row">
+                    <input
+                        type="email"
+                        class="input-field"
+                        placeholder="your@email.com"
+                        id="email-input"
+                        required
+                        aria-label="Email address"
+                    >
+                </div>
+                <div class="input-row">
+                    <input
+                        type="text"
+                        class="input-field"
+                        placeholder="@instagram (optional)"
+                        id="instagram-input"
+                        aria-label="Instagram handle"
+                    >
+                    <button class="button-primary" onclick="submitWaitlist()" aria-label="Join the Waitlist">Join the Waitlist</button>
+                </div>
+            </div>
+
+            <div class="form-success" id="form-success" role="status" aria-live="polite">
+                <div class="success-icon">✓</div>
+                <div class="success-message">You're on the list! Check your email for early access details.</div>
+            </div>
+
+            <div class="app-store-buttons">
+                <a href="https://apps.apple.com/app/rosier" class="app-store-btn" target="_blank" rel="noopener noreferrer">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M17.05 13.5c-.91 0-1.64.7-2.04 1.84h4.08c-.4-1.14-1.13-1.84-2.04-1.84zm-1.23-1.74c.76-.88 1.23-2.04 1.23-3.32 0-2.76-2.24-5-5-5s-5 2.24-5 5c0 1.28.47 2.44 1.23 3.32H6c-1.1 0-2 .9-2 2v6c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-6c0-1.1-.9-2-2-2h-2.18zM12 7c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                    </svg>
+                    App Store
+                </a>
+                <a href="https://play.google.com/store/apps/details?id=com.rosier.app" class="app-store-btn" target="_blank" rel="noopener noreferrer">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M3.609 1.814L13.792 12 3.609 22.186c-.289.289-.425.667-.425 1.043 0 .376.137.754.425 1.043.289.289.667.425 1.043.425.376 0 .754-.137 1.043-.425L16.902 12 5.72 1.196c-.289-.289-.667-.425-1.043-.425-.376 0-.754.137-1.043.425-.569.569-.569 1.517 0 2.086z"/>
+                    </svg>
+                    Play Store
+                </a>
+            </div>
+
+            <div class="social-proof">Join 2,000+ fashion-obsessed women in our waitlist</div>
+        </div>
+    </section>
+
+    <!-- HOW IT WORKS SECTION -->
+    <section class="how-it-works" id="how-it-works">
+        <div class="section-container">
+            <h2 class="section-title">How It Works</h2>
+            <p class="section-subtitle">Three simple steps to discover fashion that matches your unique taste</p>
+
+            <div class="steps-grid scroll-fade">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <div class="step-title">Swipe</div>
+                    <div class="step-description">Discover curated niche fashion pieces from contemporary brands. Swipe right to save, left to skip. Find your next favorite piece in seconds.</div>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <div class="step-title">Save</div>
+                    <div class="step-description">Build your collection of loved pieces. Our AI learns your style with every swipe and save. The more you interact, the smarter your feed becomes.</div>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <div class="step-title">Shop</div>
+                    <div class="step-description">Get price alerts on your saved items and shop directly from premium retailers. Never miss a sale on pieces you love.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- STYLE DNA FEATURE SECTION -->
+    <section class="style-dna" id="features">
+        <div class="section-container">
+            <div class="style-dna-container">
+                <div class="style-dna-content">
+                    <h2>Your Style DNA</h2>
+                    <p>Rosier's AI learns your fashion taste with every interaction. Unlike algorithmic feeds that push trends, our Style DNA engine powers truly personalized recommendations based on your unique preferences.</p>
+                    <ul>
+                        <li>AI learns from your swipes, saves, and purchases</li>
+                        <li>Gets smarter the more you use Rosier</li>
+                        <li>Powered by micro-influencer fashion curation</li>
+                        <li>No algorithm compromise—just your taste</li>
+                    </ul>
+                    <p><strong>Read our blog:</strong> <a href="/blog/style-dna-explained.html" style="color: var(--accent); text-decoration: none;">Style DNA Explained: How AI Learns Your Fashion Taste</a></p>
+                </div>
+                <div class="style-dna-visual">
+                    <h3>Your Personal Style Profile</h3>
+                    <div class="style-icons">
+                        <div>
+                            <div class="style-icon">👗</div>
+                            <p>Minimalist</p>
+                        </div>
+                        <div>
+                            <div class="style-icon">🎨</div>
+                            <p>Artistic</p>
+                        </div>
+                        <div>
+                            <div class="style-icon">✨</div>
+                            <p>Luxury</p>
+                        </div>
+                        <div>
+                            <div class="style-icon">🌿</div>
+                            <p>Sustainable</p>
+                        </div>
+                        <div>
+                            <div class="style-icon">⚡</div>
+                            <p>Bold</p>
+                        </div>
+                        <div>
+                            <div class="style-icon">🎭</div>
+                            <p>Experimental</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURES SECTION -->
+    <section class="features">
+        <div class="section-container">
+            <h2 class="section-title">Why Rosier</h2>
+
+            <div class="features-grid scroll-fade">
+                <div class="feature-card">
+                    <div class="feature-icon">🎴</div>
+                    <div class="feature-title">Swipe to Discover</div>
+                    <div class="feature-description">Tinder-meets-fashion with curated niche brands. Find your next favorite piece in seconds from contemporary designers you'll actually love.</div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">💎</div>
+                    <div class="feature-title">Niche Curation</div>
+                    <div class="feature-description">50+ contemporary and niche brands curated from premium retailers. No mass-market noise—just the brands micro-influencers actually wear.</div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔔</div>
+                    <div class="feature-title">Never Miss a Sale</div>
+                    <div class="feature-description">Price alerts for items you save. Be the first to know when prices drop on your favorites. Shop when it fits your budget.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- BRANDS SECTION -->
+    <section class="brands-section">
+        <div class="section-container">
+            <div class="brands-title">Brands You'll Discover</div>
+            <div class="brands-subtitle">Curated from 50+ niche, contemporary, and designer retailers including SSENSE, Farfetch, Browns Fashion, and more</div>
+
+            <div class="brands-grid scroll-fade">
+                <div class="brand-logo">Ganni</div>
+                <div class="brand-logo">Khaite</div>
+                <div class="brand-logo">The Row</div>
+                <div class="brand-logo">Jacquemus</div>
+                <div class="brand-logo">Staud</div>
+                <div class="brand-logo">Nanushka</div>
+                <div class="brand-logo">Reformation</div>
+                <div class="brand-logo">Deiji Studios</div>
+                <div class="brand-logo">Sandy Liang</div>
+                <div class="brand-logo">Lemaire</div>
+                <div class="brand-logo">Baserange</div>
+                <div class="brand-logo">Olivela</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- WALLPAPER REVEAL SECTION -->
+    <section class="wallpaper-reveal">
+        <div class="wallpaper-container">
+            <div class="wallpaper-content">
+                <h2>Curated Wallpapers for Early Adopters</h2>
+                <p>Download exclusive, luxe-inspired wallpapers designed by our creative team. These editorial-grade backgrounds bring the Rosier aesthetic to your home screen while you wait for launch.</p>
+                <p>Available only to our waitlist members. Unlock access when you join—no purchase necessary.</p>
+                <button class="button-primary" style="margin-top: 24px;" onclick="document.getElementById('wallpapers-section').scrollIntoView({behavior: 'smooth'})">Download Wallpapers</button>
+            </div>
+            <div class="wallpaper-visual">
+                <div class="wallpaper-preview">
+                    <div class="wallpaper-pattern">✦</div>
+                    <div class="wallpaper-text">Rosier</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- REFERRAL SECTION -->
+    <section class="referral-section" id="wallpapers-section">
+        <div class="referral-container">
+            <div class="referral-content">
+                <h2>Invite Friends. Unlock Rewards.</h2>
+                <p>Share Rosier with your fashion-obsessed friends and earn rewards together when the app launches. Everyone wins.</p>
+            </div>
+            <div class="referral-grid scroll-fade">
+                <div class="referral-card">
+                    <div class="referral-icon">👗</div>
+                    <div class="referral-title">Share Your Link</div>
+                    <div class="referral-description">Get a unique referral code. Share with friends via Instagram, email, or TikTok. The more you share, the more rewards you unlock.</div>
+                </div>
+
+                <div class="referral-card">
+                    <div class="referral-icon">🎁</div>
+                    <div class="referral-title">Friends Join the Waitlist</div>
+                    <div class="referral-description">Each friend who signs up with your code counts toward your reward tier. Watch your rewards grow as your friends discover Rosier.</div>
+                </div>
+
+                <div class="referral-card">
+                    <div class="referral-icon">⭐</div>
+                    <div class="referral-title">Unlock Exclusive Perks</div>
+                    <div class="referral-description">Earn exclusive app credits, early access features, and special founder badges in our community. Launch day rewards coming soon.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TESTIMONIALS / SOCIAL PROOF -->
+    <section class="testimonials">
+        <div class="section-container">
+            <h2 class="section-title">Loved by Fashion-Forward Women</h2>
+            <p class="section-subtitle">Early testers are raving about discovering their new favorite brands</p>
+
+            <div class="testimonials-grid scroll-fade">
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <div class="testimonial-text">"Finally, a fashion app that gets my taste. It's like someone curated SSENSE specifically for me. I've found brands I've never seen before."</div>
+                    <div class="testimonial-author">Sarah M.</div>
+                    <div class="testimonial-role">Fashion Creative, NYC</div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <div class="testimonial-text">"The Style DNA feature is insane. After a few swipes, it already knew I love minimalist pieces with interesting proportions. This is how fashion discovery should work."</div>
+                    <div class="testimonial-author">Jessica T.</div>
+                    <div class="testimonial-role">Micro-Influencer, LA</div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <div class="testimonial-text">"I got an alert for a Khaite piece I saved. It was 30% off. Never would have noticed it without Rosier. Love this app—counting down to launch!"</div>
+                    <div class="testimonial-author">Emma K.</div>
+                    <div class="testimonial-role">Artist, Boston</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA SECTION -->
+    <section class="cta-section">
+        <div class="cta-content">
+            <div class="launch-badge">Coming Summer 2026</div>
+            <div class="cta-title">Rosier is coming</div>
+            <div class="cta-subtitle">Join the waitlist now for early access and exclusive launch day perks</div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">✦ Rosier</div>
+            <div class="footer-text">Discover niche fashion. Save what you love. Never miss a sale.</div>
+            <div class="social-links">
+                <a href="https://instagram.com/rosier_app" class="social-link" target="_blank" rel="noopener noreferrer">Instagram</a>
+                <a href="https://twitter.com/rosier_app" class="social-link" target="_blank" rel="noopener noreferrer">Twitter</a>
+                <a href="/blog/" class="social-link">Blog</a>
+                <a href="/privacy" class="social-link">Privacy</a>
+                <a href="/terms" class="social-link">Terms</a>
+            </div>
+            <div class="footer-text" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(196, 167, 125, 0.1);">
+                © 2026 Rosier. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Form submission
+        function submitWaitlist() {
+            const email = document.getElementById('email-input').value.trim();
+            const instagram = document.getElementById('instagram-input').value.trim();
+
+            if (!email) {
+                alert('Please enter your email');
+                return;
+            }
+
+            if (!isValidEmail(email)) {
+                alert('Please enter a valid email');
+                return;
+            }
+
+            // Prepare data
+            const data = {
+                email: email,
+                instagram: instagram || null
+            };
+
+            // Send to API (configure endpoint as needed)
+            fetch('/api/waitlist', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (response.ok) {
+                    showSuccess();
+                    // Redirect to thank you page after 2 seconds
+                    setTimeout(() => {
+                        window.location.href = '/thank-you';
+                    }, 2000);
+                } else {
+                    throw new Error('Network response was not ok');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Something went wrong. Please try again.');
+            });
+        }
+
+        function isValidEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        function showSuccess() {
+            document.getElementById('form-container').style.display = 'none';
+            const successEl = document.getElementById('form-success');
+            successEl.classList.add('show');
+        }
+
+        // Scroll animations
+        const scrollElements = document.querySelectorAll('.scroll-fade');
+        const elementInView = (el, dividend = 1) => {
+            const elementTop = el.getBoundingClientRect().top;
+            return (
+                elementTop <= (window.innerHeight || document.documentElement.clientHeight) / dividend
+            );
+        };
+
+        const displayScrollElements = () => {
+            scrollElements.forEach((element) => {
+                if (elementInView(element, 1.25)) {
+                    element.classList.add('visible');
+                }
+            });
+        };
+
+        window.addEventListener('scroll', displayScrollElements);
+        displayScrollElements();
+
+        // Allow form submission on Enter
+        document.getElementById('instagram-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                submitWaitlist();
+            }
+        });
+    </script>
+</body>
+</html>

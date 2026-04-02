@@ -1,0 +1,58 @@
+{
+  "trending": [
+    "What's trending on Rosier this week? {brand_1} leads with {score_1}% love, followed by {brand_2} and {brand_3}. Your taste is showing 👀\n\n{hashtags}",
+    "The brands taking over your Rosier feed right now:\n\n#1: {brand_1} (+{change_1}% this week)\n#2: {brand_2} ({score_2}% saved)\n#3: {brand_3} (emerging)\n\nWhich one has YOUR name on it? {hashtags}",
+    "Fashion is moving. Here's proof:\n\n{brand_1} is your #1 most-swiped brand this week\n{brand_2} broke into top 5 overnight\n{brand_3} is the dark horse everyone's sleeping on\n\nDownload Rosier. Stay ahead. {hashtags}",
+    "Hot take: {brand_1}'s moment isn't peaking yet. Rosier data shows {brand_2} catching up fast. Both are going in your cart this season. Which first? {hashtags}",
+    "Trending right now on Rosier:\n→ {brand_1}\n→ {brand_2}\n→ {brand_3}\n\nNone of these were trending 2 weeks ago. Taste evolves fast. {hashtags}",
+    "The algorithm everyone's switching to just called. Your top 3 brands right now:\n\n{brand_1}\n{brand_2}\n{brand_3}\n\nDownload Rosier if you haven't already. {hashtags}",
+    "Stop sleeping on what's actually trending.\n\n{brand_1}: +{change_1}% this week\n{brand_2}: in your favorites\n{brand_3}: about to be\n\nSwipe through on Rosier. {hashtags}"
+  ],
+  "brand_spotlight": [
+    "{brand} just hit {position} on Rosier. Here's why:\n\n• {stat_1}\n• {stat_2}\n• {stat_3}\n\nYour next favorite brand is waiting. {hashtags}",
+    "One brand, infinite outfits:\n\n{brand}\n\n{description} Rosier users can't stop swiping. Can you? {hashtags}",
+    "{brand} is having a moment. {growth}% growth this month. The pieces? Unmissable. {hashtags}",
+    "Style blueprint: {brand}\n\nWhy Rosier users love it:\n{description}\n\nDiscover your version on Rosier. {hashtags}",
+    "This brand is everywhere on Rosier right now.\n\n{brand}\n\nDark, minimal, incredibly cool. Which piece first? {hashtags}",
+    "If you follow {brand} on Rosier, you already know. If you don't... start now. {hashtags}",
+    "{brand} entered the chat and Rosier noticed immediately.\n\n{stat_1}\n{stat_2}\n\nYour next obsession. {hashtags}"
+  ],
+  "style_dna": [
+    "Your Style DNA is calling.\n\nSwipe through 20 brands in 2 minutes. Watch Rosier learn what you love. Get your personalized Style DNA card.\n\nIt's disturbingly accurate. {hashtags}",
+    "POV: You just discovered your personal style aesthetic in one app.\n\nThat's what {archetype} energy is telling us. What's yours? {hashtags}",
+    "Your taste isn't boring. The algorithm you've been using just was.\n\nDiscover your real Style DNA on Rosier. {hashtags}",
+    "Dark Academia? Quiet Luxury? Both? {archetype} users just got their style confirmed.\n\nWhat's your mix? {hashtags}",
+    "Upload your Style DNA.\n\nTag #MyRosierStyle.\n\nWe're reposting the best ones. {hashtags}",
+    "Never felt more seen by an algorithm in my life.\n\n(Download Rosier, swipe 20 brands, get your Style DNA) {hashtags}",
+    "{archetype} coded? Your Rosier Style DNA is waiting. {hashtags}"
+  ],
+  "daily_drop": [
+    "Daily Drop is live.\n\nToday's 5:\n{products}\n\nFirst 100 to swipe get price alerts. {hashtags}",
+    "It's {day} morning. New brands just dropped on Rosier.\n\nThe edit:\n{products}\n\n{hashtags}",
+    "New on Rosier:\n{products}\n\n(These disappear fast. Link in bio.) {hashtags}",
+    "Today's Daily Drop hits different.\n\n{products}\n\nWhich are you saving? {hashtags}",
+    "Fresh inventory. Daily Drop active.\n\n{products}\n\nGo go go. {hashtags}"
+  ],
+  "price_alert": [
+    "{product} just dropped from {old_price} to {new_price}.\n\nThat's {savings}% off. \n\nRosier users with this saved? Notification just sent. Are you one of them? {hashtags}",
+    "Price drop: {product}\n{old_price} → {new_price}\n\nSave {savings}%. Rosier catches these so you don't have to. {hashtags}",
+    "Your wishlist is having a sale.\n\n{product}: {savings}% off\n\nSet price alerts on Rosier. {hashtags}",
+    "Mark this moment: {product} is now {savings}% cheaper.\n\nNotifications turned on? {hashtags}",
+    "Rosier just saved you {savings}%.\n\n{product}\n{old_price} → {new_price}\n\nGet alerts on drops. {hashtags}"
+  ],
+  "engagement": [
+    "Finish this sentence: 'I'd wear {brand} to...'\n\n(This is how Rosier learns your style.) {hashtags}",
+    "Would you or would you nah?\n\n{product} on Rosier\n\nComment below. Tag someone. {hashtags}",
+    "Hot take: {brand} is underrated.\n\nChange my mind in the comments. Or download Rosier and let the data speak. {hashtags}",
+    "Which one? Comment 1 or 2.\n\n{brand} {product_1} vs {product_2}\n\nRosier's helping us decide. {hashtags}",
+    "Your followers need to know about this brand.\n\n{brand}\n\nShare this post. {hashtags}",
+    "POV: You're about to find your new favorite {brand} piece on Rosier.\n\nLet us know which one wins. {hashtags}"
+  ],
+  "ugc_prompt": [
+    "Share your Style DNA.\n\nSwipe on Rosier. Get your personal style card. Post it to Stories. Tag #MyRosierStyle.\n\nBest ones get featured here + in the app. Let's see your vibe. {hashtags}",
+    "Style Check: What's your dominant aesthetic on Rosier?\n\nDownload, swipe 20 brands, get your answer. Share it. We're featuring the best. {hashtags}",
+    "Your turn.\n\nDownload Rosier.\nDiscover your Style DNA.\nPost it with #MyRosierStyle\n\nWe can't wait to see. {hashtags}",
+    "This is your sign to find out what your Rosier style actually is.\n\nTag us + #MyRosierStyle. Featured daily. {hashtags}",
+    "We're obsessed with your Style DNA.\n\nDownload Rosier. Swipe. Share. #MyRosierStyle {hashtags}"
+  ]
+}

@@ -1,0 +1,148 @@
+{
+  "hook_and_reveal": [
+    {
+      "hook": "This brand is about to take over your feed...",
+      "body": "It's {brand}. Rosier data shows {stat}% growth this week. Here's why.",
+      "cta": "Link in bio to discover {brand}"
+    },
+    {
+      "hook": "POV: You finally found the brand that gets your aesthetic",
+      "body": "Rosier just matched me with {brand} and I'm not recovering",
+      "cta": "Try Rosier for free"
+    },
+    {
+      "hook": "The app algorithm everyone's switching to:",
+      "body": "{brand} just hit #{position} trending on Rosier",
+      "cta": "See the full top 10"
+    },
+    {
+      "hook": "Stop sleeping on this brand...",
+      "body": "{brand}. {stat}% of Rosier users are saving these right now.",
+      "cta": "Download Rosier"
+    },
+    {
+      "hook": "This is how you actually discover niche fashion",
+      "body": "Swipe through {brand} on Rosier instead of scrolling Instagram for 2 hours",
+      "cta": "Link in bio"
+    }
+  ],
+  "style_quiz": [
+    {
+      "hook": "What's your style DNA?",
+      "body": "Take 2 minutes on Rosier. Swipe 20 brands. Get your personalized aesthetic.",
+      "cta": "Try the quiz"
+    },
+    {
+      "hook": "This describes my fashion taste too well",
+      "body": "Dark Academia meets Quiet Luxury? That's {archetype}. What's yours?",
+      "cta": "Download Rosier"
+    },
+    {
+      "hook": "Tell me your style without telling me your style",
+      "body": "My Rosier Style DNA: {archetype}. What's yours?",
+      "cta": "Find out on Rosier"
+    },
+    {
+      "hook": "Why does Rosier know my taste better than I do?",
+      "body": "2 minutes of swiping and it got my entire aesthetic right.",
+      "cta": "Try it yourself"
+    }
+  ],
+  "trend_breakdown": [
+    {
+      "hook": "{brand} is trending. Here's the tea.",
+      "body": "{stat}% more swipes this week. Rosier data doesn't lie.",
+      "cta": "See what's trending now"
+    },
+    {
+      "hook": "Fashion trends live here now:",
+      "body": "Not Instagram. Not TikTok. Rosier. {brand} is the proof.",
+      "cta": "Download Rosier"
+    },
+    {
+      "hook": "The brands to know right now",
+      "body": "Rosier's top 3: {brand_1}, {brand_2}, {brand_3}",
+      "cta": "Check the full ranking"
+    },
+    {
+      "hook": "Forget the algorithm. Follow the data.",
+      "body": "{brand} is {stat}% more loved on Rosier this month.",
+      "cta": "Swipe style"
+    }
+  ],
+  "swipe_along": [
+    {
+      "hook": "Swipe if you'd wear this brand",
+      "body": "Stopping on brands from Rosier because taste test",
+      "cta": "Swipe along on Rosier"
+    },
+    {
+      "hook": "Your style in one app",
+      "body": "Fast swipes. Real discovery. No algorithm BS.",
+      "cta": "Try it"
+    },
+    {
+      "hook": "Me swiping through {brand} on Rosier",
+      "body": "This or this or this or this",
+      "cta": "Swipe the whole collection"
+    }
+  ],
+  "app_demo": [
+    {
+      "hook": "Finally an app that understands niche fashion",
+      "body": "Rosier: swipe brands, learn your style, get notifications for drops",
+      "cta": "Download now"
+    },
+    {
+      "hook": "Instagram algorithm vs Rosier",
+      "body": "Rosier showed me {brand} and I've never felt so seen",
+      "cta": "Link in bio"
+    },
+    {
+      "hook": "This is how fashion discovery should work",
+      "body": "Not endless scrolling. Not influencer ads. Just you and the brands you love.",
+      "cta": "Try Rosier"
+    },
+    {
+      "hook": "Watching Rosier learn my style taste in real time",
+      "body": "Swipe 20 brands. Get style matched. Find new favorite piece.",
+      "cta": "App is live"
+    }
+  ],
+  "unboxing": [
+    {
+      "hook": "Unboxing my first Rosier haul",
+      "body": "Every piece from brands I found on the app + saved for price drops",
+      "cta": "Download Rosier for price alerts"
+    },
+    {
+      "hook": "This is what happens when you actually use Rosier",
+      "body": "Ordered these pieces after they dropped on the app",
+      "cta": "Get the app"
+    }
+  ],
+  "creator_testimonial": [
+    {
+      "hook": "Finally an app made for the way I actually shop",
+      "body": "Rosier gets my style immediately. It's like it was built for creators.",
+      "cta": "Download"
+    },
+    {
+      "hook": "I deleted Instagram's app and installed Rosier instead",
+      "body": "Way better algorithm. Way better brands.",
+      "cta": "Try it"
+    }
+  ],
+  "educational": [
+    {
+      "hook": "How to actually find emerging brands",
+      "body": "Step 1: Download Rosier\nStep 2: Swipe\nStep 3: Discover\nStep 4: Obsess",
+      "cta": "Link in bio"
+    },
+    {
+      "hook": "Finding your personal style, explained",
+      "body": "Rosier's algorithm breaks down your aesthetic so you understand it.",
+      "cta": "See it in action"
+    }
+  ]
+}

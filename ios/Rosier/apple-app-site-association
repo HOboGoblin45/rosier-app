@@ -1,0 +1,35 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "TEAMID.com.rosier.app",
+        "paths": [
+          "/product/*",
+          "/products/*",
+          "/dresser/*",
+          "/wardrobe/*",
+          "/dna/*",
+          "/style-profile/*",
+          "/invite/*",
+          "/invitation/*",
+          "/sale/*",
+          "/sales/*",
+          "/deals/*",
+          "/share/*",
+          "/item/*"
+        ]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": [
+      "TEAMID.com.rosier.app"
+    ]
+  },
+  "activitycontinuation": {
+    "apps": [
+      "TEAMID.com.rosier.app"
+    ]
+  }
+}

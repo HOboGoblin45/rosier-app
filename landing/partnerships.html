@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rosier — Brand Partnerships</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Trebuchet MS, sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        header {
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            color: #1a1a1a;
+        }
+
+        nav a {
+            color: #666;
+            text-decoration: none;
+            margin-left: 30px;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #1a1a1a;
+        }
+
+        .cta-button {
+            background: #1a1a1a;
+            color: white;
+            padding: 10px 24px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+
+        .cta-button:hover {
+            background: #333;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #f5f5f5 0%, #ffffff 100%);
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .hero-inner {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 42px;
+            font-weight: 300;
+            margin-bottom: 16px;
+            letter-spacing: -0.5px;
+            color: #1a1a1a;
+        }
+
+        .hero-subtitle {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 32px;
+            line-height: 1.6;
+        }
+
+        .visual-demo {
+            max-width: 1200px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+
+        .demo-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .demo-text h2 {
+            font-size: 28px;
+            font-weight: 400;
+            margin-bottom: 20px;
+            color: #1a1a1a;
+        }
+
+        .demo-text p {
+            color: #666;
+            margin-bottom: 16px;
+            font-size: 15px;
+            line-height: 1.8;
+        }
+
+        .demo-visual {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+            aspect-ratio: 9/16;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .phone-frame {
+            width: 280px;
+            height: 500px;
+            background: white;
+            border: 12px solid #1a1a1a;
+            border-radius: 40px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .phone-frame::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 25px;
+            background: #1a1a1a;
+            border-radius: 0 0 25px 25px;
+            z-index: 10;
+        }
+
+        .screen {
+            width: 100%;
+            height: 100%;
+            padding-top: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: #f9f9f9;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card {
+            width: 240px;
+            height: 320px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 16px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 150px;
+            background: linear-gradient(135deg, #e8e8e8 0%, #d0d0d0 100%);
+            border-radius: 4px;
+            margin-bottom: 12px;
+        }
+
+        .product-details h3 {
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 4px;
+            color: #1a1a1a;
+        }
+
+        .product-details p {
+            font-size: 12px;
+            color: #999;
+            margin: 0;
+        }
+
+        .card-action {
+            font-size: 11px;
+            color: #999;
+            text-align: center;
+            margin-top: 8px;
+        }
+
+        .wallpaper-reveal {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: linear-gradient(135deg, #a8e6ce 0%, #ffd3b6 50%, #ffaaa5 100%);
+            opacity: 0;
+            animation: slideUp 0.6s ease-out 1s forwards;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            color: rgba(255,255,255,0.8);
+            text-align: center;
+            padding: 8px;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stats-section {
+            background: white;
+            padding: 60px 20px;
+            border-top: 1px solid #e0e0e0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .stats-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .stats-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .stats-header h2 {
+            font-size: 28px;
+            font-weight: 400;
+            margin-bottom: 12px;
+            color: #1a1a1a;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        .stat-card {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 300;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .tiers-section {
+            max-width: 1200px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+
+        .tiers-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .tiers-header h2 {
+            font-size: 28px;
+            font-weight: 400;
+            margin-bottom: 12px;
+            color: #1a1a1a;
+        }
+
+        .tiers-header p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .tiers-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .tier-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 32px 24px;
+            transition: all 0.3s;
+        }
+
+        .tier-card:hover {
+            border-color: #1a1a1a;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+
+        .tier-name {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #1a1a1a;
+        }
+
+        .tier-price {
+            font-size: 24px;
+            font-weight: 300;
+            color: #1a1a1a;
+            margin-bottom: 24px;
+        }
+
+        .tier-price span {
+            font-size: 14px;
+            color: #999;
+        }
+
+        .tier-features {
+            list-style: none;
+            margin-bottom: 24px;
+        }
+
+        .tier-features li {
+            font-size: 14px;
+            color: #666;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .tier-features li:last-child {
+            border-bottom: none;
+        }
+
+        .tier-features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #1a1a1a;
+            font-weight: bold;
+        }
+
+        .tier-button {
+            width: 100%;
+            background: white;
+            border: 1px solid #1a1a1a;
+            color: #1a1a1a;
+            padding: 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+        }
+
+        .tier-button:hover {
+            background: #1a1a1a;
+            color: white;
+        }
+
+        .tier-card:nth-child(2) .tier-button {
+            background: #1a1a1a;
+            color: white;
+            border-color: #1a1a1a;
+        }
+
+        .tier-card:nth-child(2) .tier-button:hover {
+            background: #333;
+            border-color: #333;
+        }
+
+        .cta-section {
+            background: white;
+            padding: 60px 20px;
+            border-top: 1px solid #e0e0e0;
+            text-align: center;
+        }
+
+        .cta-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .cta-content h2 {
+            font-size: 32px;
+            font-weight: 400;
+            margin-bottom: 16px;
+            color: #1a1a1a;
+        }
+
+        .cta-content p {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 32px;
+            line-height: 1.6;
+        }
+
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .contact-form input,
+        .contact-form textarea {
+            padding: 12px 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .contact-form textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .contact-form input:focus,
+        .contact-form textarea:focus {
+            outline: none;
+            border-color: #1a1a1a;
+        }
+
+        .submit-button {
+            background: #1a1a1a;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s;
+            align-self: flex-start;
+        }
+
+        .submit-button:hover {
+            background: #333;
+        }
+
+        footer {
+            background: #1a1a1a;
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        @media (max-width: 768px) {
+            .demo-container,
+            .stats-grid,
+            .tiers-grid {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 32px;
+            }
+
+            .demo-text h2 {
+                font-size: 24px;
+            }
+
+            nav {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-inner">
+            <div class="logo">Rosier</div>
+            <nav>
+                <a href="#how-it-works">How It Works</a>
+                <a href="#audience">Audience</a>
+                <a href="#tiers">Tiers</a>
+                <a href="#contact">Contact</a>
+            </nav>
+            <a href="#contact" class="cta-button">Start a Partnership</a>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-inner">
+            <h1>Wallpaper Brand Partnerships</h1>
+            <p class="hero-subtitle">Premium pattern placement in a luxury fashion discovery app. Reach design-conscious women who curate both their wardrobe and their living space.</p>
+        </div>
+    </section>
+
+    <section class="visual-demo" id="how-it-works">
+        <div class="demo-container">
+            <div class="demo-text">
+                <h2>The Wallpaper Reveal</h2>
+                <p>Rosier's core mechanic is elegant and engaging. As users swipe through fashion products, the surface beneath each card reveals a wallpaper pattern matched to their style archetype.</p>
+                <p>Each pattern appears for 2-3 seconds of active attention—delivering brand impressions in a moment of genuine delight.</p>
+                <p>No interruption. No banner ads. Just beautiful design that feels native to the experience.</p>
+            </div>
+            <div class="demo-visual">
+                <div class="phone-frame">
+                    <div class="screen">
+                        <div class="card">
+                            <div class="product-image"></div>
+                            <div class="product-details">
+                                <h3>Luxury Cashmere</h3>
+                                <p>$340</p>
+                            </div>
+                            <div class="card-action">← Swipe →</div>
+                            <div class="wallpaper-reveal">Pattern reveals</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="stats-section" id="audience">
+        <div class="stats-inner">
+            <div class="stats-header">
+                <h2>The Audience</h2>
+                <p>Rosier reaches design-conscious women who shop luxury fashion and curate their living spaces.</p>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">50K+</div>
+                    <div class="stat-label">Active Users</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">$150K</div>
+                    <div class="stat-label">Median HHI</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">18-35</div>
+                    <div class="stat-label">Primary Demographic</div>
+                </div>
+            </div>
+            <div style="margin-top: 40px; padding: 24px; background: #f9f9f9; border-radius: 8px; font-size: 14px; color: #666; text-align: left;">
+                <strong>User Profile:</strong> Women who follow SSENSE/NET-A-PORTER fashion, engage with micro-influencer content (100K-500K followers), actively shop luxury ready-to-wear & accessories, and are design-conscious in both fashion and home aesthetics. High purchase intent across categories.
+            </div>
+        </div>
+    </section>
+
+    <section class="tiers-section" id="tiers">
+        <div class="tiers-header">
+            <h2>Partnership Tiers</h2>
+            <p>Choose the level of visibility and analytics that fits your goals.</p>
+        </div>
+        <div class="tiers-grid">
+            <div class="tier-card">
+                <div class="tier-name">Discovery Partner</div>
+                <div class="tier-price">$2K<span>/month</span></div>
+                <ul class="tier-features">
+                    <li>150K-200K monthly impressions</li>
+                    <li>Pattern rotation inclusion</li>
+                    <li>Monthly impression reports</li>
+                    <li>Basic demographic data</li>
+                    <li>3-month minimum</li>
+                </ul>
+                <a href="#contact" class="tier-button">Inquire</a>
+            </div>
+
+            <div class="tier-card">
+                <div class="tier-name">Featured Partner</div>
+                <div class="tier-price">$5K<span>/month</span></div>
+                <ul class="tier-features">
+                    <li>250K-350K monthly impressions</li>
+                    <li>Shared archetype placement</li>
+                    <li>Quarterly analytics reports</li>
+                    <li>Demographic breakdown</li>
+                    <li>Social co-promotion</li>
+                </ul>
+                <a href="#contact" class="tier-button">Get Started</a>
+            </div>
+
+            <div class="tier-card">
+                <div class="tier-name">Signature Partner</div>
+                <div class="tier-price">$10K<span>/month</span></div>
+                <ul class="tier-features">
+                    <li>500K+ guaranteed impressions</li>
+                    <li>Exclusive archetype assignment</li>
+                    <li>Monthly detailed reports</li>
+                    <li>Brand affinity analytics</li>
+                    <li>Co-branded content options</li>
+                </ul>
+                <a href="#contact" class="tier-button">Inquire</a>
+            </div>
+        </div>
+
+        <div style="margin-top: 40px; padding: 24px; background: #f9f9f9; border-radius: 8px; text-align: center; font-size: 13px; color: #666;">
+            <strong>Limited Time Pilot Offer:</strong> 50% discount on all tiers for 3-month commitments through May 31, 2026. Launch your partnership at scale as we expand to 200K+ users.
+        </div>
+    </section>
+
+    <section class="cta-section" id="contact">
+        <div class="cta-content">
+            <h2>Ready to Partner?</h2>
+            <p>Let's talk about how your brand can reach Rosier's design-conscious audience. Send us your details and we'll schedule a discovery call within 24 hours.</p>
+
+            <form class="contact-form" onsubmit="handleSubmit(event)">
+                <input type="text" placeholder="Your Name" required>
+                <input type="email" placeholder="Email Address" required>
+                <input type="text" placeholder="Brand Name" required>
+                <input type="tel" placeholder="Phone (optional)">
+                <textarea placeholder="Tell us about your brand and partnership interests..."></textarea>
+                <button type="submit" class="submit-button">Send Inquiry</button>
+            </form>
+
+            <p style="font-size: 13px; color: #999; margin-top: 16px;">
+                Or email us directly: <strong>partnerships@rosier.com</strong>
+            </p>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Rosier. Luxury fashion discovery. | <a href="#" style="color: white; text-decoration: none;">Privacy</a> | <a href="#" style="color: white; text-decoration: none;">Terms</a></p>
+    </footer>
+
+    <script>
+        function handleSubmit(event) {
+            event.preventDefault();
+            alert('Thank you for your inquiry. We will contact you within 24 hours.');
+            event.target.reset();
+        }
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

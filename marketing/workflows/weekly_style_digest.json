@@ -1,0 +1,213 @@
+{
+  "name": "Weekly Style Digest",
+  "description": "Runs every Sunday at 10am. Fetches trending brands/products from Rosier API, formats email, sends via Listmonk, and posts to social media.",
+  "active": true,
+  "nodes": [
+    {
+      "parameters": {
+        "trigger": "every",
+        "unit": "week",
+        "value": 1,
+        "dayOfWeek": "sunday",
+        "hoursInterval": 10,
+        "minutesInterval": 0
+      },
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [50, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://rosier-api:8000/api/v1/trending/brands?limit=5&period=week",
+        "authentication": "bearerToken",
+        "nodeCredentialType": "httpBearer",
+        "options": {}
+      },
+      "name": "Get Trending Brands from API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "credentials": {
+        "httpBearer": "rosier-api-token"
+      }
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://rosier-api:8000/api/v1/trending/products?limit=10&period=week",
+        "authentication": "bearerToken",
+        "nodeCredentialType": "httpBearer",
+        "options": {}
+      },
+      "name": "Get Trending Products from API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [250, 450]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Build HTML email content from trending data\nconst brands = $node['Get Trending Brands from API'].json.data;\nconst products = $node['Get Trending Products from API'].json.data;\n\nlet brandsList = '';\nbrands.forEach(brand => {\n  brandsList += `<li>${brand.name} - ${brand.mentions} mentions this week</li>`;\n});\n\nlet productsList = '';\nproducts.forEach(product => {\n  productsList += `\n    <div style=\"border: 1px solid #ddd; padding: 15px; margin: 10px 0; border-radius: 4px;\">\n      <h4>${product.name}</h4>\n      <p><strong>Brand:</strong> ${product.brand}</p>\n      <p><strong>Trending Score:</strong> ${product.trend_score}/100</p>\n      <p>${product.description}</p>\n      <a href=\"https://rosier.app/product/${product.id}\" style=\"background-color: #C4A77D; color: white; padding: 8px 16px; text-decoration: none; border-radius: 4px; display: inline-block;\">View on Rosier</a>\n    </div>\n  `;\n});\n\nconst emailContent = `\n<h2>This Week's Trending Finds</h2>\n<p>Here are the brands and products trending on Rosier this week:</p>\n\n<h3>Top Brands</h3>\n<ul>${brandsList}</ul>\n\n<h3>Top Products</h3>\n${productsList}\n\n<p style=\"margin-top: 30px; color: #666; font-size: 12px;\">\n  Not interested in these trends? Update your preferences in your Rosier settings.\n</p>\n`;\n\nreturn { emailContent, productCount: products.length, brandCount: brands.length };"
+      },
+      "name": "Format Email Content",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [450, 370]
+    },
+    {
+      "parameters": {
+        "resource": "campaign",
+        "operation": "create",
+        "campaignId": null,
+        "name": "Weekly Style Digest - {{ now.toFormat('yyyy-MM-dd') }}",
+        "subject": "Your Weekly Style Digest - Trending Now on Rosier",
+        "fromEmail": "noreply@rosier.app",
+        "fromName": "Rosier",
+        "body": "={{ $node['Format Email Content'].json.emailContent }}",
+        "listId": 2
+      },
+      "name": "Create and Send Campaign via Listmonk",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://mixpost:80/api/posts",
+        "authentication": "generic",
+        "genericAuthType": "bearerToken",
+        "nodeCredentialType": "httpBearer",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "",
+              "value": "{\"content\": \"Check out this week's trending fashion finds on Rosier! 👀✨\\n\\nTop picks: {{ $node['Format Email Content'].json.productCount }} products trending right now.\\n\\nSwipe the styles you love: https://rosier.app/trending\", \"accounts\": [\"instagram\", \"tiktok\"], \"scheduleDate\": \"{{ now.toISO() }}\"}"
+            }
+          ]
+        }
+      },
+      "name": "Post to Social Media via Mixpost",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [650, 450]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://plausible:8000/api/event",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "",
+              "value": "{\"name\": \"weekly_digest_sent\", \"url\": \"https://rosier.app/digest\", \"domain\": \"rosier.app\", \"props\": {\"brands_featured\": {{ $node['Format Email Content'].json.brandCount }}, \"products_featured\": {{ $node['Format Email Content'].json.productCount }}}}"
+            }
+          ]
+        }
+      },
+      "name": "Log Event to Analytics",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [850, 370]
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Trending Brands from API",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Trending Products from API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Trending Brands from API": {
+      "main": [
+        [
+          {
+            "node": "Format Email Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Trending Products from API": {
+      "main": [
+        [
+          {
+            "node": "Format Email Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Email Content": {
+      "main": [
+        [
+          {
+            "node": "Create and Send Campaign via Listmonk",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Post to Social Media via Mixpost",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create and Send Campaign via Listmonk": {
+      "main": [
+        [
+          {
+            "node": "Log Event to Analytics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post to Social Media via Mixpost": {
+      "main": [
+        [
+          {
+            "node": "Log Event to Analytics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

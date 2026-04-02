@@ -1,0 +1,408 @@
+name: iOS CI/CD
+
+on:
+  push:
+    branches: [main, develop]
+    paths: ['ios/**']
+  pull_request:
+    branches: [develop]
+    paths: ['ios/**']
+  workflow_dispatch:
+    inputs:
+      build_type:
+        description: 'Build type'
+        required: true
+        default: 'debug'
+        type: choice
+        options:
+          - debug
+          - testflight
+          - appstore
+  create:
+    tags:
+      - 'v*'
+
+env:
+  PROJECT_PATH: ios/Rosier
+  XCODE_VERSION: '16.0'
+  IOS_DEPLOYMENT_TARGET: '17.0'
+  SWIFT_VERSION: '5.9'
+
+jobs:
+  build-and-test:
+    name: Build & Test
+    runs-on: macos-14
+    timeout-minutes: 60
+    defaults:
+      run:
+        working-directory: ios/Rosier
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Select Xcode
+        run: |
+          sudo xcode-select -s /Applications/Xcode_16.0.app/Contents/Developer
+          xcodebuild -version
+
+      - name: Cache Homebrew packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/Library/Caches/Homebrew
+            /usr/local/Cellar
+          key: ${{ runner.os }}-brew-${{ hashFiles('**/Brewfile.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-brew-
+
+      - name: Install dependencies
+        run: |
+          brew install xcodegen swiftlint xcpretty
+
+      - name: Generate Xcode project
+        run: |
+          ./scripts/generate_xcodeproj.sh --verbose
+
+      - name: Run SwiftLint
+        run: |
+          swiftlint lint --strict --reporter github-actions-logging Sources/
+
+      - name: Build for simulator
+        run: |
+          xcodebuild build \
+            -project Rosier.xcodeproj \
+            -scheme Rosier \
+            -configuration Debug \
+            -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
+            -derivedDataPath build \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            | xcpretty --color --report html --output build/logs/build.html
+
+      - name: Run unit tests
+        run: |
+          xcodebuild test \
+            -project Rosier.xcodeproj \
+            -scheme Rosier \
+            -configuration Debug \
+            -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
+            -derivedDataPath build \
+            -resultBundlePath build/test-results.xcresult \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            | xcpretty --color --report html --output build/logs/tests.html
+
+      - name: Process test results
+        if: always()
+        run: |
+          xcrun xccov view --report --json build/test-results.xcresult > build/coverage.json || true
+          echo "Test Results Summary:"
+          tail -20 build/logs/tests.html || echo "Test log unavailable"
+
+      - name: Upload test artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: |
+            ios/Rosier/build/test-results.xcresult
+            ios/Rosier/build/coverage.json
+          retention-days: 30
+
+      - name: Upload coverage reports
+        if: always()
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./ios/Rosier/build/coverage.json
+          flags: ios-unit-tests
+          name: iOS Coverage
+          fail_ci_if_error: false
+
+      - name: Upload build logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-logs
+          path: ios/Rosier/build/logs/
+          retention-days: 7
+
+  snapshot-tests:
+    name: Snapshot Tests
+    runs-on: macos-14
+    needs: build-and-test
+    timeout-minutes: 45
+    defaults:
+      run:
+        working-directory: ios/Rosier
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_16.0.app/Contents/Developer
+
+      - name: Install dependencies
+        run: brew install xcodegen xcpretty
+
+      - name: Generate Xcode project
+        run: ./scripts/generate_xcodeproj.sh
+
+      - name: Run snapshot tests
+        run: |
+          xcodebuild test \
+            -project Rosier.xcodeproj \
+            -scheme RosierSnapshotTests \
+            -configuration Debug \
+            -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
+            -derivedDataPath build \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            | xcpretty --color
+
+      - name: Upload snapshots on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: snapshot-diffs
+          path: ios/Rosier/Tests/RosierTests/__Snapshots__/
+          retention-days: 7
+
+  deploy-testflight:
+    name: Deploy to TestFlight
+    runs-on: macos-14
+    needs: [build-and-test, snapshot-tests]
+    timeout-minutes: 90
+    if: startsWith(github.ref, 'refs/tags/v')
+    defaults:
+      run:
+        working-directory: ios/Rosier
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_16.0.app/Contents/Developer
+
+      - name: Install dependencies
+        run: |
+          brew install xcodegen fastlane xcpretty
+          gem install fastlane -NV
+          fastlane --version
+
+      - name: Generate Xcode project
+        run: ./scripts/generate_xcodeproj.sh
+
+      - name: Setup code signing
+        env:
+          APPLE_DEVELOPER_ID: ${{ secrets.APPLE_DEVELOPER_ID }}
+          IOS_CERTIFICATE_BASE64: ${{ secrets.IOS_CERTIFICATE_BASE64 }}
+          IOS_CERT_PASSWORD: ${{ secrets.IOS_CERT_PASSWORD }}
+          PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}
+        run: |
+          ./scripts/setup_signing.sh appstore
+
+      - name: Build archive
+        run: |
+          xcodebuild archive \
+            -project Rosier.xcodeproj \
+            -scheme Rosier \
+            -configuration Release \
+            -archivePath build/Rosier.xcarchive \
+            -destination 'generic/platform=iOS' \
+            -derivedDataPath build \
+            DEVELOPMENT_TEAM='${{ secrets.APPLE_DEVELOPER_ID }}' \
+            CODE_SIGN_IDENTITY='Apple Distribution' \
+            PROVISIONING_PROFILE_SPECIFIER='Rosier Distribution' \
+            | xcpretty --color
+
+      - name: Export IPA
+        run: |
+          cat > build/ExportOptions.plist <<'EOF'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+              <key>method</key>
+              <string>app-store</string>
+              <key>signingStyle</key>
+              <string>automatic</string>
+              <key>stripSwiftSymbols</key>
+              <true/>
+              <key>teamID</key>
+              <string>${{ secrets.APPLE_DEVELOPER_ID }}</string>
+              <key>provisioningProfileSelection</key>
+              <string>automatic</string>
+              <key>destinationGenericPlatformName</key>
+              <string>ios</string>
+          </dict>
+          </plist>
+          EOF
+
+          xcodebuild -exportArchive \
+            -archivePath build/Rosier.xcarchive \
+            -exportOptionsPlist build/ExportOptions.plist \
+            -exportPath build/export \
+            | xcpretty --color
+
+      - name: Verify IPA
+        run: |
+          if [[ ! -f build/export/Rosier.ipa ]]; then
+            echo "ERROR: IPA not found"
+            exit 1
+          fi
+          echo "IPA size: $(du -h build/export/Rosier.ipa | cut -f1)"
+          file build/export/Rosier.ipa
+
+      - name: Upload to TestFlight
+        env:
+          APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          APP_STORE_CONNECT_API_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          APP_STORE_CONNECT_API_KEY: ${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY }}
+        run: |
+          fastlane beta \
+            api_key_id:"$APP_STORE_CONNECT_API_KEY_ID" \
+            api_issuer_id:"$APP_STORE_CONNECT_API_ISSUER_ID" \
+            api_key_content:"$APP_STORE_CONNECT_API_KEY" \
+            ipa:"build/export/Rosier.ipa"
+
+      - name: Upload build artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: testflight-build
+          path: |
+            ios/Rosier/build/export/Rosier.ipa
+            ios/Rosier/build/Rosier.xcarchive
+          retention-days: 30
+
+  deploy-app-store:
+    name: Deploy to App Store
+    runs-on: macos-14
+    timeout-minutes: 120
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.build_type == 'appstore'
+    defaults:
+      run:
+        working-directory: ios/Rosier
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_16.0.app/Contents/Developer
+
+      - name: Install dependencies
+        run: |
+          brew install xcodegen fastlane xcpretty
+          gem install fastlane -NV
+
+      - name: Generate Xcode project
+        run: ./scripts/generate_xcodeproj.sh
+
+      - name: Setup code signing
+        env:
+          APPLE_DEVELOPER_ID: ${{ secrets.APPLE_DEVELOPER_ID }}
+          IOS_CERTIFICATE_BASE64: ${{ secrets.IOS_CERTIFICATE_BASE64 }}
+          IOS_CERT_PASSWORD: ${{ secrets.IOS_CERT_PASSWORD }}
+          PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}
+        run: ./scripts/setup_signing.sh appstore
+
+      - name: Verify tests pass
+        run: |
+          xcodebuild test \
+            -project Rosier.xcodeproj \
+            -scheme Rosier \
+            -configuration Debug \
+            -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
+            -derivedDataPath build \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            | xcpretty --color
+
+      - name: Increment version
+        run: |
+          VERSION=$(grep 'MARKETING_VERSION' Sources/App/BUILD_SETTINGS.xcconfig | awk '{print $3}')
+          BUILD=$(grep 'CURRENT_PROJECT_VERSION' Sources/App/BUILD_SETTINGS.xcconfig | awk '{print $3}')
+          NEW_BUILD=$((BUILD + 1))
+          sed -i '' "s/CURRENT_PROJECT_VERSION = .*/CURRENT_PROJECT_VERSION = $NEW_BUILD/" Sources/App/BUILD_SETTINGS.xcconfig
+          echo "Incremented build from $BUILD to $NEW_BUILD"
+
+      - name: Build archive
+        run: |
+          xcodebuild archive \
+            -project Rosier.xcodeproj \
+            -scheme Rosier \
+            -configuration Release \
+            -archivePath build/Rosier.xcarchive \
+            -destination 'generic/platform=iOS' \
+            -derivedDataPath build \
+            DEVELOPMENT_TEAM='${{ secrets.APPLE_DEVELOPER_ID }}' \
+            CODE_SIGN_IDENTITY='Apple Distribution' \
+            | xcpretty --color
+
+      - name: Export IPA
+        run: |
+          cat > build/ExportOptions.plist <<'EOF'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+              <key>method</key>
+              <string>app-store</string>
+              <key>signingStyle</key>
+              <string>automatic</string>
+              <key>stripSwiftSymbols</key>
+              <true/>
+              <key>teamID</key>
+              <string>${{ secrets.APPLE_DEVELOPER_ID }}</string>
+              <key>destinationGenericPlatformName</key>
+              <string>ios</string>
+          </dict>
+          </plist>
+          EOF
+
+          xcodebuild -exportArchive \
+            -archivePath build/Rosier.xcarchive \
+            -exportOptionsPlist build/ExportOptions.plist \
+            -exportPath build/export \
+            | xcpretty --color
+
+      - name: Submit to App Store
+        env:
+          APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          APP_STORE_CONNECT_API_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          APP_STORE_CONNECT_API_KEY: ${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY }}
+        run: |
+          fastlane release \
+            api_key_id:"$APP_STORE_CONNECT_API_KEY_ID" \
+            api_issuer_id:"$APP_STORE_CONNECT_API_ISSUER_ID" \
+            api_key_content:"$APP_STORE_CONNECT_API_KEY" \
+            ipa:"build/export/Rosier.ipa" \
+            skip_tests:true \
+            skip_git:true
+
+      - name: Upload to artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-store-build
+          path: |
+            ios/Rosier/build/export/Rosier.ipa
+            ios/Rosier/build/Rosier.xcarchive
+          retention-days: 90
+
+      - name: Create GitHub release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: ios/Rosier/build/export/Rosier.ipa
+          draft: false
+          prerelease: false

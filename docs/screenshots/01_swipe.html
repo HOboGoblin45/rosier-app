@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rosier App Store Screenshot - Swipe Discovery</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @import url('https://rsms.me/inter/inter.css');
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .header {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            font-size: 16px;
+            color: #6b6b6b;
+            font-weight: 400;
+            line-height: 1.5;
+        }
+
+        /* iPhone Frame */
+        .iphone-frame {
+            position: relative;
+            width: 412px;
+            height: 915px;
+            background: #000;
+            border-radius: 60px;
+            padding: 14px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .iphone-frame::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 28px;
+            background: #000;
+            border-radius: 0 0 40px 40px;
+            z-index: 10;
+        }
+
+        .screen-content {
+            width: 100%;
+            height: 100%;
+            background: #f5f5f5;
+            border-radius: 50px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .status-bar {
+            height: 44px;
+            background: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            font-size: 14px;
+            color: #1a1a1a;
+            font-weight: 600;
+        }
+
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Card Stack */
+        .card-stack {
+            position: relative;
+            width: 100%;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            perspective: 1000px;
+        }
+
+        .product-card {
+            position: absolute;
+            width: 280px;
+            height: 420px;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .card-main {
+            z-index: 10;
+            transform: translateY(0) scale(1);
+        }
+
+        .card-next {
+            z-index: 9;
+            transform: translateY(12px) scale(0.95);
+            opacity: 0.9;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 320px;
+            background: linear-gradient(135deg, #e8dcc8 0%, #d4b98d 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 80px;
+            overflow: hidden;
+        }
+
+        .blazer-icon {
+            font-size: 100px;
+        }
+
+        .product-info {
+            flex: 1;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .product-brand {
+            font-size: 13px;
+            color: #c4a77d;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .product-name {
+            font-size: 15px;
+            color: #1a1a1a;
+            font-weight: 700;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+
+        .product-price {
+            font-size: 16px;
+            color: #1a1a1a;
+            font-weight: 700;
+        }
+
+        /* Bottom Controls */
+        .bottom-controls {
+            padding: 16px;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            align-items: flex-end;
+            height: 80px;
+        }
+
+        .dresser-icon {
+            width: 56px;
+            height: 56px;
+            background: #f5f5f5;
+            border: 2px solid #e0e0e0;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #c4a77d;
+        }
+
+        .swipe-hint {
+            position: absolute;
+            bottom: 100px;
+            left: 20px;
+            right: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #9b9b9b;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Discover your style</h1>
+            <p>Swipe through curated niche fashion from 50+ retailers</p>
+        </div>
+
+        <div class="iphone-frame">
+            <div class="screen-content">
+                <div class="status-bar">
+                    <span>9:41</span>
+                    <span>●●●●●</span>
+                </div>
+
+                <div class="content">
+                    <div class="card-stack">
+                        <!-- Next Card (peeking behind) -->
+                        <div class="product-card card-next">
+                            <div class="product-image">
+                                <div class="blazer-icon">👜</div>
+                            </div>
+                            <div class="product-info">
+                                <div class="product-brand">Khaite</div>
+                                <div class="product-name">Small Edith Bag</div>
+                                <div class="product-price">$395</div>
+                            </div>
+                        </div>
+
+                        <!-- Main Card -->
+                        <div class="product-card card-main">
+                            <div class="product-image">
+                                <div class="blazer-icon">🧥</div>
+                            </div>
+                            <div class="product-info">
+                                <div class="product-brand">Lemaire</div>
+                                <div class="product-name">Oversized Wool Blazer</div>
+                                <div class="product-price">$485</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="swipe-hint">← Swipe to pass · Like ↗</div>
+                </div>
+
+                <div class="bottom-controls">
+                    <div class="dresser-icon">🗂️</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

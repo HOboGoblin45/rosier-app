@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="What is your Style DNA? Learn how AI learns your fashion taste, discovers your personal aesthetic, and creates personalized fashion recommendations that actually match your style.">
+    <meta name="keywords" content="style DNA, personal style, fashion AI, style personality, fashion discovery, personalized recommendations, style quiz">
+
+    <meta property="og:title" content="Style DNA Explained: How AI Learns Your Fashion Taste | Rosier">
+    <meta property="og:description" content="Understand your Style DNA. Learn how AI creates personalized fashion recommendations and helps you discover brands that match your unique aesthetic.">
+    <meta property="og:image" content="https://rosier.app/og-image.png">
+    <meta property="og:type" content="article">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="What's Your Style DNA? How AI Learns Fashion Taste">
+    <meta name="twitter:description" content="Discover how personalized AI learns your style preferences and creates a feed curated just for you.">
+    <meta name="twitter:site" content="@rosier_app">
+
+    <title>Style DNA Explained: How AI Learns Your Fashion Taste | Rosier</title>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "Style DNA Explained: How AI Learns Your Fashion Taste",
+      "description": "Complete guide to understanding your Style DNA, personal fashion preferences, and how AI creates personalized recommendations.",
+      "image": "https://rosier.app/og-image.png",
+      "datePublished": "2026-04-03",
+      "dateModified": "2026-04-03",
+      "author": { "@type": "Organization", "name": "Rosier" },
+      "publisher": { "@type": "Organization", "name": "Rosier" }
+    }
+    </script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        @import url('https://rsms.me/inter/inter.css');
+        :root {
+            --primary: #1a1a2e;
+            --accent: #c4a77d;
+            --surface: #f8f6f3;
+            --text: #1a1a1a;
+            --text-secondary: #6b6b6b;
+            --text-tertiary: #9b9b9b;
+            --border: #e8e8e8;
+        }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: var(--text);
+            background: white;
+            line-height: 1.7;
+        }
+        header {
+            padding: 24px 20px;
+            border-bottom: 1px solid var(--border);
+            background: white;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover { color: var(--accent); }
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+        }
+        .article-wrapper {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 80px 20px;
+        }
+        .article-header { margin-bottom: 60px; }
+        .article-category {
+            display: inline-block;
+            padding: 6px 14px;
+            background: rgba(196, 167, 125, 0.1);
+            color: var(--accent);
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+        }
+        .article-title {
+            font-size: clamp(28px, 6vw, 44px);
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 20px;
+            color: var(--text);
+        }
+        .article-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            font-size: 14px;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 24px;
+        }
+        .article-content {
+            font-size: 16px;
+            color: var(--text);
+            line-height: 1.8;
+        }
+        .article-content h2 {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 48px 0 20px;
+            color: var(--text);
+        }
+        .article-content h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin: 36px 0 16px;
+            color: var(--text);
+        }
+        .article-content p {
+            margin-bottom: 20px;
+            line-height: 1.9;
+        }
+        .article-content ul, .article-content ol {
+            margin: 24px 0 24px 24px;
+        }
+        .article-content li { margin-bottom: 12px; }
+        .article-content a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .article-content a:hover {
+            opacity: 0.8;
+            text-decoration: underline;
+        }
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(196, 167, 125, 0.05) 0%, rgba(26, 26, 46, 0.02) 100%);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 28px;
+            margin: 40px 0;
+        }
+        .highlight-box h3 { color: var(--accent); margin-top: 0; }
+        .article-cta {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 40px;
+            margin: 60px 0;
+            text-align: center;
+        }
+        .article-cta h3 {
+            font-size: 22px;
+            margin-bottom: 12px;
+            color: var(--text);
+        }
+        .article-cta p {
+            font-size: 15px;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+        }
+        .cta-button {
+            display: inline-block;
+            padding: 14px 32px;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 15px;
+            transition: all 0.2s;
+        }
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+        .social-share {
+            display: flex;
+            gap: 16px;
+            margin: 40px 0;
+            padding: 24px 0;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+        .social-share-label {
+            font-weight: 600;
+            color: var(--text);
+            margin-right: 16px;
+            white-space: nowrap;
+        }
+        .social-share-buttons {
+            display: flex;
+            gap: 12px;
+        }
+        .share-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 18px;
+        }
+        .share-btn:hover {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+        .related-posts {
+            margin-top: 80px;
+            padding-top: 40px;
+            border-top: 1px solid var(--border);
+        }
+        .related-posts-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 32px;
+            color: var(--text);
+        }
+        .related-posts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+        }
+        .related-post-card {
+            padding: 20px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+        .related-post-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+        .related-post-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+        .related-post-category {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        footer {
+            padding: 40px 20px;
+            background: var(--primary);
+            color: white;
+            text-align: center;
+            border-top: 1px solid rgba(196, 167, 125, 0.1);
+            margin-top: 80px;
+        }
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+        }
+        .footer-text { font-size: 13px; opacity: 0.8; }
+        .social-links {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+        .social-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 13px;
+        }
+        .social-link:hover { opacity: 0.8; }
+        .footer-logo {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        @media (max-width: 768px) {
+            .article-wrapper { padding: 40px 20px; }
+            .article-title { font-size: 28px; }
+            .article-content h2 { font-size: 24px; }
+            .social-share { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <a href="/" class="logo">✦ Rosier</a>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="/blog/">← Back to Blog</a></li>
+                    <li><a href="/">Back to App</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <article class="article-wrapper">
+        <div class="article-header">
+            <span class="article-category">Style Guide</span>
+            <h1 class="article-title">Style DNA Explained: How AI Learns Your Fashion Taste</h1>
+            <div class="article-meta">
+                <span>📅 Published April 3, 2026</span>
+                <span>⏱️ 10 min read</span>
+                <span>📍 by Rosier</span>
+            </div>
+        </div>
+
+        <div class="article-content">
+            <p>Fashion discovery apps make grand promises: "We'll learn your style." "Personalized recommendations." "Your feed, your way." But most deliver algorithmic recommendations that feel generic and algorithmic—because they are. They're trying to predict what you'll buy based on what millions of others bought.</p>
+
+            <p>Rosier's approach is different. It's built on something we call your Style DNA—not a trendy concept, but an actual personalization engine that learns your aesthetic with every interaction. This deep dive explains what Style DNA is, how it works, and how it becomes increasingly accurate the more you use Rosier.</p>
+
+            <h2>What Is Style DNA?</h2>
+
+            <p>Your Style DNA is the unique combination of aesthetic preferences, material preferences, color preferences, proportion preferences, and brand affinities that define your personal taste in fashion. It's not about trends. It's about you.</p>
+
+            <p>Unlike Instagram's algorithm (which shows you what's viral) or traditional recommendation engines (which show you what people like you bought), Rosier's Style DNA learns who you actually are as a person with taste. It accumulates data about your preferences and uses that to serve increasingly accurate recommendations.</p>
+
+            <h2>How Style DNA Works: The Learning Process</h2>
+
+            <p><strong>Swipe 1-50: Initial Pattern Recognition</strong></p>
+
+            <p>Your first 50 swipes give Rosier's system enough data to identify broad patterns. Do you prefer minimalist pieces or colorful pieces? Structured or relaxed silhouettes? Neutral fabrics or textured materials? These initial swipes create a baseline profile.</p>
+
+            <p><strong>Swipes 51-200: Aesthetic Refinement</strong></p>
+
+            <p>As you continue swiping, the system refines its understanding. Maybe you prefer minimalism but specifically contemporary minimalism (Khaite, The Row) rather than fast-fashion minimalism (COS, Uniqlo). Maybe you like color but only within a specific palette. These nuances emerge through interaction.</p>
+
+            <p><strong>Swipes 200+: True Personalization</strong></p>
+
+            <p>After 200+ swipes, Rosier's algorithm has a genuine understanding of your taste. It knows your brand affinities. It understands your proportion preferences. It can predict with increasing accuracy what you'll save and what you'll skip. At this point, your feed becomes genuinely personalized—not generic recommendations, but pieces curated specifically for your aesthetic.</p>
+
+            <h2>The Five Dimensions of Style DNA</h2>
+
+            <p>Your Style DNA comprises five distinct dimensions:</p>
+
+            <h3>1. Color Preference</h3>
+
+            <p>Does your wardrobe live in neutrals? Do you gravitate toward earth tones? Are you drawn to jewel tones? Does color matter, or is it secondary? Rosier learns your color theory and begins showing you pieces within your preferred palette.</p>
+
+            <h3>2. Proportion Preference</h3>
+
+            <p>Do you prefer oversized silhouettes or fitted pieces? Structured blazers or relaxed shirts? Long hems or cropped? Rosier identifies your proportion preferences through your saves and swipes.</p>
+
+            <h3>3. Fabric Preference</h3>
+
+            <p>Are you drawn to natural fabrics (linen, cotton, silk) or blends? Do you like textured materials (ribbed knits, corduroy) or smooth fabrics (silk, satin)? Do weight and hand-feel matter to you? These material preferences guide recommendations.</p>
+
+            <h3>4. Brand Affinity</h3>
+
+            <p>Are there specific brands you consistently save? (Ganni, Khaite, Jacquemus?) Rosier learns which brands align with your taste and prioritizes showing you pieces from those brands and similar designers.</p>
+
+            <h3>5. Price Point Comfort</h3>
+
+            <p>Do you save more pieces in the $200-400 range? The $500+ luxury range? The accessible contemporary range? Rosier learns your price comfort zone and surfaces pieces in that range, reducing the friction between "love it" and "buy it."</p>
+
+            <h2>The Six Core Style Archetypes</h2>
+
+            <p>While every person's Style DNA is unique, Rosier identifies common archetypal aesthetics:</p>
+
+            <p><strong>The Minimalist Modern:</strong> Neutral palette, clean lines, proportion-focused, investment pieces. Brands: The Row, Khaite, Baserange.</p>
+
+            <p><strong>The Artistic Maximalist:</strong> Color-forward, textured, experimental, self-expression first. Brands: Collina Strada, Jacquemus, Sandy Liang.</p>
+
+            <p><strong>The Contemporary Classic:</strong> Modern tailoring, quality fabrics, versatile pieces that work in professional and casual contexts. Brands: Ganni, COS, Lemaire.</p>
+
+            <p><strong>The Sustainable Conscious:</strong> Eco-friendly focus, ethical production, quality that lasts. Brands: Reformation, Nanushka, Deiji Studios.</p>
+
+            <p><strong>The Luxury Investor:</strong> Heritage brands, investment pieces, timeless design. Brands: The Row, Khaite, Loro Piana.</p>
+
+            <p><strong>The Niche Explorer:</strong> Emerging designers, unexpected brands, genuine discovery priority. Brands: Needles, Auralee, Visvim.</p>
+
+            <p>Most people are blends of these archetypes. Maybe you're 60% Contemporary Classic with 40% Sustainable Conscious. That blend is your Style DNA.</p>
+
+            <h2>How Rosier Uses Your Style DNA</h2>
+
+            <p>Once your Style DNA is established, Rosier uses it in three ways:</p>
+
+            <p><strong>1. Feed Curation:</strong> Every piece shown to you has been evaluated against your Style DNA. Colors you don't typically save are deprioritized. Brands you love are surfaced first. Proportions you prefer appear more frequently.</p>
+
+            <p><strong>2. Price Alert Personalization:</strong> When pieces you've saved go on sale, alerts are prioritized based on your Style DNA. High-converting items (pieces that match your aesthetic and are in your price range) trigger notifications before lower-likelihood matches.</p>
+
+            <p><strong>3. Brand Discovery:</strong> Rosier identifies emerging brands that match your Style DNA. If you consistently save from Ganni and ROTATE, the algorithm recognizes similar designers (brands with similar aesthetic DNA) and surfaces them to you.</p>
+
+            <h2>The Privacy Question: How Is My Data Used?</h2>
+
+            <p>Rosier's Style DNA is built entirely on your swipe and save data—data you control. Your style profile is never shared with brands or third parties. It's used solely to improve your personalized feed and alert system. When you delete your account, your Style DNA is deleted.</p>
+
+            <p>Unlike social media algorithms (which sell access to your preferences), Rosier's monetization comes from partnerships with retailers and price-drop alerts—not from commercializing your data.</p>
+
+            <div class="highlight-box">
+                <h3>Building Your Style DNA Faster</h3>
+                <p>Want to accelerate your Style DNA accuracy? Spend 5-10 minutes daily swiping. The algorithm learns fastest when it has diverse data. One 100-swipe session teaches less than four 25-swipe sessions spread throughout the week.</p>
+            </div>
+
+            <h2>Common Style DNA Questions</h2>
+
+            <p><strong>Q: Can my Style DNA change?</strong><br>
+            A: Yes. As you evolve—moving cities, changing life stages, discovering new aesthetics—your Style DNA adapts. The algorithm continuously learns from your most recent interactions.</p>
+
+            <p><strong>Q: What if I want different styles for different occasions?</strong><br>
+            A: That's fine. If you save formal pieces one day and casual pieces the next, Rosier learns that you have multiple aesthetic modes and reflects that in recommendations.</p>
+
+            <p><strong>Q: Can I manually set my Style DNA?</strong><br>
+            A: Partially. You can adjust your price range and primary interests. But Rosier's machine learning is most accurate when it learns organically from your behavior.</p>
+
+            <h2>How Style DNA Improves Shopping</h2>
+
+            <p>The real value of understanding your Style DNA is philosophical. It forces you to articulate your actual taste versus aspirational taste. It helps you identify which brands align with your authentic preferences. And it prevents impulse purchases that don't serve your wardrobe.</p>
+
+            <p>When you understand your Style DNA, you stop buying clothes and start building a wardrobe. Every piece works with every other piece because they all reflect the same core aesthetic preferences.</p>
+
+            <div class="article-cta">
+                <h3>Discover Your Style DNA on Rosier</h3>
+                <p>Start building your personalized fashion feed. Swipe through thousands of niche contemporary pieces and let Rosier learn your unique aesthetic. The more you swipe, the smarter your recommendations become.</p>
+                <a href="/" class="cta-button">Join the Waitlist</a>
+            </div>
+
+            <h2>The Future of Style DNA</h2>
+
+            <p>We're exploring ways to make Style DNA even more powerful: multi-season wardrobe recommendations, investment piece suggestions, brand similarity reports (which brands you should explore next). But the core principle remains: Fashion discovery should be personalized, not algorithmic. Your feed should reflect your taste, not viral trends.</p>
+
+            <p>Your Style DNA is yours. It's built from your choices, expresses your aesthetic, and becomes increasingly accurate over time. That's fashion discovery the way it should work in 2026.</p>
+        </div>
+
+        <div class="social-share">
+            <span class="social-share-label">Share this article:</span>
+            <div class="social-share-buttons">
+                <a href="https://twitter.com/intent/tweet?url=https://rosier.app/blog/style-dna-explained.html&text=What%20is%20Your%20Style%20DNA&via=rosier_app" class="share-btn" target="_blank" rel="noopener noreferrer">𝕏</a>
+                <a href="https://www.facebook.com/sharer/sharer.php?u=https://rosier.app/blog/style-dna-explained.html" class="share-btn" target="_blank" rel="noopener noreferrer">f</a>
+                <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://rosier.app/blog/style-dna-explained.html" class="share-btn" target="_blank" rel="noopener noreferrer">in</a>
+                <a href="https://www.pinterest.com/pin/create/button/?url=https://rosier.app/blog/style-dna-explained.html" class="share-btn" target="_blank" rel="noopener noreferrer">📌</a>
+            </div>
+        </div>
+
+        <div class="related-posts">
+            <h2 class="related-posts-title">Read Next</h2>
+            <div class="related-posts-grid">
+                <a href="/blog/trending-brands-april-2026.html" class="related-post-card">
+                    <div class="related-post-title">Top 10 Trending Brands on Rosier — April 2026</div>
+                    <div class="related-post-category">Trends • 12 min read</div>
+                </a>
+                <a href="/blog/best-contemporary-brands-2026.html" class="related-post-card">
+                    <div class="related-post-title">25 Contemporary Fashion Brands You Need to Know in 2026</div>
+                    <div class="related-post-category">Brands • 15 min read</div>
+                </a>
+                <a href="/blog/niche-fashion-vs-fast-fashion.html" class="related-post-card">
+                    <div class="related-post-title">Why Niche Fashion Beats Fast Fashion</div>
+                    <div class="related-post-category">Trends • 12 min read</div>
+                </a>
+            </div>
+        </div>
+    </article>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">✦ Rosier</div>
+            <div class="footer-text">Discover niche fashion. Save what you love. Never miss a sale.</div>
+            <div class="social-links">
+                <a href="https://instagram.com/rosier_app" class="social-link" target="_blank" rel="noopener noreferrer">Instagram</a>
+                <a href="https://twitter.com/rosier_app" class="social-link" target="_blank" rel="noopener noreferrer">Twitter</a>
+                <a href="/blog/" class="social-link">Blog</a>
+                <a href="/privacy" class="social-link">Privacy</a>
+                <a href="/terms" class="social-link">Terms</a>
+            </div>
+            <div class="footer-text" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(196, 167, 125, 0.1);">
+                © 2026 Rosier. All rights reserved.
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,386 @@
+/*
+ Rosier - Localization Strings (English)
+ Complete user-facing strings for all views and features
+*/
+
+// MARK: - Onboarding
+
+/* Welcome Screen */
+"onboarding.welcome.headline" = "Your taste. Your brands. Your feed.";
+"onboarding.welcome.subheadline" = "Swipe to discover niche fashion from 50+ curated retailers.";
+"onboarding.welcome.getStarted" = "Get Started";
+"onboarding.welcome.signIn" = "Already have an account? Sign In";
+
+/* Permissions Screen */
+"onboarding.permissions.title" = "Turn on notifications";
+"onboarding.permissions.subtitle" = "Get alerts when items you save go on sale.";
+"onboarding.permissions.enable" = "Turn On Notifications";
+"onboarding.permissions.skip" = "Maybe Later";
+
+/* Disclaimer */
+"onboarding.disclaimer.title" = "Shop with confidence";
+"onboarding.disclaimer.subtitle" = "All products are from authorized retailers. We earn a commission when you shop, at no extra cost to you.";
+"onboarding.disclaimer.understand" = "I understand";
+
+// MARK: - Quiz
+
+/* Quiz Prompts */
+"quiz.q1.prompt" = "What catches your eye?";
+"quiz.q1.option1" = "Structured & tailored";
+"quiz.q1.option2" = "Relaxed & effortless";
+"quiz.q1.option3" = "Body-conscious & fitted";
+"quiz.q1.option4" = "Avant-garde & experimental";
+
+"quiz.q2.prompt" = "Your color world";
+"quiz.q2.option1" = "Warm neutrals";
+"quiz.q2.option2" = "Cool tones";
+"quiz.q2.option3" = "Pastels & soft hues";
+"quiz.q2.option4" = "Bold & saturated";
+
+"quiz.q3.prompt" = "What's your typical spend?";
+"quiz.q3.option1" = "Under $150";
+"quiz.q3.option2" = "$150 – $300";
+"quiz.q3.option3" = "$300 – $500";
+"quiz.q3.option4" = "$500+";
+
+"quiz.q4.prompt" = "What draws you in most?";
+"quiz.q4.option1" = "Clothing & apparel";
+"quiz.q4.option2" = "Shoes & footwear";
+"quiz.q4.option3" = "Bags & accessories";
+"quiz.q4.option4" = "All of the above";
+
+"quiz.q5.prompt" = "Your aesthetic vibe";
+"quiz.q5.option1" = "Quiet luxury";
+"quiz.q5.option2" = "Street meets runway";
+"quiz.q5.option3" = "Eclectic maximalist";
+"quiz.q5.option4" = "Minimalist edge";
+
+/* Quiz Navigation */
+"quiz.progress" = "Question %d of %d";
+"quiz.next" = "Next";
+"quiz.back" = "Back";
+"quiz.complete" = "See Your Style DNA";
+
+/* Quiz Results */
+"quiz.results.title" = "Your Style DNA";
+"quiz.results.subtitle" = "Based on your preferences";
+"quiz.results.archetype" = "Your Archetype";
+"quiz.results.topBrands" = "Top Brands";
+"quiz.results.priceRange" = "Price Range";
+"quiz.results.colorPalette" = "Color Palette";
+
+// MARK: - Swipe View
+
+/* Main Swipe Interface */
+"swipe.topHeaderLabel" = "Discover";
+"swipe.cardNotFound" = "No more items";
+"swipe.loadingMessage" = "Loading fabulous fashion...";
+
+/* Offline State */
+"swipe.offline" = "You're offline — showing saved items";
+"swipe.offlineAction" = "Try again";
+
+/* End of Feed */
+"swipe.feedEnd.title" = "You've seen everything!";
+"swipe.feedEnd.subtitle" = "Come back tomorrow for new arrivals, or adjust your filters.";
+"swipe.feedEnd.changeFilters" = "Change Filters";
+"swipe.feedEnd.browseDresser" = "Browse Dresser";
+
+/* Product Card */
+"swipe.productDetail.brand" = "Brand";
+"swipe.productDetail.price" = "Price";
+"swipe.productDetail.retailer" = "Shop at";
+"swipe.productDetail.description" = "About this item";
+"swipe.productDetail.viewMore" = "View on Retailer";
+
+/* Gestures & Hints */
+"swipe.gesture.like" = "Like";
+"swipe.gesture.pass" = "Pass";
+"swipe.gesture.save" = "Save to dresser";
+"swipe.gesture.undo" = "Undo";
+
+// MARK: - Dresser View
+
+/* Header & Navigation */
+"dresser.title" = "My Dresser";
+"dresser.subtitle" = "%d items saved";
+"dresser.allItems" = "All Items";
+"dresser.newDrawer" = "New Drawer";
+"dresser.editDrawers" = "Edit";
+"dresser.done" = "Done";
+
+/* Drawer Management */
+"dresser.createDrawer.title" = "New Drawer";
+"dresser.createDrawer.placeholder" = "e.g., Summer, Work, Evening";
+"dresser.createDrawer.create" = "Create";
+"dresser.createDrawer.cancel" = "Cancel";
+
+"dresser.renameDrawer.title" = "Rename Drawer";
+"dresser.renameDrawer.placeholder" = "New name";
+"dresser.renameDrawer.save" = "Save";
+
+"dresser.deleteDrawer.title" = "Delete Drawer?";
+"dresser.deleteDrawer.message" = "Items will move to All Items. This can't be undone.";
+"dresser.deleteDrawer.delete" = "Delete";
+"dresser.deleteDrawer.cancel" = "Cancel";
+
+/* Empty States */
+"dresser.empty.title" = "Your dresser is empty";
+"dresser.empty.subtitle" = "Start swiping to save items!";
+"dresser.empty.action" = "Back to Swipe";
+
+/* Item Actions */
+"dresser.item.share" = "Share";
+"dresser.item.remove" = "Remove from dresser";
+"dresser.item.viewProduct" = "View Product";
+"dresser.item.shop" = "Shop This";
+
+/* Price Drop Badge */
+"dresser.priceDrop.badge" = "🔥 Price dropped";
+"dresser.priceDrop.message" = "Now %@ (was %@)";
+
+// MARK: - Profile & Style DNA
+
+/* Profile Header */
+"profile.title" = "Profile";
+"profile.logout" = "Sign Out";
+"profile.settings" = "Settings";
+
+/* Style DNA Card */
+"profile.styleDNA.title" = "Your Style DNA";
+"profile.styleDNA.locked" = "Swipe %d more items to unlock your Style DNA";
+"profile.styleDNA.archetype" = "Archetype";
+"profile.styleDNA.topBrands" = "Top Brands";
+"profile.styleDNA.colors" = "Your Colors";
+"profile.styleDNA.priceRange" = "Price Range";
+"profile.styleDNA.viewDetails" = "View Full Profile";
+
+/* Statistics */
+"profile.stats.title" = "Your Stats";
+"profile.stats.swipes" = "Swipes";
+"profile.stats.saves" = "Saved Items";
+"profile.stats.drawers" = "Drawers";
+
+/* Quiz Retake */
+"profile.retakeQuiz" = "Retake Style Quiz";
+"profile.quizMessage" = "Answer again to update your Style DNA and recommendations";
+
+// MARK: - Notifications & Alerts
+
+/* Push Notification Titles */
+"notification.priceDrop.title" = "Price Drop 🔥";
+"notification.priceDrop.body" = "Your %@ is now %@ (was %@)";
+
+"notification.newArrival.title" = "New from %@";
+"notification.newArrival.body" = "Check out the latest pieces";
+
+"notification.dailyDrop.title" = "Daily drops are in";
+"notification.dailyDrop.body" = "See what's new today";
+
+"notification.collection.title" = "New collection from %@";
+"notification.collection.body" = "Limited pieces available";
+
+"notification.sale.title" = "Sale Alert 🎉";
+"notification.sale.body" = "%@ is having a flash sale";
+
+/* In-App Alerts */
+"alert.itemSaved" = "Saved to %@";
+"alert.itemRemovedFromDresser" = "Removed from dresser";
+"alert.itemAlreadySaved" = "Already in your dresser";
+"alert.listCopied" = "List copied to clipboard";
+
+// MARK: - Filters & Search
+
+/* Filter Options */
+"filter.title" = "Filters";
+"filter.brand" = "Brand";
+"filter.category" = "Category";
+"filter.priceRange" = "Price Range";
+"filter.color" = "Color";
+"filter.size" = "Size";
+"filter.reset" = "Reset All";
+"filter.apply" = "Apply Filters";
+
+/* Brand Filter */
+"filter.brand.allBrands" = "All Brands";
+"filter.brand.search" = "Search brands";
+
+/* Category Options */
+"filter.category.clothing" = "Clothing";
+"filter.category.shoes" = "Shoes";
+"filter.category.bags" = "Bags";
+"filter.category.accessories" = "Accessories";
+"filter.category.jewelry" = "Jewelry";
+
+/* Price Range */
+"filter.price.under150" = "Under $150";
+"filter.price.150to300" = "$150 – $300";
+"filter.price.300to500" = "$300 – $500";
+"filter.price.over500" = "$500+";
+
+// MARK: - Settings
+
+/* Settings Menu */
+"settings.title" = "Settings";
+"settings.account" = "Account";
+"settings.preferences" = "Preferences";
+"settings.privacy" = "Privacy";
+"settings.legal" = "Legal";
+"settings.support" = "Support";
+
+/* Account Settings */
+"settings.account.email" = "Email";
+"settings.account.password" = "Password";
+"settings.account.changePassword" = "Change Password";
+"settings.account.deleteAccount" = "Delete Account";
+
+/* Notification Preferences */
+"settings.notifications.title" = "Notifications";
+"settings.notifications.priceDrop" = "Price Drop Alerts";
+"settings.notifications.newArrivals" = "New Arrivals";
+"settings.notifications.dailyDrops" = "Daily Drops";
+"settings.notifications.sales" = "Sales & Promotions";
+
+/* Privacy Settings */
+"settings.privacy.title" = "Privacy";
+"settings.privacy.dataCollection" = "Data Collection";
+"settings.privacy.readPrivacy" = "Read Privacy Policy";
+"settings.privacy.readTerms" = "Read Terms of Service";
+
+/* About */
+"settings.about.title" = "About";
+"settings.about.version" = "Version %@";
+"settings.about.developer" = "Developed by Rosier";
+"settings.about.feedback" = "Send Feedback";
+"settings.about.rateApp" = "Rate on App Store";
+
+// MARK: - Authentication
+
+/* Sign Up */
+"auth.signup.title" = "Create Account";
+"auth.signup.email" = "Email";
+"auth.signup.password" = "Password";
+"auth.signup.confirm" = "Confirm Password";
+"auth.signup.button" = "Sign Up";
+"auth.signup.terms" = "By signing up, you agree to our Terms of Service and Privacy Policy";
+"auth.signup.haveAccount" = "Already have an account? Sign In";
+
+/* Sign In */
+"auth.signin.title" = "Sign In";
+"auth.signin.email" = "Email";
+"auth.signin.password" = "Password";
+"auth.signin.button" = "Sign In";
+"auth.signin.forgotPassword" = "Forgot Password?";
+"auth.signin.noAccount" = "Don't have an account? Sign Up";
+
+/* Apple Sign-In */
+"auth.appleSignIn" = "Sign in with Apple";
+
+/* Password Reset */
+"auth.passwordReset.title" = "Reset Password";
+"auth.passwordReset.email" = "Enter your email";
+"auth.passwordReset.sent" = "Check your email for instructions";
+"auth.passwordReset.sendButton" = "Send Reset Link";
+"auth.passwordReset.back" = "Back to Sign In";
+
+/* Validation */
+"auth.validation.invalidEmail" = "Please enter a valid email";
+"auth.validation.passwordTooShort" = "Password must be at least 8 characters";
+"auth.validation.passwordsDoNotMatch" = "Passwords do not match";
+"auth.validation.requiredField" = "This field is required";
+
+// MARK: - Errors & Network
+
+/* Error Messages */
+"error.network" = "Something went wrong. Check your connection and try again.";
+"error.generic" = "Oops! Something unexpected happened.";
+"error.notFound" = "This item wasn't found.";
+"error.unauthorized" = "Please sign in to continue.";
+"error.serverError" = "Server error. Please try again later.";
+"error.timeout" = "Request timed out. Check your connection and try again.";
+
+/* Network Errors */
+"error.noInternet" = "No internet connection";
+"error.slowConnection" = "Slow connection detected";
+"error.retry" = "Retry";
+
+/* Loading */
+"loading.default" = "Loading...";
+"loading.products" = "Finding fabulous items...";
+"loading.styleDNA" = "Analyzing your style...";
+
+// MARK: - Accessibility
+
+/* Voice-over Hints */
+"accessibility.swipe.hint" = "Swipe right to like, left to pass, up to save to dresser";
+"accessibility.tab.hint" = "Double tap to select this tab";
+"accessibility.button.hint" = "Double tap to activate";
+"accessibility.image.hint" = "Product image";
+
+/* VoiceOver Labels */
+"accessibility.productCard.label" = "%@ by %@, $%@. Double tap for details.";
+"accessibility.price.label" = "Price: %@";
+"accessibility.brand.label" = "Brand: %@";
+"accessibility.retailer.label" = "Available at %@";
+
+/* Screen Descriptions */
+"accessibility.swipeView.description" = "Swipe interface. Drag left or right to browse products.";
+"accessibility.dresserView.description" = "Grid of saved items organized into drawers.";
+"accessibility.profileView.description" = "Your profile information and Style DNA";
+
+// MARK: - Share & Social
+
+/* Sharing */
+"share.item.title" = "Share %@";
+"share.item.message" = "Check out this %@ on Rosier";
+"share.dresser.title" = "Share My Dresser";
+"share.dresser.message" = "I just organized my saved fashion items on Rosier";
+
+/* Share Sheet Actions */
+"share.copyLink" = "Copy Link";
+"share.message" = "Message";
+"share.instagram" = "Instagram Story";
+"share.twitter" = "Twitter";
+
+// MARK: - Deep Links & Routing
+
+/* Deep Link Messages */
+"deeplink.productNotFound" = "This product is no longer available";
+"deeplink.invalidLink" = "Invalid link";
+
+// MARK: - Widget (Future)
+
+/* Lock Screen Widget */
+"widget.dailyDrop.title" = "Daily Drop";
+"widget.priceDrop.title" = "Price Alerts";
+"widget.savedCount.label" = "%d items saved";
+
+// MARK: - Premium/Future Features
+
+/* Premium Prompts */
+"premium.unlock" = "Unlock Premium";
+"premium.feature.exclusive" = "Premium feature";
+"premium.message" = "Upgrade to access this feature";
+
+// MARK: - Affiliate & Legal
+
+/* Affiliate Disclosure */
+"legal.affiliate.title" = "Affiliate Disclosure";
+"legal.affiliate.message" = "Rosier earns a commission when you shop through our links at no extra cost to you.";
+
+/* Retailer Links */
+"legal.retailer.note" = "You'll be taken to the retailer's website";
+
+// MARK: - Empty States & Placeholders
+
+/* Drawer Empty State */
+"empty.drawer.title" = "This drawer is empty";
+"empty.drawer.subtitle" = "Save items here by swiping up";
+
+/* Search Empty State */
+"empty.search.title" = "No items found";
+"empty.search.subtitle" = "Try adjusting your filters";
+
+/* Error Empty State */
+"empty.error.title" = "Something went wrong";
+"empty.error.subtitle" = "Please try again";

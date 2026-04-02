@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Rosier's Style Guide: Fashion discovery tips, niche brand spotlights, micro-influencer style guides, and how to build your personal style DNA.">
+    <meta name="keywords" content="fashion blog, niche fashion, style guide, contemporary brands, micro-influencer fashion">
+    <meta name="theme-color" content="#1A1A2E">
+
+    <!-- Open Graph Tags -->
+    <meta property="og:title" content="Rosier Style Guide - Fashion Discovery Blog">
+    <meta property="og:description" content="Discover niche fashion, style DNA, and contemporary brands. Read expert guides on finding your personal style and shopping like your favorite micro-influencers.">
+    <meta property="og:image" content="https://rosier.app/og-image.png">
+    <meta property="og:url" content="https://rosier.app/blog/">
+    <meta property="og:type" content="website">
+
+    <!-- Twitter Card Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Rosier Style Guide - Fashion Discovery Blog">
+    <meta name="twitter:description" content="Expert guides on fashion discovery, contemporary brands, and style DNA.">
+    <meta name="twitter:site" content="@rosier_app">
+
+    <title>Rosier Style Guide - Fashion Discovery Blog | Niche Brands & Style Tips</title>
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Blog",
+      "name": "Rosier Style Guide",
+      "description": "Fashion discovery blog focused on niche contemporary brands and micro-influencer fashion",
+      "url": "https://rosier.app/blog/",
+      "publisher": {
+        "@type": "Organization",
+        "name": "Rosier"
+      }
+    }
+    </script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @import url('https://rsms.me/inter/inter.css');
+
+        :root {
+            --primary: #1a1a2e;
+            --accent: #c4a77d;
+            --surface: #f8f6f3;
+            --text: #1a1a1a;
+            --text-secondary: #6b6b6b;
+            --text-tertiary: #9b9b9b;
+            --border: #e8e8e8;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: var(--text);
+            background: white;
+            line-height: 1.6;
+        }
+
+        /* HEADER */
+        header {
+            padding: 24px 20px;
+            border-bottom: 1px solid var(--border);
+            background: white;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+        }
+
+        /* HERO */
+        .blog-hero {
+            background: linear-gradient(135deg, var(--primary) 0%, #2a2a4e 100%);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .blog-hero h1 {
+            font-size: clamp(32px, 6vw, 52px);
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .blog-hero p {
+            font-size: 18px;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* CATEGORIES FILTER */
+        .categories {
+            max-width: 1200px;
+            margin: 40px auto 0;
+            padding: 0 20px 40px;
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .category-tag {
+            padding: 8px 20px;
+            border-radius: 20px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .category-tag:hover,
+        .category-tag.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        /* MAIN CONTAINER */
+        .blog-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        /* FEATURED POST */
+        .featured-post {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+            margin-bottom: 80px;
+            padding-bottom: 80px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .featured-post-image {
+            background: var(--surface);
+            border-radius: 16px;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 64px;
+            border: 1px solid var(--border);
+        }
+
+        .featured-post-content h2 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--text);
+            line-height: 1.3;
+        }
+
+        .featured-post-meta {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .featured-post-meta span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .featured-post-excerpt {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            line-height: 1.8;
+        }
+
+        .read-more {
+            display: inline-block;
+            padding: 12px 24px;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .read-more:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        /* POSTS GRID */
+        .posts-section {
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 32px;
+            color: var(--text);
+        }
+
+        .posts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 32px;
+        }
+
+        .post-card {
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s;
+            border: 1px solid var(--border);
+            background: white;
+        }
+
+        .post-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+        }
+
+        .post-card-image {
+            width: 100%;
+            height: 200px;
+            background: var(--surface);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .post-card-content {
+            padding: 24px;
+        }
+
+        .post-card-category {
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(196, 167, 125, 0.1);
+            color: var(--accent);
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .post-card-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--text);
+            line-height: 1.4;
+        }
+
+        .post-card-excerpt {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            line-height: 1.6;
+        }
+
+        .post-card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: var(--text-tertiary);
+        }
+
+        .post-card-link {
+            text-decoration: none;
+            color: var(--accent);
+            font-weight: 600;
+            transition: opacity 0.2s;
+        }
+
+        .post-card-link:hover {
+            opacity: 0.8;
+        }
+
+        /* FOOTER */
+        footer {
+            padding: 40px 20px;
+            background: var(--primary);
+            color: white;
+            text-align: center;
+            border-top: 1px solid rgba(196, 167, 125, 0.1);
+            margin-top: 80px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .footer-text {
+            font-size: 13px;
+            opacity: 0.8;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .social-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 13px;
+            transition: opacity 0.2s;
+        }
+
+        .social-link:hover {
+            opacity: 0.8;
+        }
+
+        .footer-logo {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .blog-hero h1 {
+                font-size: 28px;
+            }
+
+            .featured-post {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+
+            .featured-post-image {
+                height: 250px;
+            }
+
+            .featured-post-content h2 {
+                font-size: 24px;
+            }
+
+            .posts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .categories {
+                margin: 24px auto 0;
+                padding: 0 20px 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header>
+        <div class="header-container">
+            <a href="/" class="logo">✦ Rosier</a>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="/">Back to App</a></li>
+                    <li><a href="/#how-it-works">How It Works</a></li>
+                    <li><a href="/#features">Features</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- HERO -->
+    <section class="blog-hero">
+        <h1>Rosier Style Guide</h1>
+        <p>Expert insights on fashion discovery, contemporary brands, and finding your personal style DNA</p>
+    </section>
+
+    <!-- CATEGORIES -->
+    <div class="categories">
+        <a href="#" class="category-tag active">All</a>
+        <a href="#" class="category-tag">Trends</a>
+        <a href="#" class="category-tag">Brands</a>
+        <a href="#" class="category-tag">Style Guide</a>
+        <a href="#" class="category-tag">Behind the App</a>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <main class="blog-container">
+        <!-- FEATURED POST -->
+        <article class="featured-post">
+            <div class="featured-post-image">🌟</div>
+            <div class="featured-post-content">
+                <h2>The Rise of Micro-Influencer Fashion: Why Niche Beats Mass</h2>
+                <div class="featured-post-meta">
+                    <span>📅 March 15, 2026</span>
+                    <span>📖 8 min read</span>
+                    <span>🏷️ Trends</span>
+                </div>
+                <p class="featured-post-excerpt">The algorithmic fashion discovery model is broken. Micro-influencers are redefining how women discover, trust, and shop for fashion. Here's why authenticity and community beat algorithmic feeds every time—and how you can shop like your favorite micro-creators.</p>
+                <a href="/blog/micro-influencer-fashion.html" class="read-more">Read Full Article →</a>
+            </div>
+        </article>
+
+        <!-- RECENT POSTS -->
+        <section class="posts-section">
+            <h2 class="section-title">Recent Posts</h2>
+
+            <div class="posts-grid">
+                <!-- Post 1 -->
+                <article class="post-card">
+                    <div class="post-card-image">🧬</div>
+                    <div class="post-card-content">
+                        <span class="post-card-category">Style Guide</span>
+                        <h3 class="post-card-title">Style DNA Explained: How AI Learns Your Fashion Taste</h3>
+                        <p class="post-card-excerpt">Discover what your style DNA is and how AI personalization is revolutionizing fashion discovery. Learn the science behind personalized recommendations and how Rosier uses your swipes to perfect your feed.</p>
+                        <div class="post-card-meta">
+                            <span>March 10, 2026 • 10 min read</span>
+                            <a href="/blog/style-dna-explained.html" class="post-card-link">Read →</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 2 -->
+                <article class="post-card">
+                    <div class="post-card-image">✨</div>
+                    <div class="post-card-content">
+                        <span class="post-card-category">Brands</span>
+                        <h3 class="post-card-title">10 Emerging Brands You Should Know in 2026</h3>
+                        <p class="post-card-excerpt">Beyond the usual suspects: discover 10 emerging niche brands that are taking over contemporary fashion. These designers are redefining luxury, sustainability, and originality—and they're exactly what Rosier is built for.</p>
+                        <div class="post-card-meta">
+                            <span>March 5, 2026 • 9 min read</span>
+                            <a href="/blog/best-contemporary-brands-2026.html" class="post-card-link">Read →</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 3 -->
+                <article class="post-card">
+                    <div class="post-card-image">👗</div>
+                    <div class="post-card-content">
+                        <span class="post-card-category">Style Guide</span>
+                        <h3 class="post-card-title">How to Shop Like Your Favorite Micro-Influencer</h3>
+                        <p class="post-card-excerpt">The micro-influencers you follow aren't using TikTok trends to shop. They're curating. Learn their strategy for finding niche brands, seasonal pieces, and investment items that actually reflect their personal style.</p>
+                        <div class="post-card-meta">
+                            <span>February 28, 2026 • 8 min read</span>
+                            <a href="/blog/niche-fashion-vs-fast-fashion.html" class="post-card-link">Read →</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 4 -->
+                <article class="post-card">
+                    <div class="post-card-image">💎</div>
+                    <div class="post-card-content">
+                        <span class="post-card-category">Brands</span>
+                        <h3 class="post-card-title">Khaite: How a Designer Dress Became an 'It Piece'</h3>
+                        <p class="post-card-excerpt">Khaite is the contemporary brand everyone's talking about. Discover the story behind the brand, why their pieces are so coveted, and how to shop their iconic silhouettes on a budget.</p>
+                        <div class="post-card-meta">
+                            <span>February 20, 2026 • 7 min read</span>
+                            <a href="/blog/trending-brands-april-2026.html" class="post-card-link">Read →</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 5 -->
+                <article class="post-card">
+                    <div class="post-card-image">🎨</div>
+                    <div class="post-card-content">
+                        <span class="post-card-category">Trends</span>
+                        <h3 class="post-card-title">Contemporary Fashion Brands Explained: Your Complete Guide</h3>
+                        <p class="post-card-excerpt">What does "contemporary fashion" even mean? Explore the difference between luxury, contemporary, and emerging brands. Find out where your favorite designers sit on the spectrum and how to shop each tier smartly.</p>
+                        <div class="post-card-meta">
+                            <span>February 15, 2026 • 12 min read</span>
+                            <a href="/blog/contemporary-fashion-guide.html" class="post-card-link">Read →</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 6 -->
+                <article class="post-card">
+                    <div class="post-card-image">🌟</div>
+                    <div class="post-card-content">
+                        <span class="post-card-category">Style Guide</span>
+                        <h3 class="post-card-title">Building a Contemporary Capsule Wardrobe: The Smart Way</h3>
+                        <p class="post-card-excerpt">A capsule wardrobe doesn't mean boring basics. Learn how to build a contemporary capsule with investment pieces that actually excite you. Discover the contemporary essentials that work with niche and emerging brands.</p>
+                        <div class="post-card-meta">
+                            <span>February 10, 2026 • 11 min read</span>
+                            <a href="/blog/contemporary-capsule-wardrobe.html" class="post-card-link">Read →</a>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">✦ Rosier</div>
+            <div class="footer-text">Discover niche fashion. Save what you love. Never miss a sale.</div>
+            <div class="social-links">
+                <a href="https://instagram.com/rosier_app" class="social-link" target="_blank" rel="noopener noreferrer">Instagram</a>
+                <a href="https://twitter.com/rosier_app" class="social-link" target="_blank" rel="noopener noreferrer">Twitter</a>
+                <a href="/" class="social-link">Back to App</a>
+                <a href="/privacy" class="social-link">Privacy</a>
+                <a href="/terms" class="social-link">Terms</a>
+            </div>
+            <div class="footer-text" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(196, 167, 125, 0.1);">
+                © 2026 Rosier. All rights reserved.
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

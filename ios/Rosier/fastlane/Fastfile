@@ -1,0 +1,293 @@
+default_platform(:ios)
+
+platform :ios do
+  # MARK: - Private Lanes
+
+  private_lane :setup_signing do |options|
+    # In CI, certificates and profiles are already set up by setup_signing.sh
+    # Skip match if we're in CI environment
+    if is_ci
+      UI.message("CI environment detected - skipping match setup")
+      setup_ci
+      return
+    end
+
+    # Local development: use match
+    match(
+      type: options[:type] || "development",
+      app_identifier: CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier),
+      git_basic_authorization: Base64.strict_encode64("#{ENV['MATCH_GIT_USERNAME']}:#{ENV['MATCH_GIT_TOKEN']}") if ENV['MATCH_GIT_USERNAME'],
+      readonly: false
+    )
+  end
+
+  private_lane :build_app_for_release do |options|
+    setup_signing(type: options[:type] || "appstore")
+
+    build_app(
+      workspace: "Rosier.xcworkspace",
+      scheme: "Rosier",
+      configuration: "Release",
+      sdk: "iphoneos",
+      derived_data_path: "build",
+      destination: "generic/platform=iOS",
+      export_method: options[:export_method] || "app-store",
+      export_options: {
+        method: options[:export_method] || "app-store",
+        signingStyle: "automatic",
+        stripSwiftSymbols: true,
+        teamID: CredentialsManager::AppfileConfig.try_fetch_value(:team_id)
+      },
+      archive_path: "build/Rosier.xcarchive",
+      destination_timeout: 600,
+      buildlog_path: "build/logs",
+      result_bundle_path: "build/result.xcresult",
+      verbose: true,
+      build_for_testing: false,
+      skip_package_ipa: false,
+      output_directory: "build/ipa"
+    )
+  end
+
+  # MARK: - Test Lane
+
+  desc "Run all unit tests"
+  lane :test do |options|
+    setup_ci if is_ci
+
+    run_tests(
+      workspace: "Rosier.xcworkspace",
+      scheme: "Rosier",
+      devices: options[:devices] || ["iPhone 16 Pro"],
+      configuration: "Debug",
+      code_coverage: true,
+      derived_data_path: "build",
+      destination_timeout: 600,
+      xcargs: "-parallel-testing-enabled YES",
+      output_directory: "build/test_results",
+      result_bundle_path: "build/test_results/test.xcresult",
+      verbose: true,
+      clean: true,
+      build_for_testing: true,
+      skip_testing: options[:skip_testing] || ["RosierUITests"]
+    )
+
+    collect_coverage_reports(
+      workspace: "Rosier.xcworkspace",
+      scheme: "Rosier",
+      output_directory: "build/coverage"
+    )
+  end
+
+  # MARK: - Beta Lane
+
+  desc "Build and upload to TestFlight"
+  lane :beta do |options|
+    # In CI, signing is already configured by setup_signing.sh
+    setup_signing(type: "appstore") unless is_ci
+
+    # If IPA is provided as parameter, use it directly (CI scenario)
+    if options[:ipa]
+      UI.message("Using pre-built IPA from CI")
+      upload_to_testflight(
+        api_key: app_store_connect_api_key(options),
+        ipa: options[:ipa],
+        skip_submission: true,
+        skip_waiting_for_build_processing: true,
+        changelog: options[:changelog] || "Automated TestFlight build"
+      )
+      return
+    end
+
+    # Local scenario: build and upload
+    # Increment build number
+    increment_build_number(
+      build_number: number_of_commits,
+      xcodeproj: "Rosier.xcodeproj"
+    )
+
+    # Build the app
+    build_app_for_release(export_method: "app-store")
+
+    # Upload to TestFlight
+    upload_to_testflight(
+      api_key: app_store_connect_api_key(options),
+      ipa: "build/ipa/Rosier.ipa",
+      skip_submission: true,
+      skip_waiting_for_build_processing: true,
+      changelog: options[:changelog] || git_log_since_last_tag(max_commits: 1)
+    )
+
+    # Notify team
+    slack(
+      message: "Beta build uploaded to TestFlight",
+      slack_url: ENV['SLACK_URL'],
+      success: true
+    ) if ENV['SLACK_URL']
+  end
+
+  # MARK: - Release Lane
+
+  desc "Build and submit to App Store"
+  lane :release do |options|
+    # In CI, signing is already configured
+    setup_signing(type: "appstore") unless is_ci
+
+    # If IPA is provided, use it directly (CI scenario)
+    if options[:ipa]
+      UI.message("Using pre-built IPA from CI")
+      upload_to_app_store(
+        api_key: app_store_connect_api_key(options),
+        ipa: options[:ipa],
+        skip_screenshots: true,
+        skip_metadata: true,
+        automatic_release: false,
+        force: false,
+        submission_information: {
+          add_id_info_uses_idfa: false
+        }
+      )
+      return
+    end
+
+    # Local scenario: build and submit
+    # Verify version bump
+    unless options[:skip_version_check]
+      ensure_git_status_clean
+      ensure_git_branch(branch: "main")
+    end
+
+    # Increment version and build number
+    version = options[:version]
+    if version
+      increment_version_number(version_number: version)
+    end
+
+    increment_build_number(
+      build_number: number_of_commits,
+      xcodeproj: "Rosier.xcodeproj"
+    )
+
+    # Build the app
+    build_app_for_release(export_method: "app-store")
+
+    # Run tests before release
+    test unless options[:skip_tests]
+
+    # Upload to App Store
+    upload_to_app_store(
+      api_key: app_store_connect_api_key(options),
+      ipa: "build/ipa/Rosier.ipa",
+      skip_screenshots: true,
+      skip_metadata: true,
+      automatic_release: false,
+      force: false,
+      submission_information: {
+        add_id_info_uses_idfa: false
+      }
+    )
+
+    # Create git tag and push
+    unless options[:skip_git]
+      tag_release(version: get_version_number(xcodeproj: "Rosier.xcodeproj"))
+    end
+
+    # Notify team
+    slack(
+      message: "Version #{get_version_number(xcodeproj: 'Rosier.xcodeproj')} submitted to App Store",
+      slack_url: ENV['SLACK_URL'],
+      success: true
+    ) if ENV['SLACK_URL']
+  end
+
+  # MARK: - Screenshots Lane
+
+  desc "Generate App Store screenshots"
+  lane :screenshots do |options|
+    setup_signing(type: "development")
+
+    capture_screenshots(
+      workspace: "Rosier.xcworkspace",
+      scheme: "RosierScreenshots",
+      output_directory: "build/screenshots",
+      clear_previous_screenshots: true,
+      skip_open_summary: true,
+      erase_simulator: true,
+      reinstall_app: true,
+      stop_after_first_error: false,
+      number_of_retries: 2,
+      app_identifier: CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
+    )
+
+    # Upload to App Store Connect (optional)
+    if options[:upload]
+      upload_app_screenshots(
+        api_key: app_store_connect_api_key,
+        screenshots_path: "build/screenshots"
+      )
+    end
+  end
+
+  # MARK: - Helper Lanes
+
+  desc "Tag a release in git"
+  private_lane :tag_release do |options|
+    version = options[:version]
+
+    add_git_tag(
+      tag: "v#{version}",
+      build_number: get_build_number(xcodeproj: "Rosier.xcodeproj")
+    )
+
+    push_to_git_remote(
+      local_branch: "main",
+      remote_branch: "main",
+      tags: true
+    )
+  end
+
+  # MARK: - Helper Methods
+
+  def number_of_commits
+    `git rev-list --count HEAD`.strip.to_i
+  end
+
+  def git_log_since_last_tag(max_commits: 10)
+    `git log $(git describe --tags --abbrev=0 2>/dev/null)..HEAD --oneline -n #{max_commits}`.strip
+  end
+
+  def app_store_connect_api_key(options = {})
+    # Support environment variable names from CI (with different prefixes)
+    key_id = options[:api_key_id] || ENV['APP_STORE_CONNECT_API_KEY_ID'] || ENV['APP_STORE_CONNECT_KEY_ID']
+    issuer_id = options[:api_issuer_id] || ENV['APP_STORE_CONNECT_API_ISSUER_ID'] || ENV['APP_STORE_CONNECT_ISSUER_ID']
+    key_content = options[:api_key_content] || ENV['APP_STORE_CONNECT_API_KEY'] || ENV['APP_STORE_CONNECT_KEY_CONTENT']
+
+    unless key_id && issuer_id && key_content
+      UI.error("Missing App Store Connect API credentials")
+      UI.error("Required environment variables:")
+      UI.error("  - APP_STORE_CONNECT_API_KEY_ID")
+      UI.error("  - APP_STORE_CONNECT_API_ISSUER_ID")
+      UI.error("  - APP_STORE_CONNECT_API_KEY")
+      raise "App Store Connect API credentials not configured"
+    end
+
+    Spaceship::ConnectAPI::Token.create(
+      key_id: key_id,
+      issuer_id: issuer_id,
+      key_content: key_content,
+      in_house: false
+    )
+  end
+
+  def collect_coverage_reports(options)
+    # Generate coverage reports from xcresult
+    xcov(
+      workspace: options[:workspace],
+      scheme: options[:scheme],
+      output_directory: options[:output_directory],
+      html_report: true,
+      markdown_report: true,
+      json_report: true
+    )
+  end
+end

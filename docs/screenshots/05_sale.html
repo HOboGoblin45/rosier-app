@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rosier App Store Screenshot - Sale Alert</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @import url('https://rsms.me/inter/inter.css');
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .header {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            font-size: 16px;
+            color: #6b6b6b;
+            font-weight: 400;
+            line-height: 1.5;
+        }
+
+        /* iPhone Frame */
+        .iphone-frame {
+            position: relative;
+            width: 412px;
+            height: 915px;
+            background: #000;
+            border-radius: 60px;
+            padding: 14px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .iphone-frame::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 28px;
+            background: #000;
+            border-radius: 0 0 40px 40px;
+            z-index: 10;
+        }
+
+        .screen-content {
+            width: 100%;
+            height: 100%;
+            background: #f5f5f5;
+            border-radius: 50px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .status-bar {
+            height: 44px;
+            background: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            font-size: 14px;
+            color: #1a1a1a;
+            font-weight: 600;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 60px;
+            left: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 16px;
+            padding: 14px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            z-index: 20;
+        }
+
+        .notification-content {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .notification-icon {
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .notification-text {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+
+        .notification-message {
+            font-size: 13px;
+            color: #6b6b6b;
+            line-height: 1.4;
+        }
+
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 100px 20px 20px;
+            overflow-y: auto;
+        }
+
+        .product-section {
+            width: 100%;
+            max-width: 340px;
+        }
+
+        .product-image-large {
+            width: 100%;
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, #e8dcc8 0%, #d4b98d 100%);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 100px;
+            margin-bottom: 16px;
+        }
+
+        .product-details {
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 8px;
+        }
+
+        .current-price {
+            font-size: 24px;
+            font-weight: 700;
+            color: #e53935;
+        }
+
+        .original-price {
+            font-size: 14px;
+            color: #9b9b9b;
+            text-decoration: line-through;
+        }
+
+        .discount-badge {
+            background: #fff3e0;
+            color: #e53935;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .product-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+
+        .product-brand {
+            font-size: 13px;
+            color: #c4a77d;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .shop-button {
+            width: 100%;
+            padding: 14px;
+            background: #1a1a2e;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .shop-button:active {
+            transform: scale(0.98);
+        }
+
+        .retailer-badge {
+            margin-top: 12px;
+            padding: 8px;
+            text-align: center;
+            font-size: 12px;
+            color: #9b9b9b;
+            border-top: 1px solid #e8e8e8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Never miss a deal</h1>
+            <p>Get notified when saved items go on sale</p>
+        </div>
+
+        <div class="iphone-frame">
+            <div class="screen-content">
+                <div class="status-bar">
+                    <span>9:41</span>
+                    <span>●●●●●</span>
+                </div>
+
+                <div class="notification-badge">
+                    <div class="notification-content">
+                        <div class="notification-icon">🔥</div>
+                        <div class="notification-text">
+                            <div class="notification-title">Price Drop</div>
+                            <div class="notification-message">Your Jacquemus Le Bambino is now $315 (was $450)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content">
+                    <div class="product-section">
+                        <div class="product-image-large">👜</div>
+
+                        <div class="product-details">
+                            <div class="product-brand">Jacquemus</div>
+                            <div class="product-title">Le Bambino Leather Bag</div>
+
+                            <div class="price-row">
+                                <div class="current-price">$315</div>
+                                <div class="original-price">$450</div>
+                                <div class="discount-badge">30% off</div>
+                            </div>
+
+                            <button class="shop-button">Shop This</button>
+
+                            <div class="retailer-badge">Available at SSENSE</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

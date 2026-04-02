@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Style Digest - Rosier</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+        }
+        .header {
+            background: linear-gradient(135deg, #1A1A2E 0%, #16213E 100%);
+            padding: 30px 20px;
+            text-align: center;
+            border-top: 4px solid #C4A77D;
+        }
+        .header h1 {
+            color: #C4A77D;
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        .header p {
+            color: #fff;
+            font-size: 13px;
+            margin-top: 5px;
+            opacity: 0.9;
+        }
+        .content {
+            padding: 30px;
+        }
+        .content h2 {
+            color: #1A1A2E;
+            font-size: 18px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #C4A77D;
+            padding-bottom: 10px;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        .brands-list {
+            list-style: none;
+        }
+        .brands-list li {
+            padding: 12px;
+            margin-bottom: 8px;
+            background-color: #f5f5f5;
+            border-left: 3px solid #C4A77D;
+            border-radius: 3px;
+        }
+        .brand-name {
+            color: #1A1A2E;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .brand-stats {
+            color: #999;
+            font-size: 12px;
+            margin-top: 3px;
+        }
+        .product-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .product-card {
+            border: 1px solid #e5e5e5;
+            border-radius: 6px;
+            overflow: hidden;
+            background-color: #f9f9f9;
+        }
+        .product-image {
+            background-color: #f0e6d8;
+            padding: 20px;
+            text-align: center;
+            color: #bbb;
+            font-size: 40px;
+        }
+        .product-info {
+            padding: 15px;
+        }
+        .product-name {
+            color: #1A1A2E;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        .product-meta {
+            color: #999;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+        .product-description {
+            color: #666;
+            font-size: 13px;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+        .product-cta {
+            display: inline-block;
+            background-color: #C4A77D;
+            color: white;
+            padding: 8px 16px;
+            text-decoration: none;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+        .product-cta:hover {
+            background-color: #b39570;
+        }
+        .trend-score {
+            display: inline-block;
+            background-color: #f0e6d8;
+            color: #1A1A2E;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        .highlight {
+            background-color: #fff3e0;
+            padding: 20px;
+            border-left: 4px solid #C4A77D;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+        .highlight h3 {
+            color: #1A1A2E;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        .highlight p {
+            color: #666;
+            font-size: 13px;
+            margin: 0;
+        }
+        .cta-button {
+            display: block;
+            background-color: #C4A77D;
+            color: white;
+            padding: 14px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 14px;
+            text-align: center;
+            margin: 25px 0;
+        }
+        .cta-button:hover {
+            background-color: #b39570;
+        }
+        .footer {
+            background-color: #f9f9f9;
+            padding: 25px 30px;
+            border-top: 1px solid #eee;
+            text-align: center;
+        }
+        .footer p {
+            color: #999;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+        .footer-links {
+            margin: 15px 0;
+        }
+        .footer-links a {
+            color: #C4A77D;
+            text-decoration: none;
+            margin: 0 10px;
+            font-size: 12px;
+        }
+        .unsubscribe {
+            color: #ccc;
+            font-size: 11px;
+            margin-top: 15px;
+        }
+        .unsubscribe a {
+            color: #999;
+        }
+        @media (max-width: 600px) {
+            .content {
+                padding: 20px;
+            }
+            .product-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>✨ Weekly Style Digest</h1>
+            <p>This week's trending finds on Rosier</p>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <p>Hi {{ subscriber.first_name | default: 'friend' }},</p>
+
+            <p style="margin-bottom: 25px; color: #666;">Here are the brands and products trending on Rosier this week. Tap below to explore and add to your favorites.</p>
+
+            <!-- Top Brands Section -->
+            <div class="section">
+                <h2>🎨 Top Trending Brands</h2>
+                <ul class="brands-list">
+                    <li>
+                        <div class="brand-name">Brand Name</div>
+                        <div class="brand-stats">📊 123 swipes | Rising 24% this week</div>
+                    </li>
+                    <li>
+                        <div class="brand-name">Brand Name</div>
+                        <div class="brand-stats">📊 98 swipes | Rising 18% this week</div>
+                    </li>
+                    <li>
+                        <div class="brand-name">Brand Name</div>
+                        <div class="brand-stats">📊 87 swipes | Rising 12% this week</div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Top Products Section -->
+            <div class="section">
+                <h2>💎 Top Products</h2>
+
+                <div class="product-grid">
+                    <!-- Product Card 1 -->
+                    <div class="product-card">
+                        <div class="product-image">👗</div>
+                        <div class="product-info">
+                            <div class="product-name">Product Name</div>
+                            <div class="product-meta">
+                                Brand Name
+                                <span class="trend-score">Trending 85</span>
+                            </div>
+                            <div class="product-description">
+                                A beautifully crafted piece that captures modern elegance with sustainable practices.
+                            </div>
+                            <a href="https://rosier.app/product/1" class="product-cta">View Product</a>
+                        </div>
+                    </div>
+
+                    <!-- Product Card 2 -->
+                    <div class="product-card">
+                        <div class="product-image">👜</div>
+                        <div class="product-info">
+                            <div class="product-name">Product Name</div>
+                            <div class="product-meta">
+                                Brand Name
+                                <span class="trend-score">Trending 78</span>
+                            </div>
+                            <div class="product-description">
+                                Handmade accessories that combine vintage inspiration with contemporary design.
+                            </div>
+                            <a href="https://rosier.app/product/2" class="product-cta">View Product</a>
+                        </div>
+                    </div>
+
+                    <!-- Product Card 3 -->
+                    <div class="product-card">
+                        <div class="product-image">👟</div>
+                        <div class="product-info">
+                            <div class="product-name">Product Name</div>
+                            <div class="product-meta">
+                                Brand Name
+                                <span class="trend-score">Trending 72</span>
+                            </div>
+                            <div class="product-description">
+                                Comfortable yet stylish footwear designed for the modern nomad.
+                            </div>
+                            <a href="https://rosier.app/product/3" class="product-cta">View Product</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Highlight Section -->
+            <div class="highlight">
+                <h3>💡 This Week's Insight</h3>
+                <p>Sustainable fashion is trending! 78% of weekly swipes favored eco-friendly brands. If you love conscious style, we've got recommendations for you.</p>
+            </div>
+
+            <!-- CTA -->
+            <a href="https://rosier.app/explore" class="cta-button">Explore More Styles on Rosier</a>
+
+            <p style="color: #666; font-size: 13px; margin-top: 20px;">
+                <strong>Invite friends!</strong> Share your style with friends using your unique code and unlock exclusive rewards. <a href="https://rosier.app/invite" style="color: #C4A77D; text-decoration: none;">Get your code</a>
+            </p>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>Rosier Team</strong></p>
+
+            <div class="footer-links">
+                <a href="https://instagram.com/rosier.app">Instagram</a>
+                <a href="https://twitter.com/rosier.app">Twitter</a>
+                <a href="https://tiktok.com/@rosier.app">TikTok</a>
+            </div>
+
+            <p style="margin-top: 15px; color: #aaa;">© 2026 Rosier, Inc.</p>
+
+            <div class="unsubscribe">
+                <p>Manage your digest preferences</p>
+                <p><a href="{{ preferences_link }}">Update email frequency</a> | <a href="{{ unsubscribe_link }}">Unsubscribe</a></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

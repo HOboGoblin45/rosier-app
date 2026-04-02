@@ -1,0 +1,291 @@
+{
+  "name": "Referral Reward Flow",
+  "description": "Triggered when a user successfully refers someone. Sends confirmation emails and checks for reward milestones (5, 10 referrals).",
+  "active": true,
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [50, 300],
+      "webhookId": "referral-webhook",
+      "webhookUrl": "{{ $env.WEBHOOK_URL_PRODUCTION }}webhook/referral-success"
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://rosier-api:8000/api/v1/users/{{ $node.Webhook.json.referrer_id }}/referral-count",
+        "authentication": "bearerToken",
+        "nodeCredentialType": "httpBearer"
+      },
+      "name": "Get Referrer's Total Referral Count",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "resource": "contact",
+        "operation": "update",
+        "contactId": "={{ $node.Webhook.json.referrer_id }}",
+        "customFields": {
+          "referral_count": "={{ $node['Get Referrer\\'s Total Referral Count'].json.count }}"
+        }
+      },
+      "name": "Update Referrer Email List",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [450, 200]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://listmonk:9000/api/subscribers",
+        "authentication": "generic",
+        "genericAuthType": "basicAuth",
+        "nodeCredentialType": "httpBasicAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "",
+              "value": "{\"email\": \"{{ $node.Webhook.json.referred_email }}\", \"name\": \"{{ $node.Webhook.json.referred_name }}\", \"lists\": [1], \"status\": \"subscribed\"}"
+            }
+          ]
+        }
+      },
+      "name": "Add Referred User to Waitlist",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [450, 400]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://listmonk:9000/api/campaigns/send",
+        "authentication": "generic",
+        "genericAuthType": "basicAuth",
+        "nodeCredentialType": "httpBasicAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "",
+              "value": "{\"templateId\": 3, \"to\": [\"{{ $node.Webhook.json.referrer_email }}\"], \"subject\": \"Someone joined Rosier using your code!\"}"
+            }
+          ]
+        }
+      },
+      "name": "Send Referrer Confirmation Email",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [650, 200]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://listmonk:9000/api/campaigns/send",
+        "authentication": "generic",
+        "genericAuthType": "basicAuth",
+        "nodeCredentialType": "httpBasicAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "",
+              "value": "{\"templateId\": 1, \"to\": [\"{{ $node.Webhook.json.referred_email }}\"], \"subject\": \"Welcome to Rosier - Your friend thinks you'll love it!\"}"
+            }
+          ]
+        }
+      },
+      "name": "Send Referred User Welcome Email",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [650, 400]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $node['Get Referrer\\'s Total Referral Count'].json.count }}",
+              "operation": "equals",
+              "value2": 5
+            }
+          ]
+        }
+      },
+      "name": "Check if 5 Referral Milestone",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [850, 250]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://listmonk:9000/api/campaigns/send",
+        "authentication": "generic",
+        "genericAuthType": "basicAuth",
+        "nodeCredentialType": "httpBasicAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "",
+              "value": "{\"templateId\": 4, \"to\": [\"{{ $node.Webhook.json.referrer_email }}\"], \"subject\": \"🎉 You've earned a reward! 5 referrals unlocked!\"}"
+            }
+          ]
+        }
+      },
+      "name": "Send 5 Referral Milestone Email",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [1050, 150]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://rosier-api:8000/api/v1/users/{{ $node.Webhook.json.referrer_id }}/unlocks/early-access",
+        "authentication": "bearerToken",
+        "nodeCredentialType": "httpBearer",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "",
+              "value": "{\"reward\": \"daily_drop_early_access\"}"
+            }
+          ]
+        }
+      },
+      "name": "Unlock Daily Drop Early Access",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [1050, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://plausible:8000/api/event",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "",
+              "value": "{\"name\": \"referral_success\", \"url\": \"https://rosier.app/refer\", \"domain\": \"rosier.app\", \"props\": {\"referrer_id\": \"{{ $node.Webhook.json.referrer_id }}\", \"total_referrals\": {{ $node['Get Referrer\\'s Total Referral Count'].json.count }}}}"
+            }
+          ]
+        }
+      },
+      "name": "Log Referral Event to Analytics",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [850, 500]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Get Referrer's Total Referral Count",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Referrer's Total Referral Count": {
+      "main": [
+        [
+          {
+            "node": "Update Referrer Email List",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Add Referred User to Waitlist",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Check if 5 Referral Milestone",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Referrer Email List": {
+      "main": [
+        [
+          {
+            "node": "Send Referrer Confirmation Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add Referred User to Waitlist": {
+      "main": [
+        [
+          {
+            "node": "Send Referred User Welcome Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Referrer Confirmation Email": {
+      "main": [
+        [
+          {
+            "node": "Log Referral Event to Analytics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Referred User Welcome Email": {
+      "main": [
+        [
+          {
+            "node": "Log Referral Event to Analytics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check if 5 Referral Milestone": {
+      "main": [
+        [
+          {
+            "node": "Send 5 Referral Milestone Email",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Unlock Daily Drop Early Access",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    }
+  }
+}

@@ -1,0 +1,123 @@
+{
+  "name": "User Signup Flow",
+  "description": "Triggered when a new user signs up to Rosier. Adds them to email list, sends welcome sequence, and tracks event.",
+  "active": true,
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [50, 300],
+      "webhookId": "user-signup-webhook",
+      "webhookUrl": "{{ $env.WEBHOOK_URL_PRODUCTION }}webhook/user-signup",
+      "httpMethod": "POST"
+    },
+    {
+      "parameters": {
+        "resource": "contact",
+        "operation": "create",
+        "email": "={{ $node.Webhook.json.email }}",
+        "name": "={{ $node.Webhook.json.name }}",
+        "listId": 1
+      },
+      "name": "Add to Listmonk Users List",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "resource": "campaign",
+        "operation": "send",
+        "campaignId": 1,
+        "emailAddresses": "={{ $node.Webhook.json.email }}"
+      },
+      "name": "Send Welcome Email",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://plausible:8000/api/event",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "",
+              "value": "{\"name\": \"signup\", \"url\": \"https://rosier.app/\", \"domain\": \"rosier.app\", \"user_id\": \"={{ $node.Webhook.json.user_id }}\"}"
+            }
+          ]
+        }
+      },
+      "name": "Log Signup Event to Analytics",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {},
+      "name": "Success Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [850, 300]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Add to Listmonk Users List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add to Listmonk Users List": {
+      "main": [
+        [
+          {
+            "node": "Send Welcome Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Welcome Email": {
+      "main": [
+        [
+          {
+            "node": "Log Signup Event to Analytics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Signup Event to Analytics": {
+      "main": [
+        [
+          {
+            "node": "Success Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

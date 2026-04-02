@@ -1,0 +1,37 @@
+# Fastlane Match Configuration for Code Signing
+
+# Git-based code signing repository
+git_url(ENV['MATCH_GIT_URL'] || "https://github.com/rosier-app/code-signing.git")
+
+# Branch to use
+git_branch(ENV['MATCH_GIT_BRANCH'] || "main")
+
+# Use basic auth instead of SSH
+git_basic_authorization(
+  username: ENV['MATCH_GIT_USERNAME'],
+  token: ENV['MATCH_GIT_TOKEN']
+) if ENV['MATCH_GIT_USERNAME']
+
+# Storage mode
+storage_mode(ENV['MATCH_STORAGE_MODE'] || "git")
+
+# Key identifier for App Store Connect API
+key_id(ENV['APP_STORE_CONNECT_KEY_ID']) if ENV['APP_STORE_CONNECT_KEY_ID']
+
+# Issuer ID for App Store Connect API
+issuer_id(ENV['APP_STORE_CONNECT_ISSUER_ID']) if ENV['APP_STORE_CONNECT_ISSUER_ID']
+
+# Use certificate to store
+team_id(ENV['FASTLANE_TEAM_ID'] || "ABCDEF1234")
+
+# Additional options
+force_for_new_devices(ENV['MATCH_FORCE_FOR_NEW_DEVICES'] == 'true')
+skip_confirmation(is_ci)
+readonly(is_ci)
+verbose(true)
+
+# Certificate and provisioning profile timeout
+timeout(1000)
+
+# Notify team when provisioning profiles are updated
+notify_skipped_devices(true) if !is_ci

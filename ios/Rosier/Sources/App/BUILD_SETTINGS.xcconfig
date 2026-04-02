@@ -1,0 +1,127 @@
+// Rosier Build Settings Configuration
+// xcconfig file for consistent build settings across configurations
+// Reference this file in Project → Info → Configurations
+
+// MARK: - Versioning
+CURRENT_PROJECT_VERSION = 1
+MARKETING_VERSION = 1.0.0
+
+// MARK: - Bundle Configuration
+PRODUCT_BUNDLE_IDENTIFIER = com.rosier.app
+PRODUCT_NAME = Rosier
+EXECUTABLE_NAME = Rosier
+
+// MARK: - Deployment
+IPHONEOS_DEPLOYMENT_TARGET = 17.0
+TVOS_DEPLOYMENT_TARGET = 17.0
+MACOSX_DEPLOYMENT_TARGET = 13.0
+WATCHOS_DEPLOYMENT_TARGET = 10.0
+
+// MARK: - Swift Compiler
+SWIFT_VERSION = 5.9
+SWIFT_COMPILATION_MODE = whole
+
+// MARK: - Code Generation
+GENERATE_INFOPLIST_FILE = YES
+INFOPLIST_FILE = Sources/App/Info.plist
+INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES
+INFOPLIST_OUTPUT_FORMAT = xml
+CODE_SIGN_ENTITLEMENTS = Sources/App/Rosier.entitlements
+
+// MARK: - Signing
+DEVELOPMENT_TEAM =
+// NOTE: Set DEVELOPMENT_TEAM to your Team ID before building
+// Example: DEVELOPMENT_TEAM = ABC123XYZ9
+
+// MARK: - Architecture
+ARCHS = arm64
+VALID_ARCHS = arm64
+EXCLUDED_ARCHS[sdk=iphonesimulator*] = i386 arm64e
+
+// MARK: - Optimization (Debug)
+DEBUG_OPTIMIZATION_LEVEL = -Onone
+DEBUG_INFORMATION_FORMAT = dwarf
+OTHER_SWIFT_FLAGS_DEBUG = -D DEBUG
+
+// MARK: - Optimization (Release)
+RELEASE_OPTIMIZATION_LEVEL = -O
+RELEASE_INFORMATION_FORMAT = dwarf-with-dsym
+OTHER_SWIFT_FLAGS_RELEASE = -O -whole-module-optimization
+
+// MARK: - Code Signing (Debug)
+CODE_SIGN_STYLE[config=Debug] = Automatic
+CODE_SIGN_IDENTITY[config=Debug] = iPhone Developer
+
+// MARK: - Code Signing (Release)
+CODE_SIGN_STYLE[config=Release] = Automatic
+CODE_SIGN_IDENTITY[config=Release] = iPhone Distribution
+
+// MARK: - Asset Configuration
+ASSET_CATALOG_IDENTIFIER = com.rosier.app
+ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon
+ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage
+
+// MARK: - Plist Configuration
+INFOPLIST_KEY_NSLocalNetworkUsageDescription = Rosier uses local network discovery to enhance your fashion discovery experience.
+INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES
+INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES
+INFOPLIST_KEY_UIUserInterfaceStyle = Automatic
+INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait
+INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = UIInterfaceOrientationPortrait,UIInterfaceOrientationPortraitUpsideDown
+
+// MARK: - Framework Search Paths
+FRAMEWORK_SEARCH_PATHS = $(inherited)
+LIBRARY_SEARCH_PATHS = $(inherited)
+
+// MARK: - Header Search Paths
+HEADER_SEARCH_PATHS = $(inherited)
+SYSTEM_HEADER_SEARCH_PATHS = $(inherited)
+
+// MARK: - Warnings
+GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR
+GCC_WARN_UNUSED_VARIABLE = YES
+GCC_WARN_UNUSED_FUNCTION = YES
+CLANG_WARN_EMPTY_BODY = YES
+CLANG_WARN_IMPLICIT_FUNCTION_DECLARATION = YES
+CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR
+CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES
+
+// MARK: - Security
+OTHER_LDFLAGS = $(inherited) -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __entitlements -Xlinker $(BUILT_PRODUCTS_DIR)/$(EXECUTABLE_PATH)entitlements
+
+// MARK: - Linking
+LD_RUNPATH_SEARCH_PATHS = $(inherited) @executable_path/Frameworks
+
+// MARK: - Settings for Distribution
+VALIDATE_WORKSPACE = YES
+VALIDATE_PRODUCT = YES
+SWIFT_STRICT_CONCURRENCY = complete
+
+// MARK: - Bitcode (iOS 14.5+, not required but allowed)
+ENABLE_BITCODE = NO
+
+// MARK: - Clang Analyzer
+CLANG_ANALYZER_NONNULL = YES
+CLANG_ANALYZER_NULLABILITY_COMPLETENESS = YES
+
+// MARK: - Module Settings
+DEFINES_MODULE = YES
+GCC_INCREASE_PRECOMPILED_HEADER_SHARING = YES
+
+// MARK: - Build Directory
+CONFIGURATION_BUILD_DIR = $(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)
+
+// MARK: - Strip Settings (Release only)
+STRIP_INSTALLED_PRODUCT[config=Release] = YES
+COPY_PHASE_STRIP[config=Release] = YES
+DEPLOYMENT_POSTPROCESSING[config=Release] = YES
+
+// MARK: - Debug Symbols
+DEBUG_INFORMATION_FORMAT[config=Release] = dwarf-with-dsym
+
+// MARK: - App Store Configuration
+// Uncomment for App Store builds:
+// VALIDATE_WORKSPACE = YES
+// VALIDATE_PRODUCT = YES
+// STRIP_INSTALLED_PRODUCT = YES
+// COPY_PHASE_STRIP = YES

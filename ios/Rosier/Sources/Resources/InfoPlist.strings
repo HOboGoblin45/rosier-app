@@ -1,0 +1,189 @@
+/*
+ Rosier - Info.plist Localization Strings (English)
+ Localized descriptions for app permissions and system messages
+*/
+
+/* App Permissions */
+
+/* Notification Permission */
+"NSLocalNotificationUsageDescription" = "Rosier sends notifications when prices drop on items you've saved, and alerts for new arrivals from your favorite brands.";
+"NSRemoteNotificationUsageDescription" = "Enable push notifications to get alerts when items you save go on sale.";
+
+/* Photo Library Permission */
+"NSPhotoLibraryUsageDescription" = "Allow Rosier to access your photo library to share screenshots of items with friends.";
+"NSPhotoLibraryAddOnlyUsageDescription" = "Allow Rosier to save screenshots of items to your photo library.";
+
+/* Camera Permission (Future) */
+"NSCameraUsageDescription" = "Rosier may use your camera to scan fashion items or take photos in the future.";
+
+/* Location Permission */
+"NSLocationWhenInUseUsageDescription" = "Rosier uses your location to show relevant retailers and shipping information in your area.";
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "Rosier uses your location to show relevant retailers and shipping information.";
+
+/* Calendar Permission (Future) */
+"NSCalendarsUsageDescription" = "Add fashion sale dates and collection launches to your calendar.";
+
+/* Contacts Permission (Future) */
+"NSContactsUsageDescription" = "Allow Rosier to access your contacts to share your favorites with friends.";
+
+/* Bluetooth Permission (Future) */
+"NSBluetoothPeripheralUsageDescription" = "Rosier may use Bluetooth for future wearable features.";
+"NSBluetoothAlwaysUsageDescription" = "Rosier uses Bluetooth for future wearable integration.";
+
+/* Health & Fitness Permission (Future) */
+"NSHealthShareUsageDescription" = "Allow Rosier to access health data for size recommendations.";
+"NSHealthUpdateUsageDescription" = "Rosier may track activity for personalized recommendations.";
+
+/* App Tracking Transparency */
+"NSUserTrackingUsageDescription" = "Rosier requests permission to track your activity across apps and websites to personalize your fashion recommendations and improve your experience.";
+
+/* Face ID / Touch ID */
+"NSFaceIDUsageDescription" = "Use Face ID to securely unlock your Rosier account.";
+
+/* Microphone Permission (Future - for voice search) */
+"NSMicrophoneUsageDescription" = "Allow Rosier to use your microphone for voice search.";
+
+/* Home Kit Permission (Future) */
+"NSHomeKitUsageDescription" = "Rosier may integrate with HomeKit for smart home features.";
+
+/* Siri Permission (Future) */
+"NSSiriUsageDescription" = "Enable Siri to search for fashion items and get recommendations hands-free.";
+
+/* Mail Composition (Auto-used) */
+"NSMailUsageDescription" = "Rosier can help you share items via email.";
+
+/* VoIP Permission (Future) */
+"NSVoIPUsageDescription" = "Rosier may offer video calls with style consultants.";
+
+/* App Extensions Messages */
+"NSShareExtensionUsageDescription" = "Share fashion items from other apps directly to Rosier.";
+
+/* Health Records Permission (Future) */
+"NSHealthClinicalHealthRecordsUsageDescription" = "Allow Rosier to access health records for medical-grade size recommendations.";
+
+/* App Clips (Future) */
+"NSAppClipRequestEphemeralUserNotificationOnly" = "Rosier App Clip can show you temporary notifications about sales.";
+
+/* System Messages */
+
+/* Push Notification Decline */
+"NSNotificationDecliningMessage" = "You can enable notifications anytime in Settings > Notifications.";
+
+/* Location Services Decline */
+"NSLocationDecliningMessage" = "You can enable location services anytime in Settings > Privacy > Location Services.";
+
+/* Photo Library Decline */
+"NSPhotoLibraryDecliningMessage" = "You can enable photo library access anytime in Settings > Privacy > Photos.";
+
+/* Siri Setup Message (Future) */
+"NSSiriSetupMessage" = "Say things like 'Show me dresses on Rosier' or 'Find sale items on Rosier' to use Siri with Rosier.";
+
+/* App Description (For App Store) */
+"CFBundleDisplayName" = "Rosier";
+"CFBundleName" = "Rosier";
+"CFBundleShortVersionString" = "1.0";
+"NSAppTransportSecurityDictionary" = {
+    /* Allow HTTPS connections to authorized retailers */
+    "NSExceptionDomains" = {
+        "ssense.com" = {
+            "NSIncludesSubdomains" = "YES";
+            "NSThirdPartyExceptionAllowsInsecureHTTPLoads" = "NO";
+        };
+        "farfetch.com" = {
+            "NSIncludesSubdomains" = "YES";
+            "NSThirdPartyExceptionAllowsInsecureHTTPLoads" = "NO";
+        };
+        "brownsfashion.com" = {
+            "NSIncludesSubdomains" = "YES";
+            "NSThirdPartyExceptionAllowsInsecureHTTPLoads" = "NO";
+        };
+    };
+};
+
+/* IDFA Tracking (App Tracking Transparency) */
+"NSAdvertisingAttributionReportEndpoint" = "https://rosier.app/tracking";
+
+/* iTunes Connect Messages */
+"ITSAppUsesNonExemptEncryption" = "NO";
+
+/* Privacy Configuration */
+"NSPrivacyTracking" = "NO";
+"NSPrivacyTrackingDomains" = {};
+
+/* Minimum iOS Version */
+"MinimumOSVersion" = "14.0";
+
+/* Supported Orientations */
+"UISupportedInterfaceOrientations" = (
+    "UIInterfaceOrientationPortrait",
+    "UIInterfaceOrientationPortraitUpsideDown"
+);
+
+/* iPad Orientations (if supported) */
+"UISupportedInterfaceOrientations~ipad" = (
+    "UIInterfaceOrientationPortrait",
+    "UIInterfaceOrientationPortraitUpsideDown",
+    "UIInterfaceOrientationLandscapeLeft",
+    "UIInterfaceOrientationLandscapeRight"
+);
+
+/* Dark Mode Support */
+"UIUserInterfaceStyle" = "Light";
+"UIViewControllerBasedStatusBarAppearance" = "YES";
+
+/* Status Bar Style */
+"UIStatusBarStyle" = "UIStatusBarStyleDefault";
+
+/* App Transport Security */
+"NSAllowsArbitraryLoads" = "NO";
+"NSAllowsLocalNetworking" = "NO";
+
+/* URL Types (Deep Linking) */
+"CFBundleURLTypes" = (
+    {
+        "CFBundleURLName" = "com.rosier.app";
+        "CFBundleURLSchemes" = (
+            "rosier"
+        );
+    }
+);
+
+/* Fonts Embedded in Application */
+"UIAppFonts" = (
+    "Inter-Regular.ttf",
+    "Inter-Medium.ttf",
+    "Inter-SemiBold.ttf",
+    "Inter-Bold.ttf"
+);
+
+/* Background Modes */
+"UIBackgroundModes" = (
+    "remote-notification",
+    "fetch"
+);
+
+/* Signing & Capabilities Messages */
+"NSLocalNetworkUsageDescription" = "Rosier needs access to your local network for faster product loading.";
+"NSBonjourServiceTypes" = (
+    "_rosier._tcp"
+);
+
+/* Clipboard Warning (iOS 16+) */
+"NSPasteboardTypes" = (
+    "public.utf8-plain-text"
+);
+
+/* Third-Party SDK Messages */
+"NSThirdPartyAnalyticsUsageDescription" = "Rosier uses analytics to understand how you interact with the app and improve your experience.";
+
+/* Firebase Messages (if using) */
+"FirebaseAppID" = "";
+"FirebaseProjectID" = "rosier-app";
+
+/* Crash Reporting (if using Crashlytics) */
+"CrashlyticsAPIKey" = "";
+
+/* API Configuration Messages */
+"APIBaseURL" = "https://api.rosier.app";
+"APIVersion" = "v1";
+"APITimeout" = "30";

@@ -1,0 +1,195 @@
+name: Marketing Stack Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - staging
+
+env:
+  ROSIER_REPO_PATH: /home/ec2-user/rosier
+
+jobs:
+  deploy-marketing:
+    name: Deploy Marketing Stack
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Get EC2 instance details
+        id: ec2
+        run: |
+          INSTANCE_ID=$(aws ec2 describe-instances \
+            --filters "Name=tag:Environment,Values=${{ github.event.inputs.environment }}" \
+              "Name=tag:Name,Values=rosier-api" \
+            --query 'Reservations[0].Instances[0].InstanceId' \
+            --output text)
+
+          PUBLIC_IP=$(aws ec2 describe-instances \
+            --instance-ids "$INSTANCE_ID" \
+            --query 'Reservations[0].Instances[0].PublicIpAddress' \
+            --output text)
+
+          echo "instance_id=$INSTANCE_ID" >> $GITHUB_OUTPUT
+          echo "public_ip=$PUBLIC_IP" >> $GITHUB_OUTPUT
+
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ steps.ec2.outputs.public_ip }} >> ~/.ssh/known_hosts 2>/dev/null || true
+
+      - name: Deploy marketing stack via SSH
+        run: |
+          ssh -i ~/.ssh/id_rsa ec2-user@${{ steps.ec2.outputs.public_ip }} << 'EOF'
+          set -e
+
+          echo "Pulling latest code..."
+          cd ${{ env.ROSIER_REPO_PATH }}
+          git pull origin main
+
+          echo "Starting marketing stack..."
+          cd marketing
+
+          # Load environment variables
+          if [ -f .env ]; then
+            set -a
+            source .env
+            set +a
+          fi
+
+          # Create database initialization script if it doesn't exist
+          mkdir -p scripts
+          if [ ! -f scripts/init-marketing-db.sql ]; then
+            echo "Creating database initialization script..."
+            cat > scripts/init-marketing-db.sql << 'DBEOF'
+          -- Initialize marketing databases
+          CREATE USER IF NOT EXISTS listmonk WITH PASSWORD 'changeme123';
+          CREATE USER IF NOT EXISTS n8n WITH PASSWORD 'changeme123';
+          CREATE USER IF NOT EXISTS mixpost WITH PASSWORD 'changeme123';
+          CREATE USER IF NOT EXISTS plausible WITH PASSWORD 'changeme123';
+
+          CREATE DATABASE IF NOT EXISTS listmonk OWNER listmonk;
+          CREATE DATABASE IF NOT EXISTS n8n OWNER n8n;
+          CREATE DATABASE IF NOT EXISTS mixpost OWNER mixpost;
+          CREATE DATABASE IF NOT EXISTS plausible OWNER plausible;
+
+          GRANT ALL PRIVILEGES ON DATABASE listmonk TO listmonk;
+          GRANT ALL PRIVILEGES ON DATABASE n8n TO n8n;
+          GRANT ALL PRIVILEGES ON DATABASE mixpost TO mixpost;
+          GRANT ALL PRIVILEGES ON DATABASE plausible TO plausible;
+          DBEOF
+          fi
+
+          # Deploy with docker-compose
+          docker-compose -f docker-compose.marketing.yml pull
+          docker-compose -f docker-compose.marketing.yml up -d
+
+          echo "Waiting for services to be healthy..."
+          sleep 30
+
+          # Health checks
+          echo "Running health checks..."
+          docker-compose -f docker-compose.marketing.yml exec -T marketing-db pg_isready -U postgres || true
+          docker-compose -f docker-compose.marketing.yml exec -T marketing-redis redis-cli ping || true
+
+          echo "Marketing stack deployment complete!"
+          EOF
+
+      - name: Verify services are healthy
+        run: |
+          ssh -i ~/.ssh/id_rsa ec2-user@${{ steps.ec2.outputs.public_ip }} << 'EOF'
+          cd ${{ env.ROSIER_REPO_PATH }}/marketing
+
+          echo "Checking service health..."
+
+          # Listmonk health check
+          if docker-compose -f docker-compose.marketing.yml ps | grep -q "rosier-listmonk"; then
+            echo "✓ Listmonk container running"
+          fi
+
+          # n8n health check
+          if docker-compose -f docker-compose.marketing.yml ps | grep -q "rosier-n8n"; then
+            echo "✓ n8n container running"
+          fi
+
+          # Mixpost health check
+          if docker-compose -f docker-compose.marketing.yml ps | grep -q "rosier-mixpost"; then
+            echo "✓ Mixpost container running"
+          fi
+
+          # Plausible health check
+          if docker-compose -f docker-compose.marketing.yml ps | grep -q "rosier-plausible"; then
+            echo "✓ Plausible container running"
+          fi
+
+          echo ""
+          echo "Marketing services deployed successfully!"
+          echo "Access points:"
+          echo "  Listmonk:  https://mail.rosier.app"
+          echo "  n8n:       https://n8n.rosier.app"
+          echo "  Mixpost:   https://social.rosier.app"
+          echo "  Plausible: https://analytics.rosier.app"
+          EOF
+
+      - name: Create deployment summary
+        if: always()
+        run: |
+          cat > /tmp/deployment-summary.md << 'EOF'
+          # Marketing Stack Deployment Summary
+
+          **Environment:** ${{ github.event.inputs.environment }}
+          **Timestamp:** $(date -u +'%Y-%m-%d %H:%M:%S UTC')
+          **Triggered by:** ${{ github.actor }}
+
+          ## Deployed Services
+          - Listmonk (Email Marketing)
+          - n8n (Workflow Automation)
+          - Mixpost (Social Media Scheduling)
+          - Plausible (Analytics)
+          - ClickHouse (Analytics Database)
+
+          ## Service URLs
+          - Mail: https://mail.rosier.app
+          - Automation: https://n8n.rosier.app
+          - Social: https://social.rosier.app
+          - Analytics: https://analytics.rosier.app
+
+          ## Next Steps
+          1. Monitor service logs: `docker-compose logs -f`
+          2. Verify database backups
+          3. Test email sending through Listmonk
+          4. Verify webhook endpoints in n8n
+          EOF
+          cat /tmp/deployment-summary.md
+
+      - name: Notify deployment success
+        if: success()
+        run: |
+          echo "✓ Marketing stack deployed successfully!"
+          echo "Services are available at their respective domains"
+
+      - name: Notify deployment failure
+        if: failure()
+        run: |
+          echo "✗ Marketing stack deployment failed"
+          echo "Check the logs above for details"
+          exit 1

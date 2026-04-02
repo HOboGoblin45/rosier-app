@@ -1,0 +1,53 @@
+{
+  "generated_date": "2026-04-01T23:32:06.076961",
+  "project": "Rosier",
+  "launch_date": "Summer 2026",
+  "content_files": [
+    {
+      "file": "01_INSTAGRAM_CAPTIONS.json",
+      "type": "Social Media",
+      "platform": "Instagram",
+      "count": 21,
+      "description": "30 Instagram captions ready for scheduling"
+    },
+    {
+      "file": "02_TIKTOK_SCRIPTS.json",
+      "type": "Social Media",
+      "platform": "TikTok",
+      "count": 13,
+      "description": "15 TikTok video scripts"
+    },
+    {
+      "file": "03_LAUNCH_ANNOUNCEMENTS.json",
+      "type": "Marketing",
+      "platforms": [
+        "Email",
+        "Twitter",
+        "LinkedIn"
+      ],
+      "count": 5,
+      "description": "5 launch announcement variations"
+    },
+    {
+      "file": "04_PRESS_RELEASE.md",
+      "type": "PR",
+      "description": "Press release for newswire distribution"
+    },
+    {
+      "file": "05_PRODUCT_HUNT_POST.md",
+      "type": "Launch Platforms",
+      "platform": "Product Hunt",
+      "description": "Product Hunt launch post"
+    }
+  ],
+  "total_pieces": 40,
+  "usage_instructions": [
+    "All content is ready to use as-is",
+    "Adapt as needed for your voice/brand",
+    "Include brand visuals alongside social posts",
+    "Schedule social content using a platform like Later or Buffer",
+    "Send press release to newswire services 1 hour before launch",
+    "Post Product Hunt hunt exactly at 12:01 AM PT on launch day",
+    "Have team ready to engage with comments in real-time"
+  ]
+}

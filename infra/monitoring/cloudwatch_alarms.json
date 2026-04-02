@@ -1,0 +1,271 @@
+{
+  "alarms": [
+    {
+      "AlarmName": "rosier-api-p95-latency-high",
+      "MetricName": "TargetResponseTime",
+      "Namespace": "AWS/ApplicationELB",
+      "Statistic": "p95",
+      "Period": 300,
+      "EvaluationPeriods": 2,
+      "Threshold": 0.5,
+      "ComparisonOperator": "GreaterThanThreshold",
+      "Dimensions": [
+        {
+          "Name": "LoadBalancer",
+          "Value": "app/rosier-alb/1234567890abcdef"
+        }
+      ],
+      "AlarmActions": [
+        "arn:aws:sns:us-east-1:123456789012:rosier-pagerduty-alerts"
+      ],
+      "TreatMissingData": "notBreaching",
+      "AlarmDescription": "Alert when API p95 latency exceeds 500ms"
+    },
+    {
+      "AlarmName": "rosier-error-rate-high",
+      "MetricName": "HTTPCode_Target_5XX_Count",
+      "Namespace": "AWS/ApplicationELB",
+      "Statistic": "Sum",
+      "Period": 60,
+      "EvaluationPeriods": 3,
+      "Threshold": 20,
+      "ComparisonOperator": "GreaterThanThreshold",
+      "Dimensions": [
+        {
+          "Name": "LoadBalancer",
+          "Value": "app/rosier-alb/1234567890abcdef"
+        }
+      ],
+      "AlarmActions": [
+        "arn:aws:sns:us-east-1:123456789012:rosier-pagerduty-alerts"
+      ],
+      "TreatMissingData": "notBreaching",
+      "AlarmDescription": "Alert when error rate exceeds 2% (20 errors per minute)"
+    },
+    {
+      "AlarmName": "rosier-rds-connection-exhaustion",
+      "MetricName": "DatabaseConnections",
+      "Namespace": "AWS/RDS",
+      "Statistic": "Average",
+      "Period": 300,
+      "EvaluationPeriods": 2,
+      "Threshold": 80,
+      "ComparisonOperator": "GreaterThanThreshold",
+      "Dimensions": [
+        {
+          "Name": "DBInstanceIdentifier",
+          "Value": "rosier-db"
+        }
+      ],
+      "AlarmActions": [
+        "arn:aws:sns:us-east-1:123456789012:rosier-pagerduty-alerts"
+      ],
+      "TreatMissingData": "notBreaching",
+      "AlarmDescription": "Alert when RDS connections exceed 80% of max connections"
+    },
+    {
+      "AlarmName": "rosier-rds-disk-space-critical",
+      "MetricName": "FreeStorageSpace",
+      "Namespace": "AWS/RDS",
+      "Statistic": "Average",
+      "Period": 300,
+      "EvaluationPeriods": 1,
+      "Threshold": 10737418240,
+      "ComparisonOperator": "LessThanThreshold",
+      "Dimensions": [
+        {
+          "Name": "DBInstanceIdentifier",
+          "Value": "rosier-db"
+        }
+      ],
+      "AlarmActions": [
+        "arn:aws:sns:us-east-1:123456789012:rosier-pagerduty-alerts"
+      ],
+      "TreatMissingData": "notBreaching",
+      "AlarmDescription": "Alert when RDS free storage is below 10GB"
+    },
+    {
+      "AlarmName": "rosier-redis-memory-high",
+      "MetricName": "DatabaseMemoryUsagePercentage",
+      "Namespace": "AWS/ElastiCache",
+      "Statistic": "Average",
+      "Period": 300,
+      "EvaluationPeriods": 2,
+      "Threshold": 80,
+      "ComparisonOperator": "GreaterThanThreshold",
+      "Dimensions": [
+        {
+          "Name": "CacheClusterId",
+          "Value": "rosier-redis"
+        }
+      ],
+      "AlarmActions": [
+        "arn:aws:sns:us-east-1:123456789012:rosier-pagerduty-alerts"
+      ],
+      "TreatMissingData": "notBreaching",
+      "AlarmDescription": "Alert when Redis memory usage exceeds 80%"
+    },
+    {
+      "AlarmName": "rosier-redis-hit-rate-low",
+      "MetricName": "CacheHitRate",
+      "Namespace": "AWS/ElastiCache",
+      "Statistic": "Average",
+      "Period": 300,
+      "EvaluationPeriods": 3,
+      "Threshold": 90,
+      "ComparisonOperator": "LessThanThreshold",
+      "Dimensions": [
+        {
+          "Name": "CacheClusterId",
+          "Value": "rosier-redis"
+        }
+      ],
+      "AlarmActions": [
+        "arn:aws:sns:us-east-1:123456789012:rosier-slack-warnings"
+      ],
+      "TreatMissingData": "notBreaching",
+      "AlarmDescription": "Warning when Redis hit rate falls below 90%"
+    },
+    {
+      "AlarmName": "rosier-ecs-task-count-critical",
+      "MetricName": "RunningCount",
+      "Namespace": "AWS/ECS",
+      "Statistic": "Average",
+      "Period": 60,
+      "EvaluationPeriods": 2,
+      "Threshold": 2,
+      "ComparisonOperator": "LessThanThreshold",
+      "Dimensions": [
+        {
+          "Name": "ServiceName",
+          "Value": "rosier-api"
+        },
+        {
+          "Name": "ClusterName",
+          "Value": "rosier-production"
+        }
+      ],
+      "AlarmActions": [
+        "arn:aws:sns:us-east-1:123456789012:rosier-pagerduty-alerts"
+      ],
+      "TreatMissingData": "breaching",
+      "AlarmDescription": "Critical alert when fewer than 2 ECS tasks are running"
+    },
+    {
+      "AlarmName": "rosier-card-queue-empty",
+      "MetricName": "CardQueueLength",
+      "Namespace": "Custom/Rosier",
+      "Statistic": "Average",
+      "Period": 300,
+      "EvaluationPeriods": 1,
+      "Threshold": 1,
+      "ComparisonOperator": "LessThanThreshold",
+      "AlarmActions": [
+        "arn:aws:sns:us-east-1:123456789012:rosier-slack-warnings"
+      ],
+      "TreatMissingData": "breaching",
+      "AlarmDescription": "Warning when card queue becomes empty (may indicate recommendation service issues)"
+    },
+    {
+      "AlarmName": "rosier-crash-free-rate-low",
+      "MetricName": "CrashFreeRate",
+      "Namespace": "Custom/Rosier",
+      "Statistic": "Average",
+      "Period": 3600,
+      "EvaluationPeriods": 1,
+      "Threshold": 99.5,
+      "ComparisonOperator": "LessThanThreshold",
+      "AlarmActions": [
+        "arn:aws:sns:us-east-1:123456789012:rosier-pagerduty-alerts"
+      ],
+      "TreatMissingData": "notBreaching",
+      "AlarmDescription": "Alert when app crash-free rate drops below 99.5%"
+    },
+    {
+      "AlarmName": "rosier-dau-drop-significant",
+      "MetricName": "DailyActiveUsers",
+      "Namespace": "Custom/Rosier",
+      "Statistic": "Average",
+      "Period": 86400,
+      "EvaluationPeriods": 1,
+      "Threshold": 80,
+      "ComparisonOperator": "LessThanThreshold",
+      "AlarmActions": [
+        "arn:aws:sns:us-east-1:123456789012:rosier-slack-warnings"
+      ],
+      "TreatMissingData": "notBreaching",
+      "AlarmDescription": "Warning when daily active users drop more than 20% day-over-day"
+    },
+    {
+      "AlarmName": "rosier-ecs-cpu-utilization-high",
+      "MetricName": "CPUUtilization",
+      "Namespace": "AWS/ECS",
+      "Statistic": "Average",
+      "Period": 300,
+      "EvaluationPeriods": 2,
+      "Threshold": 75,
+      "ComparisonOperator": "GreaterThanThreshold",
+      "Dimensions": [
+        {
+          "Name": "ServiceName",
+          "Value": "rosier-api"
+        },
+        {
+          "Name": "ClusterName",
+          "Value": "rosier-production"
+        }
+      ],
+      "AlarmActions": [
+        "arn:aws:sns:us-east-1:123456789012:rosier-slack-warnings"
+      ],
+      "TreatMissingData": "notBreaching",
+      "AlarmDescription": "Warning when ECS CPU utilization exceeds 75%"
+    },
+    {
+      "AlarmName": "rosier-ecs-memory-utilization-high",
+      "MetricName": "MemoryUtilization",
+      "Namespace": "AWS/ECS",
+      "Statistic": "Average",
+      "Period": 300,
+      "EvaluationPeriods": 2,
+      "Threshold": 80,
+      "ComparisonOperator": "GreaterThanThreshold",
+      "Dimensions": [
+        {
+          "Name": "ServiceName",
+          "Value": "rosier-api"
+        },
+        {
+          "Name": "ClusterName",
+          "Value": "rosier-production"
+        }
+      ],
+      "AlarmActions": [
+        "arn:aws:sns:us-east-1:123456789012:rosier-slack-warnings"
+      ],
+      "TreatMissingData": "notBreaching",
+      "AlarmDescription": "Warning when ECS memory utilization exceeds 80%"
+    },
+    {
+      "AlarmName": "rosier-rds-cpu-high",
+      "MetricName": "CPUUtilization",
+      "Namespace": "AWS/RDS",
+      "Statistic": "Average",
+      "Period": 300,
+      "EvaluationPeriods": 2,
+      "Threshold": 75,
+      "ComparisonOperator": "GreaterThanThreshold",
+      "Dimensions": [
+        {
+          "Name": "DBInstanceIdentifier",
+          "Value": "rosier-db"
+        }
+      ],
+      "AlarmActions": [
+        "arn:aws:sns:us-east-1:123456789012:rosier-slack-warnings"
+      ],
+      "TreatMissingData": "notBreaching",
+      "AlarmDescription": "Warning when RDS CPU utilization exceeds 75%"
+    }
+  ]
+}

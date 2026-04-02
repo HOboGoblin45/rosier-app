@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>We Miss You - Rosier</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-top: 4px solid #C4A77D;
+        }
+        .header {
+            background: linear-gradient(135deg, #1A1A2E 0%, #16213E 100%);
+            padding: 40px 20px;
+            text-align: center;
+        }
+        .header h1 {
+            color: #C4A77D;
+            font-size: 26px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        .header p {
+            color: #fff;
+            font-size: 14px;
+            margin-top: 8px;
+            opacity: 0.95;
+        }
+        .content {
+            padding: 40px 30px;
+        }
+        .greeting {
+            font-size: 48px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .content h2 {
+            color: #1A1A2E;
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+        .content p {
+            color: #555;
+            font-size: 15px;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+        .reason-box {
+            background-color: #f5f5f5;
+            padding: 20px;
+            border-radius: 6px;
+            margin: 20px 0;
+            border-left: 4px solid #C4A77D;
+        }
+        .reason-box h3 {
+            color: #1A1A2E;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .reason-box p {
+            color: #666;
+            font-size: 13px;
+            margin: 0;
+        }
+        .highlight {
+            background-color: #fff3e0;
+            border-left: 4px solid #C4A77D;
+            padding: 15px 20px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+        .highlight p {
+            color: #666;
+            font-size: 14px;
+            margin: 0;
+        }
+        .list {
+            color: #555;
+            font-size: 14px;
+            margin: 15px 0;
+        }
+        .list li {
+            margin-bottom: 10px;
+            margin-left: 20px;
+        }
+        .cta-button {
+            display: inline-block;
+            background-color: #C4A77D;
+            color: white;
+            padding: 14px 40px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 14px;
+            margin: 25px 0;
+            transition: background-color 0.3s;
+        }
+        .cta-button:hover {
+            background-color: #b39570;
+        }
+        .secondary-cta {
+            display: inline-block;
+            background-color: transparent;
+            color: #C4A77D;
+            padding: 10px 20px;
+            text-decoration: underline;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 13px;
+            margin-left: 10px;
+        }
+        .footer {
+            background-color: #f9f9f9;
+            padding: 30px;
+            border-top: 1px solid #eee;
+            text-align: center;
+        }
+        .footer p {
+            color: #999;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+        .footer-links {
+            margin: 15px 0;
+        }
+        .footer-links a {
+            color: #C4A77D;
+            text-decoration: none;
+            margin: 0 10px;
+            font-size: 12px;
+        }
+        .unsubscribe {
+            color: #ccc;
+            font-size: 11px;
+            margin-top: 15px;
+        }
+        .unsubscribe a {
+            color: #999;
+        }
+        @media (max-width: 600px) {
+            .content {
+                padding: 30px 20px;
+            }
+            .greeting {
+                font-size: 32px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>We Miss You</h1>
+            <p>Come back and discover your next favorite style</p>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <div class="greeting">👋</div>
+
+            <p>Hi {{ subscriber.first_name | default: 'friend' }},</p>
+
+            <p>We noticed you haven't opened Rosier in a while, and we'd love to welcome you back. A lot has changed since you last visited, and we think you'll love what's new.</p>
+
+            <!-- What's New -->
+            <h2>Here's What's New:</h2>
+
+            <div class="reason-box">
+                <h3>✨ New Brands Just Added</h3>
+                <p>We've curated 50+ emerging micro-brands from around the world. Based on your Style DNA, we think you'll especially love these.</p>
+            </div>
+
+            <div class="reason-box">
+                <h3>🎯 Smarter Recommendations</h3>
+                <p>Our algorithm has gotten even better at finding styles that match your taste. More hits, fewer misses.</p>
+            </div>
+
+            <div class="reason-box">
+                <h3>🏆 Referral Rewards are Live</h3>
+                <p>Invite friends and unlock exclusive perks. Early access to Daily Drops, special discounts, and more.</p>
+            </div>
+
+            <!-- Highlight -->
+            <div class="highlight">
+                <p><strong>Limited time:</strong> Get 20% off your first purchase when you log back in this week. Code: WELCOME20</p>
+            </div>
+
+            <h2>Why Come Back?</h2>
+
+            <ul class="list">
+                <li>Hand-picked brands you won't find on mainstream apps</li>
+                <li>Personalized recommendations based on your unique style</li>
+                <li>Connect with a community of fashion-forward people</li>
+                <li>Exclusive early access to trending pieces</li>
+                <li>Earn rewards by inviting friends</li>
+            </ul>
+
+            <p style="margin-top: 25px;">
+                Your curated feed is waiting. We've got {{ items_waiting }} new recommendations just for you.
+            </p>
+
+            <center>
+                <a href="https://rosier.app/open" class="cta-button">Open Rosier Now</a>
+                <a href="{{ unsubscribe_link }}" class="secondary-cta">I'm not interested</a>
+            </center>
+
+            <p style="color: #999; font-size: 12px; text-align: center; margin-top: 20px;">
+                Download the app or log in on web: <a href="https://rosier.app" style="color: #C4A77D; text-decoration: none;">rosier.app</a>
+            </p>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>Rosier Team</strong></p>
+            <p>Building the future of personal style discovery.</p>
+
+            <div class="footer-links">
+                <a href="https://instagram.com/rosier.app">Instagram</a>
+                <a href="https://twitter.com/rosier.app">Twitter</a>
+                <a href="https://tiktok.com/@rosier.app">TikTok</a>
+            </div>
+
+            <p style="margin-top: 15px; color: #aaa;">© 2026 Rosier, Inc.</p>
+
+            <div class="unsubscribe">
+                <p><a href="{{ unsubscribe_link }}">Unsubscribe</a> from re-engagement emails</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

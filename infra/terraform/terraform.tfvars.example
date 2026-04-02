@@ -1,0 +1,146 @@
+# Budget-Optimized Terraform Configuration Example
+# Copy this file to terraform.tfvars and update with your values
+
+# AWS Configuration
+aws_region     = "us-east-1"
+environment    = "development"
+app_name       = "rosier"
+
+# Use default VPC (highly recommended to save costs)
+use_default_vpc = true
+
+# EC2 Configuration - t2.micro (Free Tier)
+ec2_instance_type            = "t2.micro"
+ec2_root_volume_size         = 30
+ec2_root_volume_type         = "gp3"
+enable_ec2_detailed_monitoring = false
+
+# RDS Configuration - db.t3.micro (Free Tier)
+rds_instance_class       = "db.t3.micro"
+rds_engine_version       = "16.1"
+rds_allocated_storage    = 20
+rds_storage_type         = "gp3"
+rds_multi_az             = false
+rds_backup_retention_period = 7
+rds_publicly_accessible  = false
+
+# Database Credentials
+# IMPORTANT: Never commit these to git, use environment variables instead
+# export TF_VAR_database_password="your-strong-password-here"
+database_name            = "rosier"
+database_username        = "postgres"
+database_password        = "CHANGE_ME_SET_VIA_ENV_VAR"
+
+# ElastiCache Configuration - cache.t3.micro (Free Tier)
+elasticache_instance_class      = "cache.t3.micro"
+elasticache_engine_version      = "7.0"
+elasticache_num_cache_nodes     = 1
+elasticache_automatic_failover  = false
+
+# S3 Configuration
+s3_bucket_name       = ""  # Leave empty for auto-generated name
+s3_enable_versioning = false
+s3_enable_encryption = true
+
+# Network Configuration
+domain_name    = "api.example.com"  # Your domain (optional)
+certificate_arn = ""  # ACM certificate ARN (optional)
+
+# Monitoring & Logging
+enable_cloudwatch_logs = true
+log_retention_days     = 30
+enable_detailed_monitoring = false
+
+# Application Configuration
+container_port = 8000
+
+# Application Secrets (set via environment variables, NOT in tfvars)
+# export TF_VAR_jwt_secret_key="your-jwt-secret"
+# export TF_VAR_django_secret_key="your-django-secret"
+
+# Tags for resource organization
+tags = {
+  Project     = "Rosier"
+  Environment = "mvp"
+  ManagedBy   = "Terraform"
+  CostCenter  = "Bootstrap"
+  Owner       = "Charlie"
+}
+
+# ============================================================================
+# DEPLOYMENT INSTRUCTIONS
+# ============================================================================
+
+# Before running terraform, set these environment variables:
+# export AWS_REGION="us-east-1"
+# export TF_VAR_database_password="your-strong-password-here"
+# export TF_VAR_jwt_secret_key="your-jwt-secret-here"
+# export TF_VAR_django_secret_key="your-django-secret-here"
+
+# Then initialize and apply:
+# terraform init
+# terraform plan
+# terraform apply
+
+# View outputs:
+# terraform output
+# terraform output ec2_public_ip
+# terraform output rds_connection_string
+
+# Destroy all resources:
+# terraform destroy
+
+# ============================================================================
+# SECURITY BEST PRACTICES
+# ============================================================================
+
+# IMPORTANT:
+# 1. Never commit database_password to git
+# 2. Never commit JWT secrets to git
+# 3. Use AWS Secrets Manager for production
+# 4. Restrict SSH access by modifying security group rules
+# 5. Rotate database password monthly
+# 6. Enable MFA for AWS console access
+# 7. Use IAM roles instead of access keys
+# 8. Enable VPC Flow Logs for monitoring
+# 9. Enable S3 bucket versioning in production
+# 10. Enable RDS encryption in production
+
+# ============================================================================
+# COST OPTIMIZATION TIPS
+# ============================================================================
+
+# This configuration keeps costs at $0/month (Free Tier):
+# ✓ t2.micro EC2: 750 hours/month free
+# ✓ db.t3.micro RDS: 750 hours + 20GB free
+# ✓ cache.t3.micro ElastiCache: 750 hours free
+# ✓ S3: 5GB/month free
+# ✓ CloudWatch: 5GB logs/month free
+
+# To maintain $0 cost:
+# - Keep EC2 instance type as t2.micro
+# - Keep RDS instance as db.t3.micro
+# - Keep single-node ElastiCache
+# - Keep RDS storage under 20GB
+# - Don't enable Multi-AZ
+# - Don't enable detailed monitoring
+# - Don't enable encryption at rest
+# - Don't enable transit encryption
+
+# If you need to upgrade later, use Reserved Instances (RIs):
+# - 1-year RI for t2.small: ~$140/year ($11.67/month)
+# - 1-year RI for db.t3.small: ~$400/year ($33/month)
+# - Break-even point: ~4 months
+
+# ============================================================================
+# MONITORING & ALERTS
+# ============================================================================
+
+# Set up AWS billing alerts to catch overages:
+# 1. Go to AWS Billing Console
+# 2. Click "Billing Preferences"
+# 3. Enable "Receive Billing Alerts"
+# 4. Create a CloudWatch alarm for monthly spend > $50
+
+# Review costs monthly via Cost Explorer:
+# https://us-east-1.console.aws.amazon.com/cost-management/home

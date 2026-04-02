@@ -1,0 +1,74 @@
+# === macOS ===
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# === Xcode ===
+ios/Rosier/build/
+ios/Rosier/DerivedData/
+*.xcuserdata
+*.xcworkspace/xcuserdata/
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+*.xccheckout
+*.moved-aside
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# === Swift Package Manager ===
+ios/.build/
+ios/Packages/
+
+# === Python ===
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+.venv/
+venv/
+env/
+
+# === Environment ===
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# === IDE ===
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# === Docker ===
+docker-compose.override.yml
+
+# === Testing ===
+.coverage
+htmlcov/
+.pytest_cache/
+TestResults/
+coverage.xml
+
+# === Terraform ===
+infra/terraform/.terraform/
+infra/terraform/*.tfstate
+infra/terraform/*.tfstate.backup
+infra/terraform/*.tfvars
+!infra/terraform/*.tfvars.example
+
+# === Misc ===
+*.log
+tmp/
+temp/

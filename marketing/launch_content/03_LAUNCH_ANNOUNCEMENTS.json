@@ -1,0 +1,36 @@
+{
+  "announcements": [
+    {
+      "channel": "Email (to Waitlist)",
+      "subject": "Rosier is Live\u2014Your Invite Inside",
+      "preview": "Your fashion discovery app is here.",
+      "body": "Hi there,\n\nThe moment you've been waiting for is finally here.\n\nRosier is now available on the App Store.\n\nDownload the app. Swipe through 50+ niche brands from SSENSE, Farfetch, Browns Fashion, and more. Your Style DNA learns what you love with every swipe. Get price alerts on your favorite pieces. Never miss a sale.\n\nYour taste. Your brands. Your feed.\n\n[Download on App Store Button]\n\nAs a thank you for being on our waitlist, you're unlocking:\n- Exclusive founder status in the app\n- First access to wallpaper downloads\n- Early invitation to our referral rewards program\n\nInvite your friends and both of you unlock additional perks.\n\nWelcome to Rosier.\n\nQuestions? Reply to this email or reach out to hello@rosier.app\n\nThe Rosier Team"
+    },
+    {
+      "channel": "Twitter/X",
+      "tweet": "Rosier is live. Your taste. Your brands. Your feed. Swipe through 50+ niche designer brands from SSENSE, Farfetch & more. Download now on the App Store. #FashionTech #NicheFashion"
+    },
+    {
+      "channel": "Twitter/X Thread",
+      "tweets": [
+        "1/ Rosier is LIVE \u2726 We built this for women who follow micro-influencers and live for niche fashion. Today marks the beginning of a new era of fashion discovery.",
+        "2/ The problem: Fashion apps overwhelm you with everything. We said no. Rosier = 50+ niche brands curated from premium retailers. Swipe, save, shop. That's it.",
+        "3/ Your Style DNA learns with every swipe. Unlike TikTok's algorithm that pushes trends, our engine learns YOUR taste. The more you use it, the smarter it gets.",
+        "4/ Never miss a sale again. Price alerts on the items you love. Be the first to know when prices drop on your favorites.",
+        "5/ Referral rewards are live. Invite friends. They get access. You both unlock perks. Community-first approach to growth.",
+        "6/ From Ganni to Khaite to The Row to Jacquemus\u2014all in one app. No compromise. No algorithm nonsense. Just your taste.",
+        "7/ Download now on the App Store. Join 2,000+ early testers who've already discovered their new favorite brands.",
+        "8/ Thank you to our waitlist community, early testers, brand partners, and retail partners. This launch is for you. \ud83c\udf39"
+      ]
+    },
+    {
+      "channel": "LinkedIn (Founder Post)",
+      "post": "Today, we launch Rosier.\n\nA year ago, I was frustrated with fashion apps. They showed me everything, understood nothing. I realized the problem: they're optimized for maximum engagement, not personal taste.\n\nSo we built something different.\n\nRosier is a fashion discovery app for women 18-35 who follow micro-influencers and live for niche brands. 50+ contemporary and designer brands from SSENSE, Farfetch, and other premium retailers.\n\nYour Style DNA learns what you love with every swipe. No algorithm compromise. Just your taste.\n\nToday we launch with 2,000+ early testers who've already discovered their new favorite brands.\n\nThank you to:\n- My co-founder and team\n- Early testers for shaping the product\n- Brand and retail partners\n- Our investor community\n\nThis is day 1. The journey is just beginning.\n\nDownload Rosier on the App Store. Join us. \ud83c\udf39"
+    }
+  ],
+  "timing": {
+    "email": "Send to waitlist 1 hour before app store goes live",
+    "twitter": "Post thread 30 min before app store goes live",
+    "linkedin": "Post 1 hour after app store confirmation"
+  }
+}

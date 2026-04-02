@@ -1,0 +1,21 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /api
+Disallow: /private
+
+Sitemap: https://rosier.app/sitemap.xml
+
+# Crawler delays (optional)
+Crawl-delay: 1
+Request-rate: 30/60
+
+# Block specific bots
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /

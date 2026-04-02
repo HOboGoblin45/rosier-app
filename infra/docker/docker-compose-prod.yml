@@ -1,0 +1,237 @@
+version: '3.8'
+
+# Production docker-compose for Rosier Backend
+# Requires environment variables to be set:
+#   DATABASE_URL, REDIS_URL, JWT_SECRET_KEY, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
+
+services:
+  # FastAPI Backend
+  api:
+    build:
+      context: ../../backend
+      dockerfile: Dockerfile
+    container_name: rosier-api
+    restart: always
+    environment:
+      # Database
+      DATABASE_URL: ${DATABASE_URL}
+
+      # Cache
+      REDIS_URL: ${REDIS_URL}
+
+      # AWS
+      AWS_REGION: ${AWS_REGION:-us-east-1}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      S3_BUCKET: ${S3_BUCKET}
+
+      # Application
+      ENVIRONMENT: ${ENVIRONMENT:-production}
+      DEBUG: ${DEBUG:-false}
+
+      # Security
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      SECRET_KEY: ${SECRET_KEY}
+
+      # Monitoring
+      SENTRY_DSN: ${SENTRY_DSN:-}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+
+      # API Configuration
+      API_HOST: 0.0.0.0
+      API_PORT: 8000
+      CORS_ORIGINS: ${CORS_ORIGINS:-["http://localhost:3000"]}
+
+      # PYTHONUNBUFFERED=1 ensures logs stream immediately
+      PYTHONUNBUFFERED: 1
+      PYTHONDONTWRITEBYTECODE: 1
+
+    ports:
+      - "8000:8000"
+
+    # Health check
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+    # Resource limits (adjust based on t2.micro capacity: 1 vCPU, 1GB RAM)
+    deploy:
+      resources:
+        limits:
+          cpus: '0.9'
+          memory: 800M
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+    # Logging
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+        labels: "service=rosier-api"
+
+    # Use external networks for RDS and ElastiCache
+    # Note: On EC2, remove this and use host networking for better performance
+    networks:
+      - rosier-network
+
+    # Don't depend on local services (they're in AWS)
+    # Remove depends_on section since RDS and ElastiCache are managed services
+
+  # Nginx Reverse Proxy (SSL termination, rate limiting, routing)
+  nginx:
+    image: nginx:alpine
+    container_name: rosier-nginx
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+      - ./nginx-logs:/var/log/nginx
+      - /var/www/rosier:/var/www/rosier:ro
+      - /var/www/certbot:/var/www/certbot:ro
+    depends_on:
+      - api
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+        labels: "service=rosier-nginx"
+    networks:
+      - rosier-network
+
+    # Resource limits for t2.micro
+    deploy:
+      resources:
+        limits:
+          cpus: '0.3'
+          memory: 256M
+        reservations:
+          cpus: '0.2'
+          memory: 128M
+
+networks:
+  rosier-network:
+    driver: bridge
+
+# ============================================================================
+# USAGE INSTRUCTIONS
+# ============================================================================
+
+# 1. Create environment file:
+#    cat > .env << 'EOF'
+#    DATABASE_URL=postgresql+asyncpg://postgres:PASSWORD@rosier-db.xxxx.us-east-1.rds.amazonaws.com:5432/rosier
+#    REDIS_URL=redis://rosier-redis.xxxx.ng.0001.cache.amazonaws.com:6379/0
+#    AWS_REGION=us-east-1
+#    AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE
+#    AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+#    S3_BUCKET=rosier-assets-123456789012
+#    JWT_SECRET_KEY=your-jwt-secret-key-here
+#    SECRET_KEY=your-secret-key-here
+#    ENVIRONMENT=production
+#    DEBUG=false
+#    LOG_LEVEL=info
+#    SENTRY_DSN=https://examplePublicKey@o0.ingest.sentry.io/0
+#    EOF
+
+# 2. Deploy:
+#    docker-compose -f docker-compose-prod.yml up -d
+
+# 3. Run migrations:
+#    docker-compose -f docker-compose-prod.yml exec api alembic upgrade head
+
+# 4. Check status:
+#    docker-compose -f docker-compose-prod.yml ps
+#    docker-compose -f docker-compose-prod.yml logs -f api
+
+# 5. Rebuild after code changes:
+#    docker-compose -f docker-compose-prod.yml build --no-cache
+#    docker-compose -f docker-compose-prod.yml up -d
+
+# 6. Stop services:
+#    docker-compose -f docker-compose-prod.yml down
+
+# 7. Clean up (remove volumes):
+#    docker-compose -f docker-compose-prod.yml down -v
+
+# ============================================================================
+# TROUBLESHOOTING
+# ============================================================================
+
+# View logs:
+#   docker-compose logs api
+#   docker-compose logs nginx
+#   docker-compose logs --tail=100 -f api
+
+# Execute commands in container:
+#   docker-compose exec api bash
+#   docker-compose exec api python -c "import os; print(os.getenv('DATABASE_URL'))"
+
+# Check health:
+#   curl http://localhost:8000/health
+#   curl http://localhost/health
+
+# Monitor resources:
+#   docker stats
+
+# Database connection test:
+#   docker-compose exec api python -c "
+#   from sqlalchemy import create_engine, text
+#   engine = create_engine(os.getenv('DATABASE_URL'))
+#   with engine.connect() as conn:
+#       print(conn.execute(text('SELECT 1')).scalar())
+#   "
+
+# Redis connection test:
+#   docker-compose exec api redis-cli -u ${REDIS_URL} ping
+
+# ============================================================================
+# PERFORMANCE NOTES
+# ============================================================================
+
+# t2.micro has 1 vCPU and 1GB RAM, so:
+# - Memory limit is 800MB (leaving 200MB for OS)
+# - One FastAPI worker process (uvicorn default)
+# - Connection pool size limited to 10-20
+# - Redis single-node, no replication
+
+# For better performance on t2.micro:
+# 1. Use gunicorn with 2-4 worker processes (not recommended, eats RAM)
+# 2. Increase worker timeout to handle slow queries
+# 3. Enable connection pooling in SQLAlchemy
+# 4. Cache aggressively in Redis
+# 5. Monitor slow queries in PostgreSQL
+# 6. Use read replicas if reads exceed writes (future upgrade)
+
+# ============================================================================
+# SECURITY NOTES
+# ============================================================================
+
+# IMPORTANT:
+# 1. Don't commit .env file with real credentials to git
+# 2. Use git-crypt or similar to encrypt secrets
+# 3. Rotate database password monthly
+# 4. Rotate JWT secret when deploying major updates
+# 5. Enable S3 bucket encryption
+# 6. Restrict RDS security group to EC2 only
+# 7. Enable VPC Flow Logs
+# 8. Use IAM roles instead of access keys
+# 9. Store credentials in AWS Secrets Manager
+# 10. Enable audit logging in RDS
+
+# Migrate to Secrets Manager later:
+# docker-compose exec api aws secretsmanager get-secret-value --secret-id rosier-secrets

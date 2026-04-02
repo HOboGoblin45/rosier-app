@@ -1,0 +1,541 @@
+version: '3.8'
+
+# Rosier Marketing Automation Stack
+# Self-hosted, open-source marketing infrastructure running alongside the main app
+# Total cost: ~$0-5/month (hosting only, all software free)
+
+services:
+  # ============================================================================
+  # EMAIL MARKETING: Listmonk
+  # - Unlimited subscribers, unlimited sends
+  # - Beautiful web UI for campaigns
+  # - Segmentation, automation, analytics
+  # - PostgreSQL backend
+  # ============================================================================
+  listmonk:
+    image: listmonk/listmonk:latest
+    container_name: rosier-listmonk
+    restart: always
+    ports:
+      - "9000:9000"
+    environment:
+      # Database connection
+      LISTMONK_DB_HOST: marketing-db
+      LISTMONK_DB_PORT: 5432
+      LISTMONK_DB_USER: ${LISTMONK_DB_USER:-listmonk}
+      LISTMONK_DB_PASSWORD: ${LISTMONK_DB_PASSWORD:-changeme123}
+      LISTMONK_DB_DATABASE: ${LISTMONK_DB_NAME:-listmonk}
+      LISTMONK_DB_SSL_MODE: disable
+
+      # Admin credentials
+      LISTMONK_ADMIN_USERNAME: ${LISTMONK_ADMIN_USERNAME:-admin}
+      LISTMONK_ADMIN_PASSWORD: ${LISTMONK_ADMIN_PASSWORD:-changeme123}
+
+      # SMTP (email sending configuration)
+      LISTMONK_SMTP_HOST: ${SMTP_HOST:-smtp.gmail.com}
+      LISTMONK_SMTP_PORT: ${SMTP_PORT:-587}
+      LISTMONK_SMTP_USERNAME: ${SMTP_USERNAME:-your-email@gmail.com}
+      LISTMONK_SMTP_PASSWORD: ${SMTP_PASSWORD:-your-app-password}
+      LISTMONK_SMTP_AUTH_TYPE: plain
+      LISTMONK_SMTP_TLS_ENABLED: "true"
+      LISTMONK_SMTP_TLS_SKIP_SSL_VERIFY: "false"
+
+      # Email sender configuration
+      LISTMONK_MAIL_FROM: ${MAIL_FROM:-noreply@rosier.app}
+      LISTMONK_MAIL_REPLY_TO: ${MAIL_REPLY_TO:-hello@rosier.app}
+
+      # Application settings
+      LISTMONK_APP_ADDRESS: "0.0.0.0:9000"
+      LISTMONK_APP_ADMIN_ROOT_PATH: /admin
+      LISTMONK_APP_NOTIFY_SMTPS: "true"
+      LISTMONK_APP_BOUNCE_ADMIN_EMAIL: ${BOUNCE_ADMIN_EMAIL:-admin@rosier.app}
+
+      # Security
+      LISTMONK_APP_AUTH_TOKEN: ${LISTMONK_AUTH_TOKEN:-generateme}
+      LISTMONK_SECURITY_CORS_ALLOWED_ORIGINS: ${CORS_ORIGINS:-["http://localhost:3000","http://localhost:8000","http://localhost:9000"]}
+
+    depends_on:
+      marketing-db:
+        condition: service_healthy
+
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:9000/admin"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+    networks:
+      - marketing-network
+
+    volumes:
+      - listmonk-data:/listmonk
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+        labels: "service=rosier-listmonk"
+
+
+  # ============================================================================
+  # WORKFLOW AUTOMATION: n8n
+  # - The brain of the automation stack
+  # - Connects all services together
+  # - Webhook-triggered workflows, cron jobs, API integrations
+  # - Free, open-source, self-hosted
+  # ============================================================================
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: rosier-n8n
+    restart: always
+    ports:
+      - "5678:5678"
+    environment:
+      # Database (PostgreSQL backend)
+      DB_TYPE: postgresdb
+      DB_POSTGRESDB_HOST: marketing-db
+      DB_POSTGRESDB_PORT: 5432
+      DB_POSTGRESDB_DATABASE: ${N8N_DB_NAME:-n8n}
+      DB_POSTGRESDB_USER: ${N8N_DB_USER:-n8n}
+      DB_POSTGRESDB_PASSWORD: ${N8N_DB_PASSWORD:-changeme123}
+      DB_POSTGRESDB_SCHEMA: public
+
+      # Application configuration
+      N8N_HOST: ${N8N_HOST:-n8n.rosier.local}
+      N8N_PORT: 5678
+      N8N_PROTOCOL: http
+      NODE_ENV: production
+      N8N_LOG_LEVEL: info
+
+      # Security
+      N8N_ENCRYPTION_KEY: ${N8N_ENCRYPTION_KEY:-generateme1234567890abcdefghij}
+      N8N_USER_MANAGEMENT_JWT_SECRET: ${N8N_JWT_SECRET:-generateme1234567890abcdefghij}
+
+      # API settings
+      N8N_API_ENABLED: "true"
+      N8N_API_SWAGGER_ENABLED: "true"
+
+      # Webhook settings
+      WEBHOOK_TUNNEL_URL: ${WEBHOOK_TUNNEL_URL:-http://n8n.rosier.local:5678/}
+      WEBHOOK_URL_PRODUCTION: ${WEBHOOK_URL_PRODUCTION:-http://n8n:5678/}
+
+    depends_on:
+      marketing-db:
+        condition: service_healthy
+
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:5678/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+    networks:
+      - marketing-network
+
+    volumes:
+      - n8n-data:/home/node/.n8n
+      - ./workflows:/home/node/.n8n/workflows:ro
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+        labels: "service=rosier-n8n"
+
+
+  # ============================================================================
+  # SOCIAL MEDIA SCHEDULING: Mixpost
+  # - Schedule posts to Instagram, TikTok, Twitter, Facebook
+  # - Content calendar, team collaboration
+  # - Analytics for posts
+  # - Open-source, self-hosted alternative to Buffer/Later
+  # ============================================================================
+  mixpost:
+    image: inovector/mixpost:latest
+    container_name: rosier-mixpost
+    restart: always
+    ports:
+      - "9001:80"
+    environment:
+      # Database
+      DB_CONNECTION: pgsql
+      DB_HOST: marketing-db
+      DB_PORT: 5432
+      DB_DATABASE: ${MIXPOST_DB_NAME:-mixpost}
+      DB_USERNAME: ${MIXPOST_DB_USER:-mixpost}
+      DB_PASSWORD: ${MIXPOST_DB_PASSWORD:-changeme123}
+
+      # Application
+      APP_NAME: "Rosier Marketing"
+      APP_DEBUG: "false"
+      APP_ENV: production
+      APP_URL: ${MIXPOST_URL:-http://localhost:9001}
+
+      # Security
+      APP_KEY: ${MIXPOST_APP_KEY:-base64:SomeRandomString32CharactersLong}
+
+      # Redis cache
+      CACHE_DRIVER: redis
+      REDIS_HOST: marketing-redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-}
+      REDIS_DB: 1
+
+      # Queue
+      QUEUE_CONNECTION: redis
+
+    depends_on:
+      marketing-db:
+        condition: service_healthy
+      marketing-redis:
+        condition: service_healthy
+
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+    networks:
+      - marketing-network
+
+    volumes:
+      - mixpost-data:/var/www/html/storage
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+        labels: "service=rosier-mixpost"
+
+
+  # ============================================================================
+  # ANALYTICS: Plausible (Privacy-First)
+  # - EU GDPR compliant (no cookies)
+  # - Self-hosted option
+  # - Website/landing page analytics
+  # - Lightweight JavaScript tracker
+  # ============================================================================
+  plausible:
+    image: plausible/analytics:latest
+    container_name: rosier-plausible
+    restart: always
+    ports:
+      - "8100:8000"
+    environment:
+      # Database
+      DATABASE_URL: postgresql://plausible:${PLAUSIBLE_DB_PASSWORD:-changeme123}@marketing-db:5432/plausible
+      CLICKHOUSE_DATABASE_URL: http://clickhouse:8123/plausible
+
+      # Admin credentials
+      ADMIN_USER_EMAIL: ${PLAUSIBLE_ADMIN_EMAIL:-admin@rosier.app}
+      ADMIN_USER_PWD: ${PLAUSIBLE_ADMIN_PASSWORD:-changeme123}
+      SECRET_KEY_BASE: ${PLAUSIBLE_SECRET_KEY:-generateme1234567890abcdefghij}
+
+      # Application
+      BASE_URL: ${PLAUSIBLE_BASE_URL:-http://localhost:8100}
+      LOG_LEVEL: info
+
+      # Security
+      DISABLE_REGISTRATION: "false"
+
+    depends_on:
+      marketing-db:
+        condition: service_healthy
+      clickhouse:
+        condition: service_healthy
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+    networks:
+      - marketing-network
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+        labels: "service=rosier-plausible"
+
+
+  # ============================================================================
+  # ANALYTICS: ClickHouse (Analytics Database for Plausible)
+  # - Column-oriented database optimized for analytics
+  # - Required for Plausible
+  # - Fast aggregations and queries
+  # ============================================================================
+  clickhouse:
+    image: clickhouse/clickhouse-server:latest
+    container_name: rosier-clickhouse
+    restart: always
+    environment:
+      CLICKHOUSE_DB: plausible
+
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8123/ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+    networks:
+      - marketing-network
+
+    volumes:
+      - clickhouse-data:/var/lib/clickhouse
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+        labels: "service=rosier-clickhouse"
+
+
+  # ============================================================================
+  # ALTERNATIVE ANALYTICS: Umami (Lightweight, Privacy-First)
+  # Uncomment this section if you prefer Umami over Plausible
+  # - Simpler, lighter weight than Plausible
+  # - Still privacy-compliant
+  # - Smaller resource footprint
+  # ============================================================================
+  # umami:
+  #   image: ghcr.io/umami-software/umami:postgresql-latest
+  #   container_name: rosier-umami
+  #   restart: always
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     DATABASE_URL: postgresql://umami:${UMAMI_DB_PASSWORD:-changeme123}@marketing-db:5432/umami
+  #     HASH_SALT: ${UMAMI_HASH_SALT:-generateme}
+  #     DISABLE_LOGIN: "false"
+  #   depends_on:
+  #     marketing-db:
+  #       condition: service_healthy
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:3000/api/heartbeat"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+  #     start_period: 15s
+  #   networks:
+  #     - marketing-network
+  #   volumes:
+  #     - umami-data:/var/lib/umami
+  #   logging:
+  #     driver: "json-file"
+  #     options:
+  #       max-size: "10m"
+  #       max-file: "3"
+  #       labels: "service=rosier-umami"
+
+
+  # ============================================================================
+  # SHARED INFRASTRUCTURE
+  # ============================================================================
+
+  # PostgreSQL Database (shared by Listmonk, n8n, Mixpost, Plausible)
+  marketing-db:
+    image: postgres:15-alpine
+    container_name: rosier-marketing-db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme123}
+      POSTGRES_DB: postgres
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C"
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+    networks:
+      - marketing-network
+
+    volumes:
+      - marketing-db-data:/var/lib/postgresql/data
+      - ./scripts/init-marketing-db.sql:/docker-entrypoint-initdb.d/init.sql:ro
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+        labels: "service=rosier-marketing-db"
+
+    # Resource limits for t2.micro
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.3'
+          memory: 128M
+
+
+  # Redis Cache (shared by Mixpost, n8n)
+  marketing-redis:
+    image: redis:7-alpine
+    container_name: rosier-marketing-redis
+    restart: always
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-changeme123}
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-changeme123}
+
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+    networks:
+      - marketing-network
+
+    volumes:
+      - marketing-redis-data:/data
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+        labels: "service=rosier-marketing-redis"
+
+    # Resource limits for t2.micro
+    deploy:
+      resources:
+        limits:
+          cpus: '0.3'
+          memory: 128M
+        reservations:
+          cpus: '0.2'
+          memory: 64M
+
+
+networks:
+  marketing-network:
+    driver: bridge
+
+
+volumes:
+  marketing-db-data:
+    driver: local
+  marketing-redis-data:
+    driver: local
+  listmonk-data:
+    driver: local
+  n8n-data:
+    driver: local
+  mixpost-data:
+    driver: local
+  clickhouse-data:
+    driver: local
+
+
+# ============================================================================
+# USAGE INSTRUCTIONS
+# ============================================================================
+#
+# 1. Create environment file:
+#    cat > .env << 'EOF'
+#    # Database credentials
+#    POSTGRES_PASSWORD=your-secure-postgres-password
+#    LISTMONK_DB_USER=listmonk
+#    LISTMONK_DB_PASSWORD=your-secure-listmonk-password
+#    N8N_DB_USER=n8n
+#    N8N_DB_PASSWORD=your-secure-n8n-password
+#    MIXPOST_DB_USER=mixpost
+#    MIXPOST_DB_PASSWORD=your-secure-mixpost-password
+#    PLAUSIBLE_DB_PASSWORD=your-secure-plausible-password
+#    REDIS_PASSWORD=your-secure-redis-password
+#
+#    # SMTP Configuration (Gmail example)
+#    SMTP_HOST=smtp.gmail.com
+#    SMTP_PORT=587
+#    SMTP_USERNAME=your-email@gmail.com
+#    SMTP_PASSWORD=your-app-specific-password
+#    MAIL_FROM=noreply@rosier.app
+#    MAIL_REPLY_TO=hello@rosier.app
+#    BOUNCE_ADMIN_EMAIL=admin@rosier.app
+#
+#    # Service credentials
+#    LISTMONK_ADMIN_USERNAME=admin
+#    LISTMONK_ADMIN_PASSWORD=your-secure-listmonk-admin-password
+#    LISTMONK_AUTH_TOKEN=$(openssl rand -hex 32)
+#
+#    # n8n configuration
+#    N8N_HOST=n8n.rosier.local
+#    N8N_ENCRYPTION_KEY=$(openssl rand -base64 32)
+#    N8N_JWT_SECRET=$(openssl rand -base64 32)
+#    WEBHOOK_TUNNEL_URL=http://n8n.rosier.local:5678/
+#    WEBHOOK_URL_PRODUCTION=http://n8n:5678/
+#
+#    # Mixpost configuration
+#    MIXPOST_APP_KEY=base64:$(openssl rand -base64 32)
+#    MIXPOST_URL=http://localhost:9001
+#
+#    # Plausible configuration
+#    PLAUSIBLE_ADMIN_EMAIL=admin@rosier.app
+#    PLAUSIBLE_ADMIN_PASSWORD=your-secure-plausible-password
+#    PLAUSIBLE_SECRET_KEY=$(openssl rand -base64 32)
+#    PLAUSIBLE_BASE_URL=http://localhost:8100
+#
+#    # CORS Origins
+#    CORS_ORIGINS=["http://localhost:3000","http://localhost:8000","http://localhost:9000","http://localhost:5678","http://localhost:9001","http://localhost:8100"]
+#    EOF
+#
+# 2. Create the database initialization script:
+#    mkdir -p scripts
+#    # See init-marketing-db.sql below
+#
+# 3. Start all services:
+#    docker-compose -f docker-compose.marketing.yml up -d
+#
+# 4. Check status:
+#    docker-compose -f docker-compose.marketing.yml ps
+#    docker-compose -f docker-compose.marketing.yml logs -f
+#
+# 5. Access services:
+#    Listmonk:  http://localhost:9000/admin
+#    n8n:       http://localhost:5678
+#    Mixpost:   http://localhost:9001
+#    Plausible: http://localhost:8100
+#
+# ============================================================================
+# TROUBLESHOOTING
+# ============================================================================
+#
+# View logs for specific service:
+#   docker-compose -f docker-compose.marketing.yml logs -f listmonk
+#   docker-compose -f docker-compose.marketing.yml logs -f n8n
+#   docker-compose -f docker-compose.marketing.yml logs -f mixpost
+#
+# Execute commands in containers:
+#   docker-compose -f docker-compose.marketing.yml exec marketing-db psql -U postgres
+#   docker-compose -f docker-compose.marketing.yml exec marketing-redis redis-cli
+#
+# Check health:
+#   curl http://localhost:9000/admin
+#   curl http://localhost:5678/healthz
+#   curl http://localhost:9001/health
+#   curl http://localhost:8100/api/health
+#
+# Clean up (remove volumes):
+#   docker-compose -f docker-compose.marketing.yml down -v
+#
+# ============================================================================

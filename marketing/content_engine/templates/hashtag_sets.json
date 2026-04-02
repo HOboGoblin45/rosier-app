@@ -1,0 +1,193 @@
+{
+  "core": [
+    "#rosierapp",
+    "#fashiondiscovery",
+    "#swipestyle"
+  ],
+  "trending": [
+    "#fashiontok",
+    "#outfitinspo",
+    "#stylecheck",
+    "#fashiontrend",
+    "#fashionreels",
+    "#reelsofinstagram",
+    "#foryoupage",
+    "#discovertiktok"
+  ],
+  "brand_spotlight": [
+    "#nichefashion",
+    "#emergingdesigners",
+    "#contemporaryfashion",
+    "#designerbrand",
+    "#fashionbrand",
+    "#independentdesigner",
+    "#craftedwithlove"
+  ],
+  "style_and_aesthetic": [
+    "#whatsmystyle",
+    "#styledna",
+    "#fashionswipe",
+    "#myrioerstyle",
+    "#darkacademia",
+    "#quietluxury",
+    "#minimalisticfashion",
+    "#aestheticstyle",
+    "#personalstyle",
+    "#styleinspo"
+  ],
+  "engagement": [
+    "#fashionchallenge",
+    "#stylequiz",
+    "#fashionvote",
+    "#fitcheck",
+    "#fashionopinion",
+    "#styleconfession"
+  ],
+  "app_specific": [
+    "#rosierapp",
+    "#applife",
+    "#fashiontech",
+    "#appshopping",
+    "#shoppingapp",
+    "#fashionapps"
+  ],
+  "price_and_deals": [
+    "#fashiondeals",
+    "#dealsandsteals",
+    "#shopthedrop",
+    "#saletime",
+    "#fashionsale",
+    "#pricedrop"
+  ],
+  "influencer_and_creator": [
+    "#microinfluencer",
+    "#creatoreconomy",
+    "#fashioncreator",
+    "#fashioninfluencer",
+    "#creatorlife",
+    "#fashionblogger"
+  ],
+  "audience_demographic": [
+    "#gen z fashion",
+    "#millennialfashion",
+    "#womensfashion",
+    "#fashionforwomen",
+    "#girlytok",
+    "#womeninspo"
+  ],
+  "algorithm_friendly": [
+    "#for you",
+    "#foryoupageforall",
+    "#foruyou",
+    "#viral",
+    "#trending",
+    "#explore",
+    "#explorepage",
+    "#fypシ",
+    "#fypシ゚viral",
+    "#viralvideo"
+  ],
+  "brand_specific": {
+    "ganni": [
+      "#ganni",
+      "#ganniofficial",
+      "#gannioutfit",
+      "#gannilovers"
+    ],
+    "staud": [
+      "#staud",
+      "#staudofficial",
+      "#staudstyle"
+    ],
+    "nanushka": [
+      "#nanushka",
+      "#nanushkastyle",
+      "#nanushaofficial"
+    ],
+    "khaite": [
+      "#khaite",
+      "#khaiteluxury",
+      "#khaitelovers"
+    ],
+    "the_row": [
+      "#therow",
+      "#therowstyle",
+      "#therowfashion"
+    ],
+    "jacquemus": [
+      "#jacquemus",
+      "#jacquemusfamily",
+      "#jacquemusstyle"
+    ],
+    "reformation": [
+      "#reformation",
+      "#reformationstyle",
+      "#refstreet"
+    ],
+    "cos": [
+      "#cos",
+      "#cosstyle",
+      "#cosdesign"
+    ]
+  },
+  "seasonal": {
+    "spring": [
+      "#springfashion",
+      "#springoutfit",
+      "#springcollection",
+      "#springlooks"
+    ],
+    "summer": [
+      "#summerfashion",
+      "#summeroutfit",
+      "#summerstyle",
+      "#summervibes"
+    ],
+    "fall": [
+      "#fallfashion",
+      "#falloutfit",
+      "#autumnfashion",
+      "#falllooks"
+    ],
+    "winter": [
+      "#winterfashion",
+      "#winteroutfit",
+      "#winterstyle",
+      "#cozyoutfit"
+    ]
+  },
+  "occasion_based": {
+    "casual": [
+      "#casualstyle",
+      "#casualoutfit",
+      "#everydaystyle",
+      "#casualfashion"
+    ],
+    "date_night": [
+      "#datenightoutfit",
+      "#datenightfashion",
+      "#nightoutfit",
+      "#dressy"
+    ],
+    "work": [
+      "#workfashion",
+      "#workoutfit",
+      "#officeoutfit",
+      "#professionalbut make it fashion"
+    ],
+    "event": [
+      "#eventoutfit",
+      "#specialoccasion",
+      "#partyoutfit",
+      "#eventfashion"
+    ]
+  },
+  "content_type_tiktok": [
+    "#fashiontiktok",
+    "#fashionvideos",
+    "#fashiontutorial",
+    "#fashionhacks",
+    "#fashionlife",
+    "#fashionoftheday"
+  ]
+}
