@@ -2,7 +2,7 @@ import Foundation
 
 /// Comprehensive analytics events enum with type-safe event definitions.
 /// Each case maps to a specific event name and properties dictionary.
-enum AnalyticsEvent {
+public enum AnalyticsEvent {
     // MARK: - Onboarding Events
 
     /// User starts the onboarding flow.

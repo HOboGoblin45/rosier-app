@@ -1,7 +1,7 @@
 import Foundation
 
 /// Represents a fashion product from a retail partner.
-struct Product: Identifiable, Codable, Hashable {
+public struct Product: Identifiable, Codable, Hashable {
     // MARK: - Identifiers
 
     /// Unique identifier for this product in Rosier.
@@ -121,7 +121,7 @@ struct Product: Identifiable, Codable, Hashable {
 }
 
 /// Product category enumeration.
-enum ProductCategory: String, Codable, CaseIterable {
+public enum ProductCategory: String, Codable, CaseIterable {
     case clothing
     case shoes
     case bags

@@ -2,7 +2,7 @@ import Foundation
 import UIKit
 
 /// Represents a user swipe interaction event for analytics and recommendations.
-struct SwipeEvent: Codable {
+public struct SwipeEvent: Codable {
     // MARK: - Event Metadata
 
     /// Unique identifier for this event.
@@ -72,7 +72,7 @@ struct SwipeEvent: Codable {
     ///   - sessionPosition: Position in queue
     ///   - dwellTimeMs: Time spent viewing in milliseconds
     ///   - expanded: Whether viewed in detail
-    init(
+    public init(
         action: SwipeAction,
         productId: UUID,
         externalProductId: String,
@@ -105,7 +105,7 @@ struct SwipeEvent: Codable {
 }
 
 /// Enumeration of swipe actions.
-enum SwipeAction: String, Codable {
+public enum SwipeAction: String, Codable {
     case like
     case reject
     case superLike
@@ -115,7 +115,7 @@ enum SwipeAction: String, Codable {
 }
 
 /// Network connectivity types.
-enum NetworkType: String, Codable {
+public enum NetworkType: String, Codable {
     case wifi
     case cellular
     case unknown

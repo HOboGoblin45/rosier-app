@@ -2,10 +2,10 @@ import BackgroundTasks
 import Foundation
 
 /// Manages iOS Background Tasks for syncing and cache management.
-final class BackgroundTaskService {
+public final class BackgroundTaskService {
     // MARK: - Singleton
 
-    static let shared = BackgroundTaskService()
+    public static let shared = BackgroundTaskService()
 
     // MARK: - Constants
 
@@ -20,13 +20,13 @@ final class BackgroundTaskService {
     // MARK: - Initialization
 
     /// Registers background task handlers. Call from AppDelegate.
-    func registerBackgroundTasks() {
+    public func registerBackgroundTasks() {
         registerAppRefreshTask()
         registerProcessingTask()
     }
 
     /// Schedules the app refresh background task.
-    func scheduleAppRefresh() {
+    public func scheduleAppRefresh() {
         let request = BGAppRefreshTaskRequest(identifier: appRefreshTaskId)
         request.earliestBeginDate = Date(timeIntervalSinceNow: 2 * 60 * 60) // 2 hours
 

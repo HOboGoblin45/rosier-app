@@ -3,10 +3,10 @@ import UIKit
 
 /// Singleton analytics tracker that manages event tracking, user identity, and event batching.
 /// Wraps the underlying AnalyticsService with type-safe event handling.
-final class AnalyticsTracker {
+public final class AnalyticsTracker {
     // MARK: - Singleton
 
-    static let shared = AnalyticsTracker()
+    public static let shared = AnalyticsTracker()
 
     // MARK: - Properties
 
@@ -25,7 +25,7 @@ final class AnalyticsTracker {
 
     /// Sets the current user ID for tracking.
     /// - Parameter userId: The unique user identifier
-    func setUserId(_ userId: String?) {
+    public func setUserId(_ userId: String?) {
         queue.async {
             self.userId = userId
         }
@@ -33,7 +33,7 @@ final class AnalyticsTracker {
 
     /// Tracks a type-safe analytics event.
     /// - Parameter event: The analytics event to track
-    func track(_ event: AnalyticsEvent) {
+    public func track(_ event: AnalyticsEvent) {
         queue.async {
             var properties = event.properties
             properties.merge(self.superProperties) { original, _ in original }

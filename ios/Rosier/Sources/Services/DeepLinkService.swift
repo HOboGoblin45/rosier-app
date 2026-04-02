@@ -1,10 +1,10 @@
 import Foundation
 
 /// Handles deep link routing for universal links and app schemes.
-final class DeepLinkService {
+public final class DeepLinkService {
     // MARK: - Singleton
 
-    static let shared = DeepLinkService()
+    public static let shared = DeepLinkService()
 
     // MARK: - Properties
 
@@ -13,19 +13,19 @@ final class DeepLinkService {
     // MARK: - Public Methods
 
     /// Registers a handler for deep link routing.
-    func setHandler(_ handler: @escaping (DeepLink) -> Void) {
+    public func setHandler(_ handler: @escaping (DeepLink) -> Void) {
         self.deepLinkHandler = handler
     }
 
     /// Handles a URL and routes to appropriate destination.
-    func handleURL(_ url: URL) -> DeepLink? {
+    public func handleURL(_ url: URL) -> DeepLink? {
         let deepLink = parseURL(url)
         deepLinkHandler?(deepLink)
         return deepLink
     }
 
     /// Handles a universal link URL.
-    func handleUniversalLink(_ url: URL) -> DeepLink? {
+    public func handleUniversalLink(_ url: URL) -> DeepLink? {
         handleURL(url)
     }
 
@@ -133,7 +133,7 @@ final class DeepLinkService {
 
 // MARK: - DeepLink Enum
 
-enum DeepLink: Equatable, Hashable {
+public enum DeepLink: Equatable, Hashable {
     case product(id: UUID)
     case dresser(id: UUID)
     case styleDNA

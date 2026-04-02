@@ -1,7 +1,7 @@
 import Foundation
 
 /// User's computed style DNA based on quiz responses and swipe history.
-struct StyleDNA: Identifiable, Codable, Hashable {
+public struct StyleDNA: Identifiable, Codable, Hashable {
     // MARK: - Identifiers
 
     /// Unique identifier for this style DNA.
@@ -77,7 +77,7 @@ struct StyleDNA: Identifiable, Codable, Hashable {
     // MARK: - Initializers
 
     /// Creates a new style DNA.
-    init(
+    public init(
         userId: UUID,
         archetype: String,
         secondaryArchetypes: [String] = [],
@@ -109,7 +109,7 @@ struct StyleDNA: Identifiable, Codable, Hashable {
 }
 
 /// User's color palette preferences.
-struct ColorPalette: Codable, Hashable {
+public struct ColorPalette: Codable, Hashable {
     /// Primary colors in the palette.
     let primaryColors: [String]
 
@@ -122,7 +122,7 @@ struct ColorPalette: Codable, Hashable {
     /// Whether the user prefers warm or cool tones.
     let tempPreference: TemperaturePreference
 
-    init(
+    public init(
         primaryColors: [String] = [],
         neutrals: [String] = ["black", "white", "gray"],
         accents: [String] = [],
@@ -136,14 +136,14 @@ struct ColorPalette: Codable, Hashable {
 }
 
 /// Color temperature preference.
-enum TemperaturePreference: String, Codable {
+public enum TemperaturePreference: String, Codable {
     case warm
     case cool
     case neutral
 }
 
 /// Price range preference bracket.
-enum PriceRange: String, Codable {
+public enum PriceRange: String, Codable {
     case budget
     case moderate
     case premium
@@ -165,7 +165,7 @@ enum PriceRange: String, Codable {
 }
 
 /// Statistics about user's swipe history and interactions.
-struct StyleStats: Codable, Hashable {
+public struct StyleStats: Codable, Hashable {
     /// Total number of swipes.
     let totalSwipes: Int
 
@@ -190,7 +190,7 @@ struct StyleStats: Codable, Hashable {
     /// Most engaged brands.
     let engagedBrands: [UUID: Int]
 
-    init(
+    public init(
         totalSwipes: Int = 0,
         totalLikes: Int = 0,
         likeRate: Double = 0.0,

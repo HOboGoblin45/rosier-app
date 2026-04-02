@@ -1,71 +1,71 @@
 import SwiftUI
 
 /// Animation constants and timing curves for consistent app behavior.
-enum Animations {
+public enum Animations {
     // MARK: - Spring Animations
 
     /// Card spring animation: response 0.35, damping 0.8
-    static var cardSpring: Animation {
+    public static var cardSpring: Animation {
         .spring(response: 0.35, dampingFraction: 0.8)
     }
 
     /// Sheet presentation animation: response 0.4, damping 0.85
-    static var sheetPresentation: Animation {
+    public static var sheetPresentation: Animation {
         .spring(response: 0.4, dampingFraction: 0.85)
     }
 
     /// Button press animation: response 0.2, damping 0.6
-    static var buttonPress: Animation {
+    public static var buttonPress: Animation {
         .spring(response: 0.2, dampingFraction: 0.6)
     }
 
     /// Badge pulse animation: response 0.2, damping 0.5
-    static var badgePulse: Animation {
+    public static var badgePulse: Animation {
         .spring(response: 0.2, dampingFraction: 0.5)
     }
 
     // MARK: - Duration-Based Animations
 
     /// Card exit duration: 0.25 seconds
-    static var cardExitDuration: TimeInterval {
+    public static var cardExitDuration: TimeInterval {
         0.25
     }
 
     /// Dresser fold animation duration: 0.8 seconds
-    static var dresserFoldDuration: TimeInterval {
+    public static var dresserFoldDuration: TimeInterval {
         0.8
     }
 
     // MARK: - Wallpaper Reveal Animation Parameters
 
     /// Wallpaper reveal fade-in duration: 0.2 seconds
-    static var wallpaperRevealDuration: TimeInterval {
+    public static var wallpaperRevealDuration: TimeInterval {
         0.2
     }
 
     /// Wallpaper dismiss fade-out duration: 0.3 seconds
-    static var wallpaperDismissDuration: TimeInterval {
+    public static var wallpaperDismissDuration: TimeInterval {
         0.3
     }
 
     /// Wallpaper parallax motion factor: 0.15 (inverse motion multiplier)
     /// As the card moves 1pt, the wallpaper shifts 0.15pt in opposite direction
-    static var wallpaperParallaxFactor: CGFloat {
+    public static var wallpaperParallaxFactor: CGFloat {
         0.15
     }
 
     /// Maximum wallpaper opacity in light mode: 0.06
-    static var wallpaperMaxOpacityLight: CGFloat {
+    public static var wallpaperMaxOpacityLight: CGFloat {
         0.06
     }
 
     /// Maximum wallpaper opacity in dark mode: 0.08
-    static var wallpaperMaxOpacityDark: CGFloat {
+    public static var wallpaperMaxOpacityDark: CGFloat {
         0.08
     }
 
     /// Gaussian blur radius for wallpaper pattern: 2.0 points
-    static var wallpaperBlurRadius: CGFloat {
+    public static var wallpaperBlurRadius: CGFloat {
         2.0
     }
 

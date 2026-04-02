@@ -3,15 +3,15 @@ import Foundation
 import Network
 
 /// Manages offline caching and sync between Core Data cache and remote API.
-final class OfflineSyncService: NSObject, ObservableObject {
+public final class OfflineSyncService: NSObject, ObservableObject {
     // MARK: - Singleton
 
-    static let shared = OfflineSyncService()
+    public static let shared = OfflineSyncService()
 
     // MARK: - Published Properties
 
-    @Published var isSyncing = false
-    @Published var isOnline = true
+    @Published public var isSyncing = false
+    @Published public var isOnline = true
 
     // MARK: - Properties
 
@@ -37,7 +37,7 @@ final class OfflineSyncService: NSObject, ObservableObject {
     // MARK: - Public Methods
 
     /// Performs initial sync on app launch (syncs unsynced events, caches queue).
-    func performInitialSync() async {
+    public func performInitialSync() async {
         await syncUnyncedSwipeEvents()
         await prefetchCardQueue()
     }

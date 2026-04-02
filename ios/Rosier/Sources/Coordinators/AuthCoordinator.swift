@@ -1,6 +1,6 @@
 import SwiftUI
 
-enum AuthScreen: Hashable {
+public enum AuthScreen: Hashable {
     case signIn
     case signUp
     case forgotPassword
@@ -8,7 +8,7 @@ enum AuthScreen: Hashable {
 }
 
 /// Coordinator managing authentication flows (Sign In, Sign Up).
-final class AuthCoordinator: BaseCoordinator<AuthScreen, SheetType, FullScreenCoverType> {
+public final class AuthCoordinator: BaseCoordinator<AuthScreen, SheetType, FullScreenCoverType> {
     // MARK: - Properties
 
     @Published var isLoading = false

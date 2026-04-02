@@ -1,10 +1,10 @@
 import Foundation
 
 /// Generic URLSession-based networking layer with JWT authentication.
-final class NetworkService {
+public final class NetworkService {
     // MARK: - Singleton
 
-    static let shared = NetworkService()
+    public static let shared = NetworkService()
 
     // MARK: - Properties
 
@@ -18,7 +18,7 @@ final class NetworkService {
     /// - Parameters:
     ///   - baseURL: Base URL for API requests
     ///   - configuration: URL session configuration
-    init(
+    public init(
         baseURL: URL = URL(string: "https://api.rosier.app/v1")!,
         configuration: URLSessionConfiguration = .default
     ) {
@@ -29,7 +29,7 @@ final class NetworkService {
     // MARK: - Public Methods
 
     /// Sets the auth service reference for token injection.
-    func setAuthService(_ authService: AuthService) {
+    public func setAuthService(_ authService: AuthService) {
         self.authService = authService
     }
 
@@ -40,7 +40,7 @@ final class NetworkService {
     ///   - body: Optional request body (will be JSON encoded)
     ///   - headers: Additional headers to include
     /// - Returns: Decoded response of type T
-    func request<T: Decodable>(
+    public func request<T: Decodable>(
         _ endpoint: String,
         method: HTTPMethod = .get,
         body: Encodable? = nil,
@@ -90,7 +90,7 @@ final class NetworkService {
     }
 
     /// Performs a network request that returns no content (e.g., DELETE, POST with 204 response).
-    func requestEmpty(
+    public func requestEmpty(
         _ endpoint: String,
         method: HTTPMethod = .post,
         body: Encodable? = nil,
@@ -159,7 +159,7 @@ final class NetworkService {
 
 // MARK: - HTTP Method Enum
 
-enum HTTPMethod: String {
+public enum HTTPMethod: String {
     case get = "GET"
     case post = "POST"
     case put = "PUT"
@@ -170,7 +170,7 @@ enum HTTPMethod: String {
 
 // MARK: - Network Error Enum
 
-enum NetworkError: LocalizedError {
+public enum NetworkError: LocalizedError {
     case invalidResponse
     case badRequest
     case unauthorized

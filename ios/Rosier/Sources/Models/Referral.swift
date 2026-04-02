@@ -1,7 +1,7 @@
 import Foundation
 
 /// Referral tier enum for reward tracking.
-enum ReferralTier: String, Codable {
+public enum ReferralTier: String, Codable {
     case none = "none"
     case styleDna = "style_dna"
     case dailyDrop = "daily_drop"
@@ -45,7 +45,7 @@ enum ReferralTier: String, Codable {
 }
 
 /// User's referral code and stats.
-struct ReferralCode: Codable {
+public struct ReferralCode: Codable {
     let code: String
     let totalReferrals: Int
     let successfulReferrals: Int
@@ -66,7 +66,7 @@ struct ReferralCode: Codable {
 }
 
 /// User's referral statistics.
-struct ReferralStats: Codable {
+public struct ReferralStats: Codable {
     let code: String
     let totalReferrals: Int
     let successfulReferrals: Int
@@ -108,7 +108,7 @@ struct ReferralStats: Codable {
 }
 
 /// Leaderboard entry.
-struct LeaderboardEntry: Codable {
+public struct LeaderboardEntry: Codable {
     let rank: Int
     let userId: String
     let name: String
@@ -138,7 +138,7 @@ struct LeaderboardEntry: Codable {
 }
 
 /// Leaderboard response.
-struct Leaderboard: Codable {
+public struct Leaderboard: Codable {
     let month: String?
     let leaderboard: [LeaderboardEntry]
     let yourRank: Int?
@@ -153,7 +153,7 @@ struct Leaderboard: Codable {
 }
 
 /// Referral link for sharing.
-struct ReferralLink: Codable {
+public struct ReferralLink: Codable {
     let code: String
     let link: String
     let qrCode: String?
@@ -166,7 +166,7 @@ struct ReferralLink: Codable {
 }
 
 /// Reward details.
-struct ReferralReward: Codable {
+public struct ReferralReward: Codable {
     let id: String
     let userId: String
     let rewardType: String
@@ -185,7 +185,7 @@ struct ReferralReward: Codable {
 }
 
 /// Reward milestone information.
-struct RewardMilestone: Codable {
+public struct RewardMilestone: Codable {
     let milestone: Int
     let tier: ReferralTier
     let rewardType: String
@@ -200,13 +200,13 @@ struct RewardMilestone: Codable {
 }
 
 /// Response containing all milestones.
-struct MilestonesResponse: Codable {
+public struct MilestonesResponse: Codable {
     let milestones: [RewardMilestone]
     let description: String
 }
 
 /// Shareable Style DNA card with referral QR code.
-struct StyleDNACard: Codable {
+public struct StyleDNACard: Codable {
     let userId: String
     let archetype: String
     let topBrands: [String]
@@ -227,18 +227,18 @@ struct StyleDNACard: Codable {
 }
 
 /// Referral code application request.
-struct ApplyReferralCodeRequest: Codable {
+public struct ApplyReferralCodeRequest: Codable {
     let code: String
     let source: String
 
-    init(code: String, source: String = "link") {
+    public init(code: String, source: String = "link") {
         self.code = code
         self.source = source
     }
 }
 
 /// Share tracking request.
-struct ShareTrackingRequest: Codable {
+public struct ShareTrackingRequest: Codable {
     let platform: String
 
     enum Platform: String {

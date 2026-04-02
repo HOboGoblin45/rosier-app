@@ -15,7 +15,7 @@ import UIKit
 // MARK: - Wallpaper House Enum
 
 /// Represents the four luxury wallpaper houses curated for Rosier
-enum WallpaperHouse: String, CaseIterable {
+public enum WallpaperHouse: String, CaseIterable {
     /// de Gournay - Hand-painted chinoiserie, scenic murals
     case deGournay = "de_gournay"
 
@@ -60,7 +60,7 @@ enum WallpaperHouse: String, CaseIterable {
 // MARK: - Wallpaper Pattern Enum
 
 /// All 16 curated wallpaper patterns across four houses
-enum WallpaperPattern: String, CaseIterable {
+public enum WallpaperPattern: String, CaseIterable {
     // de Gournay - Classical Elegance & Chinoiserie
     case earlham = "earlham"
     case portobello = "portobello"
@@ -147,7 +147,7 @@ enum WallpaperPattern: String, CaseIterable {
 // MARK: - Style Archetype Enum
 
 /// Rosier user style archetypes that map to wallpaper patterns
-enum StyleArchetype: String, CaseIterable {
+public enum StyleArchetype: String, CaseIterable {
     /// Users who appreciate timeless sophistication and heritage craftsmanship
     case classicRefined = "classic_refined"
 
@@ -177,7 +177,7 @@ enum StyleArchetype: String, CaseIterable {
 // MARK: - Color Configuration
 
 /// Lightweight color container for light/dark mode support
-struct ColorPair {
+public struct ColorPair {
     let light: UIColor
     let dark: UIColor
 
@@ -199,7 +199,7 @@ struct ColorPair {
 
 /// Complete configuration for a wallpaper pattern including colors,
 /// rendering hints, and archetype association
-struct WallpaperConfig {
+public struct WallpaperConfig {
     /// Pattern identifier
     let pattern: WallpaperPattern
 
@@ -246,7 +246,7 @@ struct WallpaperConfig {
 // MARK: - Wallpaper Configuration Factory
 
 /// Factory for creating wallpaper configurations with validated color palettes
-class WallpaperConfigFactory {
+public class WallpaperConfigFactory {
 
     // MARK: - de Gournay Configurations
 
@@ -763,7 +763,7 @@ class WallpaperConfigFactory {
 // MARK: - Archetype Pattern Mapping
 
 /// Maps user style archetypes to their recommended wallpaper patterns
-class ArchetypePatternMapper {
+public class ArchetypePatternMapper {
 
     /// Get primary pattern recommendations for an archetype
     static func primaryPatterns(for archetype: StyleArchetype) -> [WallpaperPattern] {

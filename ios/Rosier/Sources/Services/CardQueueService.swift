@@ -1,13 +1,13 @@
 import Foundation
 
 /// Manages the card queue for the swipe interface with pre-fetching and caching.
-final class CardQueueService: ObservableObject {
+public final class CardQueueService: ObservableObject {
     // MARK: - Published Properties
 
-    @Published var currentCard: CardQueueItem?
-    @Published var queue: [CardQueueItem] = []
-    @Published var isLoading = false
-    @Published var error: CardQueueError?
+    @Published public var currentCard: CardQueueItem?
+    @Published public var queue: [CardQueueItem] = []
+    @Published public var isLoading = false
+    @Published public var error: CardQueueError?
 
     // MARK: - Properties
 
@@ -22,7 +22,7 @@ final class CardQueueService: ObservableObject {
 
     // MARK: - Initializers
 
-    init(
+    public init(
         networkService: NetworkService = .shared,
         imageCacheService: ImageCacheService = .shared
     ) {
@@ -34,7 +34,7 @@ final class CardQueueService: ObservableObject {
     // MARK: - Public Methods
 
     /// Initializes the queue with the initial batch of cards.
-    func initializeQueue() async {
+    public func initializeQueue() async {
         await MainActor.run {
             isLoading = true
         }
@@ -57,7 +57,7 @@ final class CardQueueService: ObservableObject {
     }
 
     /// Handles a swipe action and updates the queue.
-    func handleSwipe(action: SwipeAction, dwellTimeMs: Int) async {
+    public func handleSwipe(action: SwipeAction, dwellTimeMs: Int) async {
         guard let current = currentCard else { return }
 
         // Create swipe event

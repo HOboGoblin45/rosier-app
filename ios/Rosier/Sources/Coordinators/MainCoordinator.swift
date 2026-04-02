@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Coordinator for the main tab-based navigation (Swipe, Dresser, Profile).
-final class MainCoordinator: BaseCoordinator<MainScreen, SheetType, FullScreenCoverType> {
+public final class MainCoordinator: BaseCoordinator<MainScreen, SheetType, FullScreenCoverType> {
     // MARK: - Properties
 
     @Published var selectedTab: Tab = .swipe

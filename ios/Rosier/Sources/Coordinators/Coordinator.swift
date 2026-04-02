@@ -2,7 +2,7 @@ import Foundation
 import SwiftUI
 
 /// Base protocol for coordinators in the app.
-protocol Coordinator: AnyObject, ObservableObject {
+public protocol Coordinator: AnyObject, ObservableObject {
     associatedtype Screen: Hashable
     associatedtype Sheet: Hashable
     associatedtype FullScreenCover: Hashable
@@ -22,7 +22,7 @@ protocol Coordinator: AnyObject, ObservableObject {
 }
 
 /// Default implementation of Coordinator protocol.
-class BaseCoordinator<Screen: Hashable, Sheet: Hashable, FullScreenCover: Hashable>: Coordinator {
+public class BaseCoordinator<Screen: Hashable, Sheet: Hashable, FullScreenCover: Hashable>: Coordinator {
     @Published var navigationPath = NavigationPath()
     @Published var sheet: Sheet?
     @Published var fullScreenCover: FullScreenCover?
@@ -62,13 +62,13 @@ class BaseCoordinator<Screen: Hashable, Sheet: Hashable, FullScreenCover: Hashab
 
 // MARK: - Navigation Screen Definitions
 
-enum OnboardingScreen: Hashable {
+public enum OnboardingScreen: Hashable {
     case welcome
     case styleQuiz
     case styleQuizResults
 }
 
-enum MainScreen: Hashable {
+public enum MainScreen: Hashable {
     case swipe
     case dresser
     case profile
@@ -76,7 +76,7 @@ enum MainScreen: Hashable {
     case drawerDetail(drawerId: UUID)
 }
 
-enum SheetType: Hashable {
+public enum SheetType: Hashable {
     case productDetail(product: Product)
     case filterOptions
     case sortOptions
@@ -85,7 +85,7 @@ enum SheetType: Hashable {
     case webView(url: URL, title: String)
 }
 
-enum FullScreenCoverType: Hashable {
+public enum FullScreenCoverType: Hashable {
     case authentication
     case onboarding
     case styleQuiz
