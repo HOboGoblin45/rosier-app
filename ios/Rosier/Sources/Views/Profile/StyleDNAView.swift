@@ -1,5 +1,5 @@
 import SwiftUI
-
+import RosierCore
 
 /// Full-screen, beautif dedicated Style DNA experience with viral sharing mechanics.
 /// Shows user's archetype, brands, color palette, and stats in an Instagram Story-sized card.

@@ -1,6 +1,6 @@
 import Foundation
 import SwiftUI
-
+import RosierCore
 
 /// ViewModel managing dresser drawers, items, and organization.
 @Observable final class DresserViewModel {

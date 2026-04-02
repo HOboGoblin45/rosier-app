@@ -56,27 +56,88 @@ buildSettings:
     VALIDATE_PRODUCT: 'YES'
 
 targets:
+  RosierCore:
+    type: framework
+    platform: iOS
+    deploymentTarget: '17.0'
+    settings:
+      CODE_SIGN_STYLE: Automatic
+      CODE_SIGN_IDENTITY: ''
+      DEFINES_MODULE: 'YES'
+      PRODUCT_NAME: RosierCore
+    sources:
+      - path: Sources
+        includes:
+          - Models/**
+          - Services/**
+          - DesignSystem/**
+          - Extensions/**
+          - CoreData/**
+          - Coordinators/**
+        excludes:
+          - Views
+          - ViewModels
+          - App
+          - Resources
+    resources:
+      - path: Sources/Resources
+        buildPhase: resources
+    frameworks:
+      - CoreData
+      - CloudKit
+      - UserNotifications
+      - BackgroundTasks
+    scheme:
+      testTargets:
+        - RosierTests
+
+  RosierUI:
+    type: framework
+    platform: iOS
+    deploymentTarget: '17.0'
+    settings:
+      DEFINES_MODULE: 'YES'
+      PRODUCT_NAME: RosierUI
+      CODE_SIGN_STYLE: Automatic
+      CODE_SIGN_IDENTITY: ''
+    sources:
+      - path: Sources
+        includes:
+          - Views/**
+          - ViewModels/**
+        excludes:
+          - Models
+          - Services
+          - DesignSystem
+          - Extensions
+          - CoreData
+          - Coordinators
+          - App
+          - Resources
+    dependencies:
+      - target: RosierCore
+    scheme: {}
+
   Rosier:
     type: application
     platform: iOS
     deploymentTarget: '17.0'
     sources:
-      - path: Sources
+      - path: Sources/App
+        includes:
+          - '*.swift'
         excludes:
-          - App/Resources
+          - Resources
     resources:
       - path: Sources/App/Resources
         buildPhase: resources
-      - path: Sources/Resources
-        buildPhase: resources
       - path: Resources
         buildPhase: resources
+    dependencies:
+      - target: RosierCore
+      - target: RosierUI
     frameworks:
       - UIKit
-      - CoreData
-      - CloudKit
-      - UserNotifications
-      - BackgroundTasks
     info:
       path: Sources/App/Info.plist
       useBase64: false
@@ -84,7 +145,6 @@ targets:
       path: Sources/App/Rosier.entitlements
     settings:
       PRODUCT_BUNDLE_IDENTIFIER: com.rosier.app
-      PRODUCT_NAME: Rosier
       EXECUTABLE_NAME: Rosier
       CURRENT_PROJECT_VERSION: 1
       MARKETING_VERSION: 1.0.0
@@ -130,7 +190,8 @@ targets:
         includes:
           - '**/*.swift'
     dependencies:
-      - target: Rosier
+      - target: RosierCore
+      - target: RosierUI
     settings:
       BUNDLE_LOADER: '$(TEST_HOST)'
       TEST_HOST: '$(BUILT_PRODUCTS_DIR)/Rosier.app/Rosier'
@@ -140,6 +201,8 @@ schemes:
     build:
       targets:
         Rosier: all
+        RosierCore: all
+        RosierUI: all
     run:
       config: Debug
       executable: Rosier
@@ -149,7 +212,8 @@ schemes:
         - RosierTests
       coverage: true
       codeCoverageTargets:
-        - Rosier
+        - RosierCore
+        - RosierUI
     archive:
       config: Release
       customArchiveName: Rosier

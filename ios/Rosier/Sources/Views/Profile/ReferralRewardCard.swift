@@ -1,5 +1,5 @@
 import SwiftUI
-
+import RosierCore
 
 /// Reusable component displaying a single reward tier.
 struct ReferralRewardCard: View {

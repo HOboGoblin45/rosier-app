@@ -1,5 +1,5 @@
 import SwiftUI
-
+import RosierCore
 
 /// Main tab navigation shell with Swipe, Dresser, and Profile tabs.
 struct MainTabView: View {

@@ -1,5 +1,5 @@
 import SwiftUI
-
+import RosierCore
 
 /// View for new users to enter a referral code during onboarding.
 struct ReferralCodeEntryView: View {

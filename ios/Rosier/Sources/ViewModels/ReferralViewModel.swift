@@ -1,6 +1,6 @@
 import Foundation
 import SwiftUI
-
+import RosierCore
 
 /// ViewModel managing referral code, stats, and sharing functionality.
 @Observable final class ReferralViewModel {

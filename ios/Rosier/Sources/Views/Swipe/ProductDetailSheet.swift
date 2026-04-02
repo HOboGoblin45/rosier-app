@@ -1,6 +1,6 @@
 import SwiftUI
 import SafariServices
-
+import RosierCore
 
 /// Detailed product view presented as a modal sheet when user taps a card.
 struct ProductDetailSheet: View {
