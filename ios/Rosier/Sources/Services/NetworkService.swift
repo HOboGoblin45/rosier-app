@@ -47,30 +47,30 @@ final class NetworkService {
         headers: [String: String] = [:]
     ) async throws -> T {
         let url = baseURL.appendingPathComponent(endpoint)
-        var request = URLRequest(url: url)
-        request.httpMethod = method.rawValue
+        var urlRequest = URLRequest(url: url)
+        urlRequest.httpMethod = method.rawValue
 
         // Set default content type
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Accept")
 
         // Add authorization token
         if let token = try await authService?.getValidToken() {
-            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+            urlRequest.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         }
 
         // Add custom headers
         for (key, value) in headers {
-            request.setValue(value, forHTTPHeaderField: key)
+            urlRequest.setValue(value, forHTTPHeaderField: key)
         }
 
         // Encode body if provided
         if let body = body {
-            request.httpBody = try JSONEncoder().encode(body)
+            urlRequest.httpBody = try JSONEncoder().encode(body)
         }
 
         do {
-            let (data, response) = try await session.data(for: request)
+            let (data, response) = try await session.data(for: urlRequest)
 
             // Handle 401 unauthorized (token refresh)
             if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 401 {
@@ -97,29 +97,29 @@ final class NetworkService {
         headers: [String: String] = [:]
     ) async throws {
         let url = baseURL.appendingPathComponent(endpoint)
-        var request = URLRequest(url: url)
-        request.httpMethod = method.rawValue
+        var urlRequest = URLRequest(url: url)
+        urlRequest.httpMethod = method.rawValue
 
         // Set default content type
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
         // Add authorization token
         if let token = try await authService?.getValidToken() {
-            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+            urlRequest.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         }
 
         // Add custom headers
         for (key, value) in headers {
-            request.setValue(value, forHTTPHeaderField: key)
+            urlRequest.setValue(value, forHTTPHeaderField: key)
         }
 
         // Encode body if provided
         if let body = body {
-            request.httpBody = try JSONEncoder().encode(body)
+            urlRequest.httpBody = try JSONEncoder().encode(body)
         }
 
         do {
-            let (_, response) = try await session.data(for: request)
+            let (_, response) = try await session.data(for: urlRequest)
             try validateResponse(response)
         } catch let error as NetworkError {
             throw error
