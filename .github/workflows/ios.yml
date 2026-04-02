@@ -225,7 +225,20 @@ jobs:
         run: |
           ./scripts/setup_signing.sh appstore
 
+      - name: Setup API key for signing
+        env:
+          APP_STORE_CONNECT_API_KEY: ${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY }}
+          APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          APP_STORE_CONNECT_API_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+        run: |
+          mkdir -p ~/.appstoreconnect/private_keys
+          echo "$APP_STORE_CONNECT_API_KEY" > ~/.appstoreconnect/private_keys/AuthKey_${APP_STORE_CONNECT_API_KEY_ID}.p8
+          echo "API key written for key ID: $APP_STORE_CONNECT_API_KEY_ID"
+
       - name: Build archive
+        env:
+          APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          APP_STORE_CONNECT_API_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
         run: |
           xcodebuild archive \
             -project Rosier.xcodeproj \
@@ -234,12 +247,14 @@ jobs:
             -archivePath build/Rosier.xcarchive \
             -destination 'generic/platform=iOS' \
             -derivedDataPath build/DerivedData \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath ~/.appstoreconnect/private_keys/AuthKey_${APP_STORE_CONNECT_API_KEY_ID}.p8 \
+            -authenticationKeyID "$APP_STORE_CONNECT_API_KEY_ID" \
+            -authenticationKeyIssuerID "$APP_STORE_CONNECT_API_ISSUER_ID" \
             DEVELOPMENT_TEAM='${{ secrets.APPLE_DEVELOPER_ID }}' \
-            CODE_SIGN_IDENTITY='Apple Distribution' \
-            CODE_SIGN_STYLE=Manual \
+            CODE_SIGN_STYLE=Automatic \
             CODE_SIGNING_REQUIRED=YES \
-            CODE_SIGNING_ALLOWED=YES \
-            
+            CODE_SIGNING_ALLOWED=YES
 
           echo '=== Archive contents ==='
           ls -la build/Rosier.xcarchive/ 2>/dev/null || echo 'Archive not found'
@@ -272,7 +287,10 @@ jobs:
             -archivePath build/Rosier.xcarchive \
             -exportOptionsPlist build/ExportOptions.plist \
             -exportPath build/export \
-            
+            -allowProvisioningUpdates \
+            -authenticationKeyPath ~/.appstoreconnect/private_keys/AuthKey_${{ secrets.APP_STORE_CONNECT_KEY_ID }}.p8 \
+            -authenticationKeyID '${{ secrets.APP_STORE_CONNECT_KEY_ID }}' \
+            -authenticationKeyIssuerID '${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}'
 
           echo '=== Export contents ==='
           ls -laR build/export/ 2>/dev/null || echo 'Export dir not found'
@@ -382,7 +400,20 @@ jobs:
           sed -i '' "s/CURRENT_PROJECT_VERSION = .*/CURRENT_PROJECT_VERSION = $NEW_BUILD/" Sources/App/BUILD_SETTINGS.xcconfig
           echo "Incremented build from $BUILD to $NEW_BUILD"
 
+      - name: Setup API key for signing
+        env:
+          APP_STORE_CONNECT_API_KEY: ${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY }}
+          APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          APP_STORE_CONNECT_API_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+        run: |
+          mkdir -p ~/.appstoreconnect/private_keys
+          echo "$APP_STORE_CONNECT_API_KEY" > ~/.appstoreconnect/private_keys/AuthKey_${APP_STORE_CONNECT_API_KEY_ID}.p8
+          echo "API key written for key ID: $APP_STORE_CONNECT_API_KEY_ID"
+
       - name: Build archive
+        env:
+          APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          APP_STORE_CONNECT_API_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
         run: |
           xcodebuild archive \
             -project Rosier.xcodeproj \
@@ -391,12 +422,14 @@ jobs:
             -archivePath build/Rosier.xcarchive \
             -destination 'generic/platform=iOS' \
             -derivedDataPath build/DerivedData \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath ~/.appstoreconnect/private_keys/AuthKey_${APP_STORE_CONNECT_API_KEY_ID}.p8 \
+            -authenticationKeyID "$APP_STORE_CONNECT_API_KEY_ID" \
+            -authenticationKeyIssuerID "$APP_STORE_CONNECT_API_ISSUER_ID" \
             DEVELOPMENT_TEAM='${{ secrets.APPLE_DEVELOPER_ID }}' \
-            CODE_SIGN_IDENTITY='Apple Distribution' \
-            CODE_SIGN_STYLE=Manual \
+            CODE_SIGN_STYLE=Automatic \
             CODE_SIGNING_REQUIRED=YES \
-            CODE_SIGNING_ALLOWED=YES \
-            
+            CODE_SIGNING_ALLOWED=YES
 
           echo '=== Archive contents ==='
           ls -la build/Rosier.xcarchive/ 2>/dev/null || echo 'Archive not found'
@@ -459,3 +492,5 @@ jobs:
           artifacts: ios/Rosier/build/export/Rosier.ipa
           draft: false
           prerelease: false
+
+
