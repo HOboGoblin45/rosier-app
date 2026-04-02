@@ -86,7 +86,11 @@ final class CardQueueService: ObservableObject {
 
         // Check if we need to fetch more cards
         if queue.count <= lowQueueThreshold {
-            await fetchMoreCards()
+            do {
+                try await fetchMoreCards()
+            } catch {
+                // Silently handle fetch errors in background
+            }
         }
     }
 
