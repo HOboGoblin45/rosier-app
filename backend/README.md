@@ -412,3 +412,4 @@ Proprietary - Rosier Fashion Inc.
 
 See CONTRIBUTING.md for guidelines.
 # Backend CI/CD validated
+
