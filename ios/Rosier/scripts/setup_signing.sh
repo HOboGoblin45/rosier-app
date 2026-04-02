@@ -151,7 +151,7 @@ import_certificate() {
   fi
 
   # Verify certificate was imported
-  security find-identity -v -p codesigning "$KEYCHAIN_NAME" | grep "iPhone Distribution" || {
+  security find-identity -v -p codesigning "$KEYCHAIN_NAME" | grep -E "(Apple|iPhone) Distribution" || {
     echo -e "${RED}[ERROR]${NC} Distribution certificate not found in keychain" >&2
     cleanup
     exit 1
@@ -216,7 +216,7 @@ verify_signing() {
   fi
 
   # Check certificate
-  if security find-identity -v -p codesigning "$KEYCHAIN_NAME" | grep -q "iPhone Distribution"; then
+  if security find-identity -v -p codesigning "$KEYCHAIN_NAME" | grep -qE "(Apple|iPhone) Distribution"; then
     echo -e "${GREEN}[SUCCESS]${NC} Distribution certificate found"
   else
     echo -e "${RED}[ERROR]${NC} Distribution certificate not found" >&2
