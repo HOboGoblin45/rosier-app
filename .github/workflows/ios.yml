@@ -224,6 +224,7 @@ jobs:
           APP_STORE_CONNECT_API_KEY: ${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY }}
           APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
           APP_STORE_CONNECT_API_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}
         run: |
           set -euo pipefail
 
@@ -261,32 +262,84 @@ jobs:
           mkdir -p ~/.appstoreconnect/private_keys
           echo "$APP_STORE_CONNECT_API_KEY" > ~/.appstoreconnect/private_keys/AuthKey_${APP_STORE_CONNECT_API_KEY_ID}.p8
 
-          # Create Fastlane API key JSON (key_filepath format)
-          cat > /tmp/api_key.json << APIEOF
-          {
-            "key_id": "$APP_STORE_CONNECT_API_KEY_ID",
-            "issuer_id": "$APP_STORE_CONNECT_API_ISSUER_ID",
-            "key_filepath": "$HOME/.appstoreconnect/private_keys/AuthKey_${APP_STORE_CONNECT_API_KEY_ID}.p8",
-            "in_house": false
-          }
-          APIEOF
-
-          echo "API key JSON created:"
-          cat /tmp/api_key.json | sed 's/key_filepath.*/key_filepath: [REDACTED]/'
-
-          # --- 3. Download provisioning profile from Apple using Fastlane sigh ---
+          # --- 3. Download provisioning profile from Apple via App Store Connect API ---
           echo "Downloading provisioning profile from Apple..."
-          fastlane sigh \
-            --app_identifier "com.rosier.app" \
-            --api_key_path /tmp/api_key.json \
-            --platform ios 2>&1 || {
-            echo "sigh with default options failed, trying --skip_install false..."
-            fastlane sigh \
-              --app_identifier "com.rosier.app" \
-              --api_key_path /tmp/api_key.json \
-              --platform ios \
-              --force 2>&1 || true
+          
+          # Generate JWT for App Store Connect API
+          pip3 install PyJWT cryptography --break-system-packages -q 2>/dev/null || true
+          
+          JWT_TOKEN=$(python3 << 'JWTEOF'
+          import jwt, time, json
+          
+          key_id = "${APP_STORE_CONNECT_API_KEY_ID}"
+          issuer_id = "${APP_STORE_CONNECT_API_ISSUER_ID}"
+          
+          with open("${HOME}/.appstoreconnect/private_keys/AuthKey_${APP_STORE_CONNECT_API_KEY_ID}.p8") as f:
+              private_key = f.read()
+          
+          now = int(time.time())
+          payload = {
+              "iss": issuer_id,
+              "iat": now,
+              "exp": now + 1200,
+              "aud": "appstoreconnect-v1"
           }
+          token = jwt.encode(payload, private_key, algorithm="ES256", headers={"kid": key_id})
+          print(token)
+          JWTEOF
+          )
+          
+          echo "JWT token generated (length: ${#JWT_TOKEN})"
+          
+          # List App Store provisioning profiles for com.rosier.app
+          PROFILES_JSON=$(curl -s -H "Authorization: Bearer $JWT_TOKEN" \
+            "https://api.appstoreconnect.apple.com/v1/profiles?filter[profileType]=IOS_APP_STORE&include=bundleId")
+          
+          echo "API response status: $(echo "$PROFILES_JSON" | python3 -c "import sys,json; d=json.load(sys.stdin); print(len(d.get('data',[])), 'profiles found')" 2>/dev/null || echo "parse error")"
+          
+          # Download the first matching profile
+          PROFILE_CONTENT=$(echo "$PROFILES_JSON" | python3 << 'DLEOF'
+          import sys, json, base64
+          data = json.load(sys.stdin)
+          profiles = data.get("data", [])
+          if not profiles:
+              print("NO_PROFILES", file=sys.stderr)
+              sys.exit(1)
+          # Get the first profile
+          profile = profiles[0]
+          attrs = profile.get("attributes", {})
+          print(f"Profile: {attrs.get('name', 'unknown')} (UUID: {attrs.get('uuid', 'unknown')})", file=sys.stderr)
+          # profileContent is base64-encoded
+          content_b64 = attrs.get("profileContent", "")
+          if content_b64:
+              sys.stdout.buffer.write(base64.b64decode(content_b64))
+          else:
+              print("No profileContent in response", file=sys.stderr)
+              sys.exit(1)
+          DLEOF
+          )
+          
+          if [ $? -eq 0 ] && [ -n "$PROFILE_CONTENT" ]; then
+            mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+            # Extract UUID from downloaded profile
+            PROFILE_UUID=$(echo "$PROFILE_CONTENT" | strings 2>/dev/null | grep -A1 '<key>UUID</key>' | grep '<string>' | head -1 | sed 's/.*<string>//;s/<\/string>.*//' || true)
+            if [ -z "$PROFILE_UUID" ]; then
+              PROFILE_UUID=$(uuidgen | tr '[:upper:]' '[:lower:]')
+            fi
+            echo "$PROFILE_CONTENT" > ~/Library/MobileDevice/Provisioning\ Profiles/${PROFILE_UUID}.mobileprovision
+            echo "Profile installed with UUID: $PROFILE_UUID"
+          else
+            echo "WARNING: Could not download profile from API. Trying with pre-uploaded secret..."
+            # Fallback: install the base64-encoded secret profile
+            mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+            if [ -n "${PROVISIONING_PROFILE_BASE64:-}" ]; then
+              echo "$PROVISIONING_PROFILE_BASE64" | base64 --decode > /tmp/profile.mobileprovision
+              PROFILE_UUID=$(strings /tmp/profile.mobileprovision 2>/dev/null | grep -A1 '<key>UUID</key>' | grep '<string>' | head -1 | sed 's/.*<string>//;s/<\/string>.*//' || true)
+              if [ -z "$PROFILE_UUID" ]; then PROFILE_UUID=$(uuidgen | tr '[:upper:]' '[:lower:]'); fi
+              cp /tmp/profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/${PROFILE_UUID}.mobileprovision
+              echo "Fallback profile installed with UUID: $PROFILE_UUID"
+            fi
+          fi
 
           # Verify profile installed
           echo "=== Installed profiles ==="
