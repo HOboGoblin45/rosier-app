@@ -167,34 +167,26 @@ install_provisioning_profile() {
 
   mkdir -p "$profile_dir"
 
-  # Extract UUID from provisioning profile
-  # mobileprovision files are CMS-signed containers with an embedded plist
+  # Extract UUID using strings + grep (works on binary mobileprovision files)
+  # The UUID is embedded as XML text within the signed CMS container
   local profile_uuid=""
-  local profile_plist="$TEMP_DIR/profile.plist"
+  profile_uuid=$(strings "$profile_file" 2>/dev/null | grep -A1 '<key>UUID</key>' | grep '<string>' | head -1 | sed 's/.*<string>//;s/<\/string>.*//' || true)
 
-  # Method 1: security cms (best approach on macOS)
-  if security cms -D -i "$profile_file" -o "$profile_plist" 2>/dev/null; then
-    profile_uuid=$(/usr/libexec/PlistBuddy -c "Print UUID" "$profile_plist" 2>/dev/null || true)
-  fi
-
-  # Method 2: openssl smime to extract the signed content
-  if [[ -z "$profile_uuid" ]]; then
-    openssl smime -inform der -verify -noverify -in "$profile_file" -out "$profile_plist" 2>/dev/null || true
-    if [[ -f "$profile_plist" ]]; then
-      profile_uuid=$(/usr/libexec/PlistBuddy -c "Print UUID" "$profile_plist" 2>/dev/null || true)
+  # Validate it looks like a UUID
+  if [[ ! "$profile_uuid" =~ ^[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}$ ]]; then
+    echo -e "${YELLOW}[WARN]${NC} Could not extract valid UUID (got: '$profile_uuid')"
+    # Try security cms approach
+    local profile_plist="$TEMP_DIR/profile.plist"
+    security cms -D -i "$profile_file" > "$profile_plist" 2>/dev/null || true
+    if [[ -f "$profile_plist" && -s "$profile_plist" ]]; then
+      profile_uuid=$(/usr/libexec/PlistBuddy -c "Print UUID" "$profile_plist" 2>&1 | head -1 || true)
     fi
   fi
 
-  # Method 3: grep the raw binary for UUID pattern
-  if [[ -z "$profile_uuid" ]]; then
-    profile_uuid=$(strings "$profile_file" | grep -A1 '<key>UUID</key>' | grep '<string>' | sed 's/.*<string>//;s/<\/string>.*//' || true)
-  fi
-
-  if [[ -z "$profile_uuid" ]]; then
-    echo -e "${RED}[ERROR]${NC} Failed to read provisioning profile UUID" >&2
-    echo -e "${YELLOW}[WARN]${NC} Attempting direct install without UUID..."
-    # Just copy with a fixed name - Xcode will still scan it
-    profile_uuid="rosier-profile"
+  # Final validation
+  if [[ ! "$profile_uuid" =~ ^[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}$ ]]; then
+    echo -e "${YELLOW}[WARN]${NC} Using generated UUID as fallback"
+    profile_uuid=$(uuidgen | tr '[:upper:]' '[:lower:]')
   fi
 
   cp "$profile_file" "$profile_dir/$profile_uuid.mobileprovision"
