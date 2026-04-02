@@ -133,12 +133,15 @@ final class DeepLinkService {
 
 // MARK: - DeepLink Enum
 
-enum DeepLink: Equatable {
+enum DeepLink: Equatable, Hashable {
     case product(id: UUID)
     case dresser(id: UUID)
     case styleDNA
     case invite(code: String)
     case sale(id: UUID)
+    case dailyDrop
+    case dresserSaleFilter(retailerId: UUID)
+    case swipeFeed
     case unknown
 
     // MARK: - URL Generators
@@ -156,6 +159,12 @@ enum DeepLink: Equatable {
             return URL(string: "rosier://invite?code=\(code)")
         case .sale(let id):
             return URL(string: "rosier://sale/\(id.uuidString)")
+        case .dailyDrop:
+            return URL(string: "rosier://daily-drop")
+        case .dresserSaleFilter(let retailerId):
+            return URL(string: "rosier://dresser?retailer=\(retailerId.uuidString)")
+        case .swipeFeed:
+            return URL(string: "rosier://swipe")
         case .unknown:
             return nil
         }
@@ -174,6 +183,12 @@ enum DeepLink: Equatable {
             return URL(string: "\(baseURL)/invite/\(code)")
         case .sale(let id):
             return URL(string: "\(baseURL)/sale/\(id.uuidString)")
+        case .dailyDrop:
+            return URL(string: "\(baseURL)/daily-drop")
+        case .dresserSaleFilter(let retailerId):
+            return URL(string: "\(baseURL)/dresser?retailer=\(retailerId.uuidString)")
+        case .swipeFeed:
+            return URL(string: "\(baseURL)/swipe")
         case .unknown:
             return nil
         }
