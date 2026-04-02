@@ -194,7 +194,7 @@ class ReferralService:
             return None
 
         # Check expiry
-        if code_record.created_at + timedelta(days=self.REFERRAL_CODE_VALIDITY_DAYS) < datetime.now(timezone.utc):
+        if code_record.created_at + timedelta(days=ReferralService.REFERRAL_CODE_VALIDITY_DAYS) < datetime.now(timezone.utc):
             logger.warning(f"Referral code expired: {referral_code}")
             code_record.is_active = False
             await db.commit()
@@ -223,7 +223,7 @@ class ReferralService:
             return None
 
         # Create referral record
-        expires_at = datetime.now(timezone.utc) + timedelta(days=self.REFERRAL_CODE_VALIDITY_DAYS)
+        expires_at = datetime.now(timezone.utc) + timedelta(days=ReferralService.REFERRAL_CODE_VALIDITY_DAYS)
         referral = Referral(
             referrer_id=referrer_id,
             referred_id=referred_user_id,
@@ -493,7 +493,7 @@ class ReferralService:
         result = await db.execute(stmt)
         completed_today = result.scalar() or 0
 
-        allowed = completed_today < self.MAX_REFERRAL_COMPLETIONS_PER_DAY
-        remaining = max(0, self.MAX_REFERRAL_COMPLETIONS_PER_DAY - completed_today)
+        allowed = completed_today < ReferralService.MAX_REFERRAL_COMPLETIONS_PER_DAY
+        remaining = max(0, ReferralService.MAX_REFERRAL_COMPLETIONS_PER_DAY - completed_today)
 
         return allowed, remaining
