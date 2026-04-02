@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 
 /// Singleton analytics tracker that manages event tracking, user identity, and event batching.
 /// Wraps the underlying AnalyticsService with type-safe event handling.
