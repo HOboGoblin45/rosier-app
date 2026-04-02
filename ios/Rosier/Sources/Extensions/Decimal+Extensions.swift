@@ -52,7 +52,7 @@ extension Decimal {
         guard original > 0 else { return 0 }
 
         let discount = ((original - current) / original) * 100
-        return Int(discount.rounded())
+        return NSDecimalNumber(decimal: discount).rounding(accordingToBehavior: nil).intValue
     }
 
     /// Formats the discount as a string (e.g., "Save 25%").
