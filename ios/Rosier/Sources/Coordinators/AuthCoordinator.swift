@@ -28,13 +28,13 @@ final class AuthCoordinator: BaseCoordinator<AuthScreen, SheetType, FullScreenCo
 
     /// Starts the sign in flow.
     func startSignIn() {
-        navigationPath = NavigationPath()
+        navigationPath = NavigationPath(AuthScreen.self)
         push(.signIn)
     }
 
     /// Starts the sign up flow.
     func startSignUp() {
-        navigationPath = NavigationPath()
+        navigationPath = NavigationPath(AuthScreen.self)
         push(.signUp)
     }
 
@@ -148,7 +148,7 @@ final class AuthCoordinator: BaseCoordinator<AuthScreen, SheetType, FullScreenCo
 
     /// Dismisses the auth flow.
     func dismiss() {
-        navigationPath = NavigationPath()
+        navigationPath = NavigationPath(AuthScreen.self)
         dismissFullScreenCover()
     }
 
