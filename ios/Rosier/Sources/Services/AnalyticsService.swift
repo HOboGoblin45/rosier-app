@@ -21,7 +21,7 @@ final class AnalyticsService: AnalyticsServiceProtocol {
 
     private let sessionId = UUID().uuidString
     private var sessionStartTime = Date()
-    private var events: [AnalyticsEvent] = []
+    private var events: [AnalyticsEventRecord] = []
     private let networkService: NetworkService
     private let maxBufferSize = 100
 
@@ -35,7 +35,7 @@ final class AnalyticsService: AnalyticsServiceProtocol {
 
     /// Tracks a custom analytics event.
     func trackEvent(_ name: String, properties: [String: Any]? = nil) {
-        let event = AnalyticsEvent(
+        let event = AnalyticsEventRecord(
             sessionId: sessionId,
             name: name,
             properties: properties ?? [:],
@@ -182,7 +182,7 @@ final class AnalyticsService: AnalyticsServiceProtocol {
 
 // MARK: - Analytics Models
 
-struct AnalyticsEvent: Codable {
+struct AnalyticsEventRecord: Codable {
     let sessionId: String
     let name: String
     let properties: [String: String]
@@ -206,7 +206,7 @@ struct AnalyticsEvent: Codable {
 }
 
 struct AnalyticsEventBatch: Codable {
-    let events: [AnalyticsEvent]
+    let events: [AnalyticsEventRecord]
 }
 
 // MARK: - User Action Model
