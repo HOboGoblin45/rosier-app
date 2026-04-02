@@ -85,7 +85,7 @@ jobs:
             -scheme Rosier \
             -configuration Debug \
             -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
-            -derivedDataPath build \
+            -derivedDataPath build/DerivedData \
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
             | xcpretty --color --report html --output build/logs/build.html
@@ -97,7 +97,7 @@ jobs:
             -scheme Rosier \
             -configuration Debug \
             -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
-            -derivedDataPath build \
+            -derivedDataPath build/DerivedData \
             -resultBundlePath build/test-results.xcresult \
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
@@ -172,7 +172,7 @@ jobs:
             -scheme RosierSnapshotTests \
             -configuration Debug \
             -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
-            -derivedDataPath build \
+            -derivedDataPath build/DerivedData \
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
             | xcpretty --color
@@ -233,11 +233,15 @@ jobs:
             -configuration Release \
             -archivePath build/Rosier.xcarchive \
             -destination 'generic/platform=iOS' \
-            -derivedDataPath build \
+            -derivedDataPath build/DerivedData \
             DEVELOPMENT_TEAM='${{ secrets.APPLE_DEVELOPER_ID }}' \
             CODE_SIGN_IDENTITY='Apple Distribution' \
             PROVISIONING_PROFILE_SPECIFIER='Rosier Distribution' \
-            | xcpretty --color
+            
+
+          echo '=== Archive contents ==='
+          ls -la build/Rosier.xcarchive/ 2>/dev/null || echo 'Archive not found'
+          ls -la build/Rosier.xcarchive/Products/Applications/ 2>/dev/null || echo 'No apps in archive'
 
       - name: Export IPA
         run: |
@@ -266,7 +270,10 @@ jobs:
             -archivePath build/Rosier.xcarchive \
             -exportOptionsPlist build/ExportOptions.plist \
             -exportPath build/export \
-            | xcpretty --color
+            
+
+          echo '=== Export contents ==='
+          ls -laR build/export/ 2>/dev/null || echo 'Export dir not found'
 
       - name: Verify IPA
         run: |
@@ -360,7 +367,7 @@ jobs:
             -scheme Rosier \
             -configuration Debug \
             -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
-            -derivedDataPath build \
+            -derivedDataPath build/DerivedData \
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
             | xcpretty --color
@@ -381,10 +388,14 @@ jobs:
             -configuration Release \
             -archivePath build/Rosier.xcarchive \
             -destination 'generic/platform=iOS' \
-            -derivedDataPath build \
+            -derivedDataPath build/DerivedData \
             DEVELOPMENT_TEAM='${{ secrets.APPLE_DEVELOPER_ID }}' \
             CODE_SIGN_IDENTITY='Apple Distribution' \
-            | xcpretty --color
+            
+
+          echo '=== Archive contents ==='
+          ls -la build/Rosier.xcarchive/ 2>/dev/null || echo 'Archive not found'
+          ls -la build/Rosier.xcarchive/Products/Applications/ 2>/dev/null || echo 'No apps in archive'
 
       - name: Export IPA
         run: |
