@@ -34,7 +34,7 @@ settings:
   GCC_WARN_ABOUT_RETURN_TYPE: 'YES_ERROR'
   GCC_WARN_UNUSED_VARIABLE: 'YES'
   CLANG_WARN_EMPTY_BODY: 'YES'
-  OTHER_LDFLAGS: '$(inherited) -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __entitlements -Xlinker $(BUILT_PRODUCTS_DIR)/$(EXECUTABLE_PATH)entitlements'
+  OTHER_LDFLAGS: '$(inherited)'
   LD_RUNPATH_SEARCH_PATHS: '$(inherited) @executable_path/Frameworks'
 
 buildSettings:
