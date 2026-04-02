@@ -19,17 +19,7 @@ struct LoadingStateView: View {
                 ZStack {
                     // Outer ring
                     Circle()
-                        .stroke(
-                            LinearGradient(
-                                gradient: Gradient(colors: [
-                                    Color.brandAccent.opacity(0.3),
-                                    Color.brandAccent.opacity(0.1)
-                                ]),
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            ),
-                            lineWidth: 2
-                        )
+                        .stroke(Color.brandAccent.opacity(0.3), lineWidth: 2)
                         .scaleEffect(isAnimating ? 1.2 : 1.0)
                         .opacity(isAnimating ? 0.3 : 0.8)
 
@@ -120,20 +110,12 @@ struct ShimmerModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .overlay(
-                LinearGradient(
-                    gradient: Gradient(colors: [
-                        Color.white.opacity(0),
-                        Color.white.opacity(0.2),
-                        Color.white.opacity(0)
-                    ]),
-                    startPoint: .leading,
-                    endPoint: .trailing
-                )
-                .offset(x: isShimmering ? 400 : -400)
-                .animation(.linear(duration: 1.5).repeatForever(autoreverses: false), value: isShimmering)
-                .onAppear {
-                    isShimmering = true
-                }
+                Color.white.opacity(0.15)
+                    .offset(x: isShimmering ? 400 : -400)
+                    .animation(.linear(duration: 1.5).repeatForever(autoreverses: false), value: isShimmering)
+                    .onAppear {
+                        isShimmering = true
+                    }
             )
     }
 }

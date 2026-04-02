@@ -18,17 +18,25 @@ import SwiftUI
 // MARK: - Brand Colors
 
 extension Color {
-    /// Primary brand color - Deep Navy
+    /// Primary brand color - Light Pink/Lavender
+    /// RGB: (243, 203, 240) | Hex: #F3CBF0
+    static let brandPrimary = Color(red: 243/255, green: 203/255, blue: 240/255)
+
+    /// Secondary brand color - Deep Navy
     /// RGB: (26, 26, 46) | Hex: #1A1A2E
-    static let brandPrimary = Color(red: 26/255, green: 26/255, blue: 46/255)
+    static let brandSecondary = Color(red: 26/255, green: 26/255, blue: 46/255)
 
-    /// Secondary brand color - Warm Gold/Tan
-    /// RGB: (196, 167, 125) | Hex: #C4A77D
-    static let brandAccent = Color(red: 196/255, green: 167/255, blue: 125/255)
+    /// Brand accent color - Coral/Salmon Red
+    /// RGB: (254, 111, 111) | Hex: #FE6F6F
+    static let brandAccent = Color(red: 254/255, green: 111/255, blue: 111/255)
 
-    /// Tertiary brand color - Soft Mauve
-    /// RGB: (142, 108, 129) | Hex: #8E6C81
-    static let brandTertiary = Color(red: 142/255, green: 108/255, blue: 129/255)
+    /// Tertiary brand color - Coral/Salmon Red
+    /// RGB: (254, 111, 111) | Hex: #FE6F6F
+    static let brandTertiary = Color(red: 254/255, green: 111/255, blue: 111/255)
+
+    /// Neutral brand color - Light Gray
+    /// RGB: (243, 243, 243) | Hex: #F3F3F3
+    static let brandNeutral = Color(red: 243/255, green: 243/255, blue: 243/255)
 }
 
 // MARK: - Surface Colors
@@ -119,12 +127,12 @@ extension Color {
 
 extension Color {
     /// Button background - Primary
-    /// RGB: (26, 26, 46) | Hex: #1A1A2E
-    static let buttonPrimary = Color.brandPrimary
+    /// RGB: (254, 111, 111) | Hex: #FE6F6F
+    static let buttonPrimary = Color.brandAccent
 
     /// Button background - Secondary
-    /// RGB: (196, 167, 125) | Hex: #C4A77D
-    static let buttonSecondary = Color.brandAccent
+    /// RGB: (26, 26, 46) | Hex: #1A1A2E
+    static let buttonSecondary = Color.brandSecondary
 
     /// Button disabled state
     /// RGB: (224, 224, 224) | Hex: #E0E0E0
@@ -174,8 +182,8 @@ extension Color {
     /// RGB: (128, 128, 128) | Hex: #808080
     static let passColor = Color(red: 128/255, green: 128/255, blue: 128/255)
 
-    /// Shop/CTA color - Gold (matches brandAccent)
-    /// RGB: (196, 167, 125) | Hex: #C4A77D
+    /// Shop/CTA color - Coral/Salmon Red (matches brandAccent)
+    /// RGB: (254, 111, 111) | Hex: #FE6F6F
     static let shopColor = Color.brandAccent
 }
 
@@ -195,13 +203,13 @@ extension Color {
     static let swipeUp = Color(red: 1, green: 193/255, blue: 7/255)
 }
 
-// MARK: - Gradient Colors
+// MARK: - Gradient Colors (Deprecated - Use Solid Colors Instead)
 
 extension Color {
-    /// Gradient start - Deep Navy
+    /// Solid background - Light Pink/Lavender (replaces gradient)
     static let gradientStart = Color.brandPrimary
 
-    /// Gradient end - Warm Gold
+    /// Solid background - Coral/Salmon Red (replaces gradient)
     static let gradientEnd = Color.brandAccent
 
     /// Skeleton loading - Light Gray

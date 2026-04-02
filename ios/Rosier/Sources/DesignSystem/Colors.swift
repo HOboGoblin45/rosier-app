@@ -4,14 +4,29 @@ import SwiftUI
 extension Color {
     // MARK: - Brand Colors
 
-    /// Primary brand color - dark in light mode, light in dark mode.
+    /// Primary brand color - light pink/lavender in light mode, dark variant in dark mode.
     static var brandPrimary: Color {
-        Color(light: 0x1A1A2E, dark: 0xE8E8F0)
+        Color(light: 0xF3CBF0, dark: 0xE8B5E0)
     }
 
-    /// Brand accent color - warm gold tone.
+    /// Secondary brand color - deep navy.
+    static var brandSecondary: Color {
+        Color(light: 0x1A1A2E, dark: 0x2D2D4D)
+    }
+
+    /// Brand accent color - coral/salmon red.
     static var brandAccent: Color {
-        Color(light: 0xC4A77D, dark: 0xD4B98D)
+        Color(light: 0xFE6F6F, dark: 0xFF9999)
+    }
+
+    /// Tertiary brand color - coral/salmon red (alias for accent).
+    static var brandTertiary: Color {
+        Color(light: 0xFE6F6F, dark: 0xFF9999)
+    }
+
+    /// Neutral color - light gray.
+    static var brandNeutral: Color {
+        Color(light: 0xF3F3F3, dark: 0x2A2A2A)
     }
 
     // MARK: - Surface Colors

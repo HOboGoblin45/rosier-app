@@ -20,22 +20,8 @@ struct ReferralRewardCard: View {
             RoundedRectangle(cornerRadius: 14)
                 .fill(
                     isUnlocked
-                        ? LinearGradient(
-                            gradient: Gradient(colors: [
-                                Color.brandAccent.opacity(0.12),
-                                Color.brandAccent.opacity(0.06)
-                            ]),
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                        : LinearGradient(
-                            gradient: Gradient(colors: [
-                                Color.textTertiary.opacity(0.08),
-                                Color.textTertiary.opacity(0.04)
-                            ]),
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
+                        ? Color.brandAccent.opacity(0.12)
+                        : Color.textTertiary.opacity(0.08)
                 )
 
             // Border

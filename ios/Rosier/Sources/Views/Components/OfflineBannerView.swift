@@ -49,16 +49,7 @@ struct OfflineBannerView: View {
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
         .frame(maxWidth: .infinity)
-        .background(
-            LinearGradient(
-                gradient: Gradient(colors: [
-                    Color.saleRed,
-                    Color.saleRed.opacity(0.8)
-                ]),
-                startPoint: .leading,
-                endPoint: .trailing
-            )
-        )
+        .background(Color.saleRed)
         .onTapGesture {
             withAnimation(.easeInOut(duration: 0.3)) {
                 isOffline = false

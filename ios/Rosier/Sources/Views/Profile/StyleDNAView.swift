@@ -190,16 +190,9 @@ struct StyleDNAView: View {
     @ViewBuilder
     private func styleCard() -> some View {
         ZStack(alignment: .topLeading) {
-            // Gradient background from user's palette
-            LinearGradient(
-                gradient: Gradient(colors: [
-                    Color.brandPrimary.opacity(0.9),
-                    Color.brandAccent.opacity(0.3)
-                ]),
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-            .ignoresSafeArea()
+            // Solid background color (replaced gradient)
+            Color.brandPrimary.opacity(0.85)
+                .ignoresSafeArea()
 
             VStack(alignment: .leading, spacing: 24) {
                 // Title

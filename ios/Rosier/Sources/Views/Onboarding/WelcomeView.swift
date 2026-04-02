@@ -25,16 +25,9 @@ struct WelcomeView: View {
             VStack(spacing: 0) {
                 // Top half with parallax effect
                 ZStack(alignment: .center) {
-                    // Gradient backdrop
-                    LinearGradient(
-                        gradient: Gradient(colors: [
-                            Color.brandPrimary.opacity(0.05),
-                            Color.brandAccent.opacity(0.1)
-                        ]),
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                    .ignoresSafeArea()
+                    // Solid color backdrop (replaced gradient)
+                    Color.brandPrimary.opacity(0.08)
+                        .ignoresSafeArea()
 
                     // Product collage with parallax (0.3x speed)
                     VStack(spacing: 12) {

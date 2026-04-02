@@ -337,16 +337,7 @@ struct ReferralProgressSectionView: View {
                     .fill(Color.textTertiary.opacity(0.2))
 
                 RoundedRectangle(cornerRadius: 6)
-                    .fill(
-                        LinearGradient(
-                            gradient: Gradient(colors: [
-                                Color.brandAccent,
-                                Color.brandAccent.opacity(0.8)
-                            ]),
-                            startPoint: .leading,
-                            endPoint: .trailing
-                        )
-                    )
+                    .fill(Color.brandAccent)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .frame(width: max(8, UIScreen.main.bounds.width * 0.7 * (stats.progressToNextTier / 100)))
             }

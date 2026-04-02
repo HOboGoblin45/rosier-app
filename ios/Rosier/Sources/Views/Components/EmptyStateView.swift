@@ -168,17 +168,7 @@ struct EmptyStateView: View {
                         // Progress circle
                         Circle()
                             .trim(from: 0, to: type.progressValue)
-                            .stroke(
-                                LinearGradient(
-                                    gradient: Gradient(colors: [
-                                        Color.brandAccent,
-                                        Color.saleRed.opacity(0.8)
-                                    ]),
-                                    startPoint: .topLeading,
-                                    endPoint: .bottomTrailing
-                                ),
-                                style: StrokeStyle(lineWidth: 3, lineCap: .round)
-                            )
+                            .stroke(Color.brandAccent, style: StrokeStyle(lineWidth: 3, lineCap: .round))
                             .rotationEffect(.degrees(-90))
 
                         // Center text

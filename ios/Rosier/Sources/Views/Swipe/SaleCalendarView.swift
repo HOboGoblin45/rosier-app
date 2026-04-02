@@ -302,16 +302,7 @@ struct SaleEventCard: View {
                 .foregroundColor(.white)
                 .padding(.horizontal, 12)
                 .padding(.vertical, 6)
-                .background(
-                    LinearGradient(
-                        gradient: Gradient(colors: [
-                            Color.saleRed,
-                            Color.saleRed.opacity(0.8)
-                        ]),
-                        startPoint: .leading,
-                        endPoint: .trailing
-                    )
-                )
+                .background(Color.saleRed)
                 .cornerRadius(6)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal, 12)

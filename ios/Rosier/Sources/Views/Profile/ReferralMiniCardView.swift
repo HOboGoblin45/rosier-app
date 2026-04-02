@@ -44,16 +44,7 @@ struct ReferralMiniCardView: View {
                     .fill(Color.textTertiary.opacity(0.2))
 
                 RoundedRectangle(cornerRadius: 4)
-                    .fill(
-                        LinearGradient(
-                            gradient: Gradient(colors: [
-                                Color.brandAccent,
-                                Color.brandAccent.opacity(0.7)
-                            ]),
-                            startPoint: .leading,
-                            endPoint: .trailing
-                        )
-                    )
+                    .fill(Color.brandAccent)
                     .frame(width: max(4, 250 * (stats.progressToNextTier / 100)))
             }
             .frame(height: 6)
