@@ -57,7 +57,7 @@ final class OfflineSyncService: NSObject, ObservableObject {
         }
 
         do {
-            try await persistenceController.performBackgroundTaskWithSave { context in
+            try await persistenceController.performBackgroundTaskWithSave { context throws in
                 let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CachedSwipeEvent")
                 fetchRequest.predicate = NSPredicate(format: "isSynced == false")
 
@@ -219,7 +219,7 @@ final class OfflineSyncService: NSObject, ObservableObject {
     /// Gets offline card queue from cache.
     func getOfflineCardQueue() async -> [Product] {
         do {
-            return try await persistenceController.performBackgroundTask { context in
+            return try await persistenceController.performBackgroundTask { context throws in
                 let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CachedCardQueue")
                 fetchRequest.sortDescriptors = [NSSortDescriptor(key: "queuePosition", ascending: true)]
 
@@ -247,7 +247,7 @@ final class OfflineSyncService: NSObject, ObservableObject {
         guard isOnline else { return }
 
         do {
-            try await persistenceController.performBackgroundTask { context in
+            try await persistenceController.performBackgroundTask { context throws in
                 let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CachedDresserItem")
                 guard let items = try context.fetch(fetchRequest) as? [NSManagedObject] else {
                     return
@@ -297,7 +297,7 @@ final class OfflineSyncService: NSObject, ObservableObject {
 
     /// Gets the count of cached cards in the queue.
     private func getCardQueueCacheCount() async throws -> Int {
-        return try await persistenceController.performBackgroundTask { context in
+        return try await persistenceController.performBackgroundTask { context throws in
             let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CachedCardQueue")
             return try context.count(for: fetchRequest)
         }
