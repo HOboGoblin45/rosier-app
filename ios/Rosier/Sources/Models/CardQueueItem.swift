@@ -1,7 +1,7 @@
 import Foundation
 
 /// Wrapper around a Product with queue-specific metadata for card swiping.
-public struct CardQueueItem: Identifiable, Hashable, Codable {
+struct CardQueueItem: Identifiable, Hashable, Codable {
     // MARK: - Identifiers
 
     /// Unique identifier for this queue item.
@@ -74,7 +74,7 @@ public struct CardQueueItem: Identifiable, Hashable, Codable {
     ///   - queuePosition: Current position in queue
     ///   - queueSize: Total queue size
     ///   - sessionId: Session identifier
-    public init(
+    init(
         product: Product,
         queuePosition: Int,
         queueSize: Int,

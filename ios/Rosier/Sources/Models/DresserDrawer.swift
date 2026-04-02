@@ -1,7 +1,7 @@
 import Foundation
 
 /// Represents a user's virtual dresser drawer for saving and organizing fashion items.
-public struct DresserDrawer: Identifiable, Codable, Hashable {
+struct DresserDrawer: Identifiable, Codable, Hashable {
     // MARK: - Identifiers
 
     /// Unique identifier for the dresser drawer.
@@ -66,7 +66,7 @@ public struct DresserDrawer: Identifiable, Codable, Hashable {
     ///   - colorTag: Color tag for visual identification
     ///   - displayOrder: Sorting order
     ///   - isDefault: Whether this is the default drawer
-    public init(
+    init(
         id: UUID = UUID(),
         userId: UUID,
         name: String,
@@ -88,7 +88,7 @@ public struct DresserDrawer: Identifiable, Codable, Hashable {
 }
 
 /// A product saved to a dresser drawer.
-public struct SavedProduct: Identifiable, Codable, Hashable {
+struct SavedProduct: Identifiable, Codable, Hashable {
     // MARK: - Identifiers
 
     /// Unique identifier for this saved product entry.
@@ -156,7 +156,7 @@ public struct SavedProduct: Identifiable, Codable, Hashable {
     ///   - notes: Optional notes
     ///   - desiredSize: Optional desired size
     ///   - isPriority: Whether marked as priority
-    public init(
+    init(
         drawerId: UUID,
         product: Product,
         notes: String? = nil,
@@ -181,7 +181,7 @@ public struct SavedProduct: Identifiable, Codable, Hashable {
 }
 
 /// Color tags for visual organization of dresser drawers.
-public enum DresserColorTag: String, Codable, CaseIterable {
+enum DresserColorTag: String, Codable, CaseIterable {
     case red
     case orange
     case yellow

@@ -2,10 +2,10 @@ import Foundation
 import UIKit
 
 /// Image loading and caching service with memory and disk storage.
-public final class ImageCacheService {
+final class ImageCacheService {
     // MARK: - Singleton
 
-    public static let shared = ImageCacheService()
+    static let shared = ImageCacheService()
 
     // MARK: - Properties
 
@@ -23,7 +23,7 @@ public final class ImageCacheService {
 
     // MARK: - Initializers
 
-    public init() {
+    init() {
         let config = URLSessionConfiguration.default
         config.urlCache = URLCache(
             memoryCapacity: 0,
@@ -38,7 +38,7 @@ public final class ImageCacheService {
     // MARK: - Public Methods
 
     /// Loads an image from URL with caching support.
-    public func loadImage(from url: URL) async -> UIImage? {
+    func loadImage(from url: URL) async -> UIImage? {
         let key = url.absoluteString as NSString
 
         // Check memory cache first

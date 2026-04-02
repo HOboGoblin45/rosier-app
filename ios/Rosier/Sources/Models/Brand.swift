@@ -1,7 +1,7 @@
 import Foundation
 
 /// Represents a fashion brand in the Rosier ecosystem.
-public struct Brand: Identifiable, Codable, Hashable {
+struct Brand: Identifiable, Codable, Hashable {
     // MARK: - Identifiers
 
     /// Unique identifier for the brand.
@@ -50,7 +50,7 @@ public struct Brand: Identifiable, Codable, Hashable {
 }
 
 /// Brand tier classification for filtering and ranking.
-public enum BrandTier: String, Codable, CaseIterable {
+enum BrandTier: String, Codable, CaseIterable {
     case emerging
     case established
     case luxury

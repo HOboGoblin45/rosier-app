@@ -2,17 +2,17 @@ import Foundation
 import AuthenticationServices
 
 /// Authentication service handling sign-in, token management, and session persistence.
-public final class AuthService: NSObject, ObservableObject {
+final class AuthService: NSObject, ObservableObject {
     // MARK: - Singleton
 
-    public static let shared = AuthService()
+    static let shared = AuthService()
 
     // MARK: - Published Properties
 
-    @Published public var isAuthenticated = false
-    @Published public var currentUser: UserProfile?
-    @Published public var isLoading = false
-    @Published public var error: AuthError?
+    @Published var isAuthenticated = false
+    @Published var currentUser: UserProfile?
+    @Published var isLoading = false
+    @Published var error: AuthError?
 
     // MARK: - Private Properties
 
@@ -59,7 +59,7 @@ public final class AuthService: NSObject, ObservableObject {
     // MARK: - Public Methods
 
     /// Gets a valid access token, refreshing if necessary.
-    public func getValidToken() async throws -> String? {
+    func getValidToken() async throws -> String? {
         if let token = accessToken, !isTokenExpired(token) {
             return token
         }
@@ -69,7 +69,7 @@ public final class AuthService: NSObject, ObservableObject {
     }
 
     /// Authenticates with Apple Sign-In.
-    public func signInWithApple() async throws {
+    func signInWithApple() async throws {
         isLoading = true
         defer { isLoading = false }
 
@@ -85,7 +85,7 @@ public final class AuthService: NSObject, ObservableObject {
     }
 
     /// Authenticates with email and password.
-    public func signInWithEmail(_ email: String, password: String) async throws {
+    func signInWithEmail(_ email: String, password: String) async throws {
         isLoading = true
         defer { isLoading = false }
 
@@ -94,7 +94,7 @@ public final class AuthService: NSObject, ObservableObject {
     }
 
     /// Registers a new account with email.
-    public func signUpWithEmail(
+    func signUpWithEmail(
         email: String,
         password: String,
         displayName: String
@@ -119,7 +119,7 @@ public final class AuthService: NSObject, ObservableObject {
     }
 
     /// Refreshes the access token using the refresh token.
-    public func refreshToken() async throws {
+    func refreshToken() async throws {
         guard let refreshToken = refreshToken else {
             throw AuthError.noRefreshToken
         }
@@ -141,7 +141,7 @@ public final class AuthService: NSObject, ObservableObject {
     }
 
     /// Merges an anonymous session with a newly authenticated user.
-    public func mergeSession() async throws {
+    func mergeSession() async throws {
         let mergeRequest = MergeSessionRequest(sessionId: sessionId)
         try await networkService.requestEmpty(
             "auth/merge-session",
@@ -151,7 +151,7 @@ public final class AuthService: NSObject, ObservableObject {
     }
 
     /// Fetches the current user's profile from the backend.
-    public func fetchCurrentUser() async throws {
+    func fetchCurrentUser() async throws {
         let profile: UserProfile = try await networkService.request("users/me")
         DispatchQueue.main.async {
             self.currentUser = profile
@@ -161,7 +161,7 @@ public final class AuthService: NSObject, ObservableObject {
     }
 
     /// Signs out the current user.
-    public func signOut() {
+    func signOut() {
         accessToken = nil
         refreshToken = nil
         currentUser = nil
@@ -247,7 +247,7 @@ public final class AuthService: NSObject, ObservableObject {
 
 // MARK: - Auth Models
 
-public struct AuthResponse: Codable {
+struct AuthResponse: Codable {
     let accessToken: String
     let refreshToken: String
     let expiresIn: Int
@@ -285,7 +285,7 @@ enum AuthMethod {
 
 // MARK: - Auth Error
 
-public enum AuthError: LocalizedError {
+enum AuthError: LocalizedError {
     case invalidCredentials
     case noRefreshToken
     case tokenRefreshFailed
@@ -310,7 +310,7 @@ public enum AuthError: LocalizedError {
 
 // MARK: - Keychain Helper
 
-public final class KeychainHelper {
+final class KeychainHelper {
     func save(key: String, value: String) {
         let data = value.data(using: .utf8) ?? Data()
         let query: [String: Any] = [

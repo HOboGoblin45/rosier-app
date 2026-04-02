@@ -1,7 +1,7 @@
 import Foundation
 
 /// User profile containing personal information, preferences, and settings.
-public struct UserProfile: Identifiable, Codable, Hashable {
+struct UserProfile: Identifiable, Codable, Hashable {
     // MARK: - Identifiers
 
     /// Unique user identifier.
@@ -85,7 +85,7 @@ public struct UserProfile: Identifiable, Codable, Hashable {
     // MARK: - Initializers
 
     /// Creates a new user profile.
-    public init(
+    init(
         id: UUID = UUID(),
         email: String? = nil,
         displayName: String? = nil,
@@ -116,7 +116,7 @@ public struct UserProfile: Identifiable, Codable, Hashable {
 }
 
 /// User's age range for personalization and compliance.
-public enum AgeRange: String, Codable, CaseIterable {
+enum AgeRange: String, Codable, CaseIterable {
     case range18To24 = "18-24"
     case range25To34 = "25-34"
     case range35To44 = "35-44"
@@ -129,7 +129,7 @@ public enum AgeRange: String, Codable, CaseIterable {
 }
 
 /// Style quiz responses capturing user fashion preferences.
-public struct QuizResponses: Codable, Hashable {
+struct QuizResponses: Codable, Hashable {
     /// Preferred style archetypes.
     let styleArchetypes: [String]
 
@@ -150,7 +150,7 @@ public struct QuizResponses: Codable, Hashable {
 }
 
 /// Price range preferences for different product categories.
-public struct PricePreferences: Codable, Hashable {
+struct PricePreferences: Codable, Hashable {
     /// Maximum price for clothing in cents.
     let clothingMaxCents: Int
 

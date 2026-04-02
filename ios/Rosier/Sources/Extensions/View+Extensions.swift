@@ -3,7 +3,7 @@ import UIKit
 
 // MARK: - Spacing Enum
 
-public enum ViewSpacing: CGFloat {
+enum ViewSpacing: CGFloat {
     case xxSmall = 4
     case xSmall = 8
     case small = 12
@@ -20,7 +20,7 @@ extension View {
     /// - Parameters:
     ///   - condition: The condition to check
     ///   - modifier: The modifier to apply if condition is true
-    public @ViewBuilder func `if`<Content: View>(
+    @ViewBuilder func `if`<Content: View>(
         _ condition: Bool,
         @ViewBuilder transform: (Self) -> Content
     ) -> some View {
@@ -36,7 +36,7 @@ extension View {
     ///   - condition: The condition to check
     ///   - ifTrue: The modifier to apply if condition is true
     ///   - ifFalse: The modifier to apply if condition is false
-    public @ViewBuilder func ifElse<TrueContent: View, FalseContent: View>(
+    @ViewBuilder func ifElse<TrueContent: View, FalseContent: View>(
         _ condition: Bool,
         @ViewBuilder ifTrue: (Self) -> TrueContent,
         @ViewBuilder ifFalse: (Self) -> FalseContent

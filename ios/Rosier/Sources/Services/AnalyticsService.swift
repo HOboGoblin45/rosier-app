@@ -1,7 +1,7 @@
 import Foundation
 
 /// Analytics service protocol for flexible provider implementation.
-public protocol AnalyticsServiceProtocol {
+protocol AnalyticsServiceProtocol {
     func trackEvent(_ name: String, properties: [String: Any]?)
     func trackScreenView(_ screenName: String)
     func trackUserAction(_ action: UserAction)
@@ -12,10 +12,10 @@ public protocol AnalyticsServiceProtocol {
 }
 
 /// Concrete analytics service implementation.
-public final class AnalyticsService: AnalyticsServiceProtocol {
+final class AnalyticsService: AnalyticsServiceProtocol {
     // MARK: - Singleton
 
-    public static let shared = AnalyticsService()
+    static let shared = AnalyticsService()
 
     // MARK: - Properties
 
@@ -27,14 +27,14 @@ public final class AnalyticsService: AnalyticsServiceProtocol {
 
     // MARK: - Initializers
 
-    public init(networkService: NetworkService = .shared) {
+    init(networkService: NetworkService = .shared) {
         self.networkService = networkService
     }
 
     // MARK: - Public Methods
 
     /// Tracks a custom analytics event.
-    public func trackEvent(_ name: String, properties: [String: Any]? = nil) {
+    func trackEvent(_ name: String, properties: [String: Any]? = nil) {
         let event = AnalyticsEventRecord(
             sessionId: sessionId,
             name: name,
@@ -50,12 +50,12 @@ public final class AnalyticsService: AnalyticsServiceProtocol {
     }
 
     /// Tracks a screen view.
-    public func trackScreenView(_ screenName: String) {
+    func trackScreenView(_ screenName: String) {
         trackEvent("screen_view", properties: ["screen_name": screenName])
     }
 
     /// Tracks a user action.
-    public func trackUserAction(_ action: UserAction) {
+    func trackUserAction(_ action: UserAction) {
         let properties: [String: Any] = [
             "action_type": action.type.rawValue,
             "action_name": action.name,
@@ -66,7 +66,7 @@ public final class AnalyticsService: AnalyticsServiceProtocol {
     }
 
     /// Sets a user property for segmentation.
-    public func setUserProperty(_ property: String, value: Any) {
+    func setUserProperty(_ property: String, value: Any) {
         trackEvent("user_property", properties: [
             "property": property,
             "value": String(describing: value),
@@ -74,20 +74,20 @@ public final class AnalyticsService: AnalyticsServiceProtocol {
     }
 
     /// Starts a new analytics session.
-    public func startSession() {
+    func startSession() {
         sessionStartTime = Date()
         trackEvent("session_start")
     }
 
     /// Ends the current analytics session.
-    public func endSession() {
+    func endSession() {
         let duration = Date().timeIntervalSince(sessionStartTime)
         trackEvent("session_end", properties: ["duration_seconds": duration])
         flush()
     }
 
     /// Flushes buffered events to the server.
-    public func flush() {
+    func flush() {
         guard !events.isEmpty else { return }
 
         let eventsToSend = events

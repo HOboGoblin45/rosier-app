@@ -1,60 +1,60 @@
 import SwiftUI
 
 /// Typography style definitions with Dynamic Type support.
-public enum Typography {
+enum Typography {
     // MARK: - Display Styles
 
     /// Display Large: 34pt Bold, -0.4pt tracking
-    public static var displayLarge: Font {
+    static var displayLarge: Font {
         .system(size: 34, weight: .bold, design: .default)
     }
 
-    public static var displayLargeMetrics: UIFontMetrics {
+    static var displayLargeMetrics: UIFontMetrics {
         UIFontMetrics(forTextStyle: .largeTitle)
     }
 
     /// Display Medium: 28pt Bold, -0.2pt tracking
-    public static var displayMedium: Font {
+    static var displayMedium: Font {
         .system(size: 28, weight: .bold, design: .default)
     }
 
-    public static var displayMediumMetrics: UIFontMetrics {
+    static var displayMediumMetrics: UIFontMetrics {
         UIFontMetrics(forTextStyle: .title1)
     }
 
     // MARK: - Title Styles
 
     /// Title Large: 22pt Semibold
-    public static var titleLarge: Font {
+    static var titleLarge: Font {
         .system(size: 22, weight: .semibold, design: .default)
     }
 
-    public static var titleLargeMetrics: UIFontMetrics {
+    static var titleLargeMetrics: UIFontMetrics {
         UIFontMetrics(forTextStyle: .title1)
     }
 
     /// Title Medium: 20pt Semibold
-    public static var titleMedium: Font {
+    static var titleMedium: Font {
         .system(size: 20, weight: .semibold, design: .default)
     }
 
-    public static var titleMediumMetrics: UIFontMetrics {
+    static var titleMediumMetrics: UIFontMetrics {
         UIFontMetrics(forTextStyle: .title2)
     }
 
     // MARK: - Body Styles
 
     /// Body: 17pt Regular
-    public static var body: Font {
+    static var body: Font {
         .system(size: 17, weight: .regular, design: .default)
     }
 
     /// Body Bold: 17pt Semibold
-    public static var bodyBold: Font {
+    static var bodyBold: Font {
         .system(size: 17, weight: .semibold, design: .default)
     }
 
-    public static var bodyMetrics: UIFontMetrics {
+    static var bodyMetrics: UIFontMetrics {
         UIFontMetrics(forTextStyle: .body)
     }
 

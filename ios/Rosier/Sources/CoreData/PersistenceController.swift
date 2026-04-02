@@ -2,21 +2,21 @@ import CoreData
 import Foundation
 
 /// Manages Core Data stack for the Rosier app with offline persistence.
-public final class PersistenceController {
+final class PersistenceController {
     // MARK: - Singleton
 
-    public static let shared = PersistenceController()
+    static let shared = PersistenceController()
 
     // MARK: - Properties
 
-    public let container: NSPersistentContainer
+    let container: NSPersistentContainer
     private let modelName = "Rosier"
 
-    public var mainContext: NSManagedObjectContext {
+    var mainContext: NSManagedObjectContext {
         container.viewContext
     }
 
-    public var backgroundContext: NSManagedObjectContext {
+    var backgroundContext: NSManagedObjectContext {
         let context = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
         context.parent = mainContext
         context.automaticallyMergesChangesFromParent = true
@@ -28,7 +28,7 @@ public final class PersistenceController {
 
     /// Initializes the Core Data stack.
     /// - Parameter inMemory: If true, uses in-memory store (for testing/previews)
-    public init(inMemory: Bool = false) {
+    init(inMemory: Bool = false) {
         self.container = NSPersistentContainer(name: modelName)
 
         if inMemory {

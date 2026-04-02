@@ -4,7 +4,7 @@ extension Date {
     // MARK: - Date Formatting
 
     /// Formats the date as a short date string (e.g., "Mar 15, 2026").
-    public var shortDateString: String {
+    var shortDateString: String {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
         formatter.timeStyle = .none
@@ -12,7 +12,7 @@ extension Date {
     }
 
     /// Formats the date as a long date string (e.g., "Monday, March 15, 2026").
-    public var longDateString: String {
+    var longDateString: String {
         let formatter = DateFormatter()
         formatter.dateStyle = .long
         formatter.timeStyle = .none
@@ -20,7 +20,7 @@ extension Date {
     }
 
     /// Formats the date as a time string (e.g., "2:45 PM").
-    public var shortTimeString: String {
+    var shortTimeString: String {
         let formatter = DateFormatter()
         formatter.dateStyle = .none
         formatter.timeStyle = .short
@@ -28,7 +28,7 @@ extension Date {
     }
 
     /// Formats the date as a relative string (e.g., "2 hours ago").
-    public var relativeString: String {
+    var relativeString: String {
         let calendar = Calendar.current
         let now = Date()
         let components = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: self, to: now)

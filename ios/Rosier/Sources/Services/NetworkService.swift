@@ -1,10 +1,10 @@
 import Foundation
 
 /// Generic URLSession-based networking layer with JWT authentication.
-public final class NetworkService {
+final class NetworkService {
     // MARK: - Singleton
 
-    public static let shared = NetworkService()
+    static let shared = NetworkService()
 
     // MARK: - Properties
 
@@ -18,7 +18,7 @@ public final class NetworkService {
     /// - Parameters:
     ///   - baseURL: Base URL for API requests
     ///   - configuration: URL session configuration
-    public init(
+    init(
         baseURL: URL = URL(string: "https://api.rosier.app/v1")!,
         configuration: URLSessionConfiguration = .default
     ) {
@@ -29,7 +29,7 @@ public final class NetworkService {
     // MARK: - Public Methods
 
     /// Sets the auth service reference for token injection.
-    public func setAuthService(_ authService: AuthService) {
+    func setAuthService(_ authService: AuthService) {
         self.authService = authService
     }
 
@@ -40,7 +40,7 @@ public final class NetworkService {
     ///   - body: Optional request body (will be JSON encoded)
     ///   - headers: Additional headers to include
     /// - Returns: Decoded response of type T
-    public func request<T: Decodable>(
+    func request<T: Decodable>(
         _ endpoint: String,
         method: HTTPMethod = .get,
         body: Encodable? = nil,
@@ -90,7 +90,7 @@ public final class NetworkService {
     }
 
     /// Performs a network request that returns no content (e.g., DELETE, POST with 204 response).
-    public func requestEmpty(
+    func requestEmpty(
         _ endpoint: String,
         method: HTTPMethod = .post,
         body: Encodable? = nil,
@@ -159,7 +159,7 @@ public final class NetworkService {
 
 // MARK: - HTTP Method Enum
 
-public enum HTTPMethod: String {
+enum HTTPMethod: String {
     case get = "GET"
     case post = "POST"
     case put = "PUT"
@@ -170,7 +170,7 @@ public enum HTTPMethod: String {
 
 // MARK: - Network Error Enum
 
-public enum NetworkError: LocalizedError {
+enum NetworkError: LocalizedError {
     case invalidResponse
     case badRequest
     case unauthorized

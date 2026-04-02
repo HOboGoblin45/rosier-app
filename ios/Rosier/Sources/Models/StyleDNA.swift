@@ -1,7 +1,7 @@
 import Foundation
 
 /// User's computed style DNA based on quiz responses and swipe history.
-public struct StyleDNA: Identifiable, Codable, Hashable {
+struct StyleDNA: Identifiable, Codable, Hashable {
     // MARK: - Identifiers
 
     /// Unique identifier for this style DNA.
@@ -77,7 +77,7 @@ public struct StyleDNA: Identifiable, Codable, Hashable {
     // MARK: - Initializers
 
     /// Creates a new style DNA.
-    public init(
+    init(
         userId: UUID,
         archetype: String,
         secondaryArchetypes: [String] = [],
@@ -109,7 +109,7 @@ public struct StyleDNA: Identifiable, Codable, Hashable {
 }
 
 /// User's color palette preferences.
-public struct ColorPalette: Codable, Hashable {
+struct ColorPalette: Codable, Hashable {
     /// Primary colors in the palette.
     let primaryColors: [String]
 
@@ -122,7 +122,7 @@ public struct ColorPalette: Codable, Hashable {
     /// Whether the user prefers warm or cool tones.
     let tempPreference: TemperaturePreference
 
-    public init(
+    init(
         primaryColors: [String] = [],
         neutrals: [String] = ["black", "white", "gray"],
         accents: [String] = [],
@@ -136,14 +136,14 @@ public struct ColorPalette: Codable, Hashable {
 }
 
 /// Color temperature preference.
-public enum TemperaturePreference: String, Codable {
+enum TemperaturePreference: String, Codable {
     case warm
     case cool
     case neutral
 }
 
 /// Price range preference bracket.
-public enum PriceRange: String, Codable {
+enum PriceRange: String, Codable {
     case budget
     case moderate
     case premium
@@ -165,7 +165,7 @@ public enum PriceRange: String, Codable {
 }
 
 /// Statistics about user's swipe history and interactions.
-public struct StyleStats: Codable, Hashable {
+struct StyleStats: Codable, Hashable {
     /// Total number of swipes.
     let totalSwipes: Int
 
@@ -190,7 +190,7 @@ public struct StyleStats: Codable, Hashable {
     /// Most engaged brands.
     let engagedBrands: [UUID: Int]
 
-    public init(
+    init(
         totalSwipes: Int = 0,
         totalLikes: Int = 0,
         likeRate: Double = 0.0,

@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Coordinator managing the onboarding flow (Welcome → StyleQuiz → Confirmation).
-public final class OnboardingCoordinator: BaseCoordinator<OnboardingScreen, SheetType, FullScreenCoverType> {
+final class OnboardingCoordinator: BaseCoordinator<OnboardingScreen, SheetType, FullScreenCoverType> {
     // MARK: - Properties
 
     @Published var quizResponses: QuizResponses?

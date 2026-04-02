@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Root coordinator that manages the app's overall navigation flow.
-public final class AppCoordinator: BaseCoordinator<MainScreen, SheetType, FullScreenCoverType> {
+final class AppCoordinator: BaseCoordinator<MainScreen, SheetType, FullScreenCoverType> {
     // MARK: - Properties
 
     @Published var authState: AuthState = .checking

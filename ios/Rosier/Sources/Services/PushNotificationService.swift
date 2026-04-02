@@ -4,15 +4,15 @@ import SafariServices
 import UIKit
 
 /// Manages push notifications including permissions, registration, and deep linking.
-public final class PushNotificationService: NSObject, ObservableObject {
+final class PushNotificationService: NSObject, ObservableObject {
     // MARK: - Singleton
 
-    public static let shared = PushNotificationService()
+    static let shared = PushNotificationService()
 
     // MARK: - Published Properties
 
-    @Published public var notificationEnabled = false
-    @Published public var badgeCount = 0
+    @Published var notificationEnabled = false
+    @Published var badgeCount = 0
 
     // MARK: - Properties
 
@@ -36,7 +36,7 @@ public final class PushNotificationService: NSObject, ObservableObject {
     // MARK: - Public Methods
 
     /// Requests notification permissions and registers for remote notifications.
-    public func requestNotificationPermissions() async -> Bool {
+    func requestNotificationPermissions() async -> Bool {
         do {
             let granted = try await notificationCenter.requestAuthorization(
                 options: [.alert, .sound, .badge]

@@ -12,7 +12,7 @@ extension View {
     ///   - product: Product name or description
     ///   - price: Product price string
     /// - Returns: View with applied accessibility modifiers
-    public func accessibleCard(
+    func accessibleCard(
         brand: String,
         product: String,
         price: String
@@ -32,7 +32,7 @@ extension View {
     ///   - price: Current price
     ///   - priceDropped: Whether the price has dropped since saving
     /// - Returns: View with applied accessibility modifiers
-    public func accessibleDresserItem(
+    func accessibleDresserItem(
         brand: String,
         product: String,
         price: String,

@@ -1,10 +1,10 @@
 import Foundation
 
 /// Batches swipe events and sends them to the backend with retry logic.
-public final class SwipeEventService {
+final class SwipeEventService {
     // MARK: - Singleton
 
-    public static let shared = SwipeEventService()
+    static let shared = SwipeEventService()
 
     // MARK: - Properties
 
@@ -17,7 +17,7 @@ public final class SwipeEventService {
 
     // MARK: - Initializers
 
-    public init(networkService: NetworkService = .shared) {
+    init(networkService: NetworkService = .shared) {
         self.networkService = networkService
         loadPersistedEvents()
         startBatchTimer()
@@ -30,7 +30,7 @@ public final class SwipeEventService {
     // MARK: - Public Methods
 
     /// Tracks a swipe event and adds it to the batch queue.
-    public func trackEvent(_ event: SwipeEvent) async {
+    func trackEvent(_ event: SwipeEvent) async {
         await MainActor.run {
             eventQueue.append(event)
             persistEvents()
