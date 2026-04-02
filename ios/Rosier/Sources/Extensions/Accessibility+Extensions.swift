@@ -305,16 +305,14 @@ extension View {
     ///
     /// - Parameters:
     ///   - message: Status message to announce
-    ///   - announcement: The type of announcement
     /// - Returns: View with accessibility announcements
     func accessibleStatus(
-        _ message: String,
-        announcement: UIAccessibility.Announcement = .layoutChanged
+        _ message: String
     ) -> some View {
         self.onAppear {
             // Announce status change to VoiceOver
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                UIAccessibility.post(notification: announcement, argument: message)
+                UIAccessibility.post(notification: UIAccessibility.layoutChangedNotification, argument: message)
             }
         }
     }
@@ -361,8 +359,7 @@ extension View {
     /// - Returns: View marked as important button
     func accessibilityImportantButton() -> some View {
         self
-            .accessibilityTraits(.isButton)
-            .accessibilityAddTraits(.startsMediaSession)
+            .accessibilityAddTraits(.isButton)
     }
 }
 
@@ -374,11 +371,11 @@ extension View {
     /// - Parameter message: Message to announce when focused
     /// - Returns: View that announces focus changes
     func announceFocusChange(_ message: String) -> some View {
-        self
-            .accessibilityFocused(.constant(true))
-            .onReceive(NotificationCenter.default.publisher(for: UIAccessibility.focusedElementDidChangeNotification)) { _ in
-                UIAccessibility.post(notification: .announcement, argument: message)
+        self.onAppear {
+            DispatchQueue.main.async {
+                UIAccessibility.post(notification: UIAccessibility.announcementNotification, argument: message)
             }
+        }
     }
 }
 
