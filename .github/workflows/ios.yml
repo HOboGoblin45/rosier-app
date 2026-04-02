@@ -216,30 +216,101 @@ jobs:
       - name: Generate Xcode project
         run: ./scripts/generate_xcodeproj.sh
 
-      - name: Setup code signing
+      - name: Setup signing and provisioning
         env:
           APPLE_DEVELOPER_ID: ${{ secrets.APPLE_DEVELOPER_ID }}
           IOS_CERTIFICATE_BASE64: ${{ secrets.IOS_CERTIFICATE_BASE64 }}
           IOS_CERT_PASSWORD: ${{ secrets.IOS_CERT_PASSWORD }}
-          PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}
-        run: |
-          ./scripts/setup_signing.sh appstore
-
-      - name: Setup API key for signing
-        env:
           APP_STORE_CONNECT_API_KEY: ${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY }}
           APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
           APP_STORE_CONNECT_API_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
         run: |
+          set -euo pipefail
+
+          # --- 1. Create keychain and import certificate ---
+          KEYCHAIN_NAME="rosier-ci-keychain"
+          KEYCHAIN_PASSWORD="$(uuidgen)"
+          security delete-keychain "$KEYCHAIN_NAME" 2>/dev/null || true
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_NAME"
+          security set-keychain-settings -lut 3600 "$KEYCHAIN_NAME"
+          security list-keychains -s "$KEYCHAIN_NAME" $(security list-keychains | sed s/\"//g)
+
+          # Decode and import certificate
+          CERT_DIR=$(mktemp -d)
+          echo "$IOS_CERTIFICATE_BASE64" | base64 --decode > "$CERT_DIR/cert.p12"
+
+          # Re-encode P12 for macOS compatibility (OpenSSL 3.x → legacy format)
+          if openssl pkcs12 -in "$CERT_DIR/cert.p12" -out "$CERT_DIR/cert.pem" -nodes -passin pass:"$IOS_CERT_PASSWORD" 2>/dev/null; then
+            openssl pkcs12 -export -in "$CERT_DIR/cert.pem" -out "$CERT_DIR/cert_legacy.p12" \
+              -passout pass:"$IOS_CERT_PASSWORD" -legacy 2>/dev/null || \
+            openssl pkcs12 -export -in "$CERT_DIR/cert.pem" -out "$CERT_DIR/cert_legacy.p12" \
+              -passout pass:"$IOS_CERT_PASSWORD" -certpbe PBE-SHA1-3DES -keypbe PBE-SHA1-3DES -macalg SHA1 2>/dev/null || \
+            cp "$CERT_DIR/cert.p12" "$CERT_DIR/cert_legacy.p12"
+            rm -f "$CERT_DIR/cert.pem"
+            CERT_FILE="$CERT_DIR/cert_legacy.p12"
+          else
+            CERT_FILE="$CERT_DIR/cert.p12"
+          fi
+
+          security import "$CERT_FILE" -k "$KEYCHAIN_NAME" -P "$IOS_CERT_PASSWORD" -A
+          security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_NAME"
+          echo "Certificate imported:"
+          security find-identity -v -p codesigning "$KEYCHAIN_NAME"
+
+          # --- 2. Write API key for Fastlane and xcodebuild ---
           mkdir -p ~/.appstoreconnect/private_keys
           echo "$APP_STORE_CONNECT_API_KEY" > ~/.appstoreconnect/private_keys/AuthKey_${APP_STORE_CONNECT_API_KEY_ID}.p8
-          echo "API key written for key ID: $APP_STORE_CONNECT_API_KEY_ID"
+
+          cat > /tmp/api_key.json << APIEOF
+          {
+            "key_id": "$APP_STORE_CONNECT_API_KEY_ID",
+            "issuer_id": "$APP_STORE_CONNECT_API_ISSUER_ID",
+            "key": $(python3 -c "import json; print(json.dumps(open('/Users/runner/.appstoreconnect/private_keys/AuthKey_${APP_STORE_CONNECT_API_KEY_ID}.p8').read()))"),
+            "in_house": false
+          }
+          APIEOF
+
+          # --- 3. Download provisioning profile from Apple using Fastlane sigh ---
+          echo "Downloading provisioning profile from Apple..."
+          fastlane sigh \
+            --app_identifier "com.rosier.app" \
+            --api_key_path /tmp/api_key.json \
+            --force \
+            --platform ios \
+            --readonly false 2>&1 || {
+            echo "sigh failed, trying with --adhoc false..."
+            fastlane sigh download_all \
+              --api_key_path /tmp/api_key.json 2>&1 || true
+          }
+
+          # Verify profile installed
+          echo "=== Installed profiles ==="
+          ls -la ~/Library/MobileDevice/Provisioning\ Profiles/ 2>/dev/null || echo "No profiles dir"
+
+          # Extract profile name for xcodebuild
+          PROFILE_PATH=$(ls -t ~/Library/MobileDevice/Provisioning\ Profiles/*.mobileprovision 2>/dev/null | head -1)
+          if [ -n "$PROFILE_PATH" ]; then
+            PROFILE_UUID=$(security cms -D -i "$PROFILE_PATH" 2>/dev/null | plutil -extract UUID raw - 2>/dev/null || true)
+            PROFILE_NAME=$(security cms -D -i "$PROFILE_PATH" 2>/dev/null | plutil -extract Name raw - 2>/dev/null || true)
+            echo "Profile UUID: $PROFILE_UUID"
+            echo "Profile Name: $PROFILE_NAME"
+            echo "PROFILE_UUID=$PROFILE_UUID" >> $GITHUB_ENV
+            echo "PROFILE_NAME=$PROFILE_NAME" >> $GITHUB_ENV
+          else
+            echo "WARNING: No provisioning profile found!"
+          fi
+
+          rm -rf "$CERT_DIR"
 
       - name: Build archive
         env:
           APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
           APP_STORE_CONNECT_API_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
         run: |
+          # Use Manual signing with the downloaded profile
+          PROFILE_SPEC="${PROFILE_NAME:-}"
+          echo "Using provisioning profile: $PROFILE_SPEC"
+
           xcodebuild archive \
             -project Rosier.xcodeproj \
             -scheme Rosier \
@@ -252,9 +323,11 @@ jobs:
             -authenticationKeyID "$APP_STORE_CONNECT_API_KEY_ID" \
             -authenticationKeyIssuerID "$APP_STORE_CONNECT_API_ISSUER_ID" \
             DEVELOPMENT_TEAM='${{ secrets.APPLE_DEVELOPER_ID }}' \
-            CODE_SIGN_STYLE=Automatic \
+            CODE_SIGN_IDENTITY='Apple Distribution' \
+            CODE_SIGN_STYLE=Manual \
             CODE_SIGNING_REQUIRED=YES \
-            CODE_SIGNING_ALLOWED=YES
+            CODE_SIGNING_ALLOWED=YES \
+            PROVISIONING_PROFILE_SPECIFIER="$PROFILE_SPEC"
 
           echo '=== Archive contents ==='
           ls -la build/Rosier.xcarchive/ 2>/dev/null || echo 'Archive not found'
@@ -262,7 +335,7 @@ jobs:
 
       - name: Export IPA
         run: |
-          cat > build/ExportOptions.plist <<'EOF'
+          cat > build/ExportOptions.plist << EXPEOF
           <?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
           <plist version="1.0">
@@ -270,18 +343,21 @@ jobs:
               <key>method</key>
               <string>app-store</string>
               <key>signingStyle</key>
-              <string>automatic</string>
+              <string>manual</string>
               <key>stripSwiftSymbols</key>
               <true/>
               <key>teamID</key>
               <string>${{ secrets.APPLE_DEVELOPER_ID }}</string>
-              <key>provisioningProfileSelection</key>
-              <string>automatic</string>
-              <key>destinationGenericPlatformName</key>
-              <string>ios</string>
+              <key>signingCertificate</key>
+              <string>Apple Distribution</string>
+              <key>provisioningProfiles</key>
+              <dict>
+                  <key>com.rosier.app</key>
+                  <string>${PROFILE_NAME}</string>
+              </dict>
           </dict>
           </plist>
-          EOF
+          EXPEOF
 
           xcodebuild -exportArchive \
             -archivePath build/Rosier.xcarchive \
