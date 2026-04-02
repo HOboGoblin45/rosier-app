@@ -11,11 +11,7 @@ itc_team_name(ENV['ITC_TEAM_NAME'] || "Charles Cresci")
 team_id(ENV['FASTLANE_TEAM_ID'] || "52SKBHZK3L")
 team_name(ENV['FASTLANE_TEAM_NAME'] || "Charles Cresci")
 
-# App Identifier(s)
-app_identifier(
-  default: "com.rosier.app",
-  dev: "com.rosier.app.dev",
-  internal: "com.rosier.app.internal"
-)
+# App Identifier
+app_identifier("com.rosier.app")
 
 # For all available options, check out Appfile documentation
