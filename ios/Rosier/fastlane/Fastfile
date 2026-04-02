@@ -13,12 +13,15 @@ platform :ios do
     end
 
     # Local development: use match
-    match(
+    match_params = {
       type: options[:type] || "development",
       app_identifier: CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier),
-      git_basic_authorization: Base64.strict_encode64("#{ENV['MATCH_GIT_USERNAME']}:#{ENV['MATCH_GIT_TOKEN']}") if ENV['MATCH_GIT_USERNAME'],
       readonly: false
-    )
+    }
+    if ENV['MATCH_GIT_USERNAME']
+      match_params[:git_basic_authorization] = Base64.strict_encode64("#{ENV['MATCH_GIT_USERNAME']}:#{ENV['MATCH_GIT_TOKEN']}")
+    end
+    match(match_params)
   end
 
   private_lane :build_app_for_release do |options|
@@ -271,12 +274,13 @@ platform :ios do
       raise "App Store Connect API credentials not configured"
     end
 
-    Spaceship::ConnectAPI::Token.create(
+    # Use the fastlane action which returns an API key hash suitable for other fastlane actions
+    {
       key_id: key_id,
       issuer_id: issuer_id,
-      key_content: key_content,
+      key: key_content,
       in_house: false
-    )
+    }
   end
 
   def collect_coverage_reports(options)
