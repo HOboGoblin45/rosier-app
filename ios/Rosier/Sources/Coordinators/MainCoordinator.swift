@@ -127,7 +127,17 @@ final class MainCoordinator: BaseCoordinator<MainScreen, SheetType, FullScreenCo
             // Handle invite redirect
             print("Opening invite with code: \(code)")
 
-        case .sale:
+        case .sale(let id):
+            selectTab(.swipe)
+            push(.productDetail(productId: id))
+
+        case .dailyDrop:
+            selectTab(.swipe)
+
+        case .dresserSaleFilter(let retailerId):
+            selectTab(.dresser)
+
+        case .swipeFeed:
             selectTab(.swipe)
 
         case .unknown:
