@@ -98,6 +98,8 @@ targets:
     settings:
       DEFINES_MODULE: 'YES'
       PRODUCT_NAME: RosierUI
+      CODE_SIGN_STYLE: Automatic
+      CODE_SIGN_IDENTITY: ''
     sources:
       - path: Sources
         includes:
