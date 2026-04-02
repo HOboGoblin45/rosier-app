@@ -1,15 +1,14 @@
 """Scheduled task for price monitoring (runs every 4 hours)."""
+
 import asyncio
 import logging
 from datetime import datetime, timezone
 
 from sqlalchemy.ext.asyncio import create_async_engine
-from sqlalchemy.orm import sessionmaker
 
 from app.core.config import get_settings
 from app.core.database import get_session_factory
 from app.services.price_monitor import PriceMonitorService
-from app.services.notification import NotificationService, NotificationType
 
 logger = logging.getLogger(__name__)
 

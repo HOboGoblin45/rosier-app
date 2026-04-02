@@ -1,4 +1,5 @@
 """Referral system endpoints."""
+
 import logging
 from typing import Annotated, Optional
 from uuid import UUID
@@ -173,11 +174,11 @@ async def complete_referral(
     # Get referred user for email
     stmt = select(User).where(User.id == referred_user_id)
     result = await db.execute(stmt)
-    referred_user = result.scalar_one_or_none()
+    result.scalar_one_or_none()
 
     # Trigger emails if reward granted
     if reward:
-        referral = await ReferralService.complete_referral(db, referred_user_id)
+        await ReferralService.complete_referral(db, referred_user_id)
 
         await EmailSequenceService.trigger_referral_milestone(
             db,
@@ -194,7 +195,9 @@ async def complete_referral(
             "id": str(reward.id),
             "type": reward.reward_type,
             "milestone": reward.milestone_count,
-        } if reward else None,
+        }
+        if reward
+        else None,
     }
 
 

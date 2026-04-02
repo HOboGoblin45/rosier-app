@@ -1,4 +1,5 @@
 """Card queue generation and management service."""
+
 import logging
 import random
 from typing import Optional
@@ -81,7 +82,9 @@ class CardQueueService:
                     Product.is_active is True,
                     Product.current_price >= user_prefs.price_range_low,
                     Product.current_price <= user_prefs.price_range_high,
-                    Product.id.not_in(viewed_product_ids) if viewed_product_ids else True,
+                    Product.id.not_in(viewed_product_ids)
+                    if viewed_product_ids
+                    else True,
                 )
             )
             .order_by(Product.created_at.desc())
@@ -149,6 +152,7 @@ class CardQueueService:
         taste_emb_array = None
         if taste_embedding:
             import numpy as np
+
             taste_emb_array = np.array(taste_embedding)
 
         # Use hybrid scoring
@@ -179,7 +183,6 @@ class CardQueueService:
             Diversified queue
         """
         diverse_queue = []
-        brand_counts_window = {}
         retailer_counts = {}
         category_counts = {}
 
@@ -288,7 +291,9 @@ class CardQueueService:
         # Exploration: random selection from medium-scored products (10% of queue)
         exploration_target = int(queue_size * CardQueueService.EXPLORATION_RATE)
         if len(scored_products) > exploitation_target:
-            exploration_candidates = scored_products[exploitation_target : exploitation_target * 2]
+            exploration_candidates = scored_products[
+                exploitation_target : exploitation_target * 2
+            ]
             random_sample = random.sample(
                 exploration_candidates,
                 min(exploration_target, len(exploration_candidates)),
@@ -337,7 +342,9 @@ class CardQueueService:
             "product_id": str(product.id),
             "name": product.name,
             "current_price": float(product.current_price),
-            "original_price": float(product.original_price) if product.original_price else None,
+            "original_price": float(product.original_price)
+            if product.original_price
+            else None,
             "is_on_sale": product.is_on_sale,
             "image_urls": product.image_urls or [],
             "category": product.category,
@@ -416,7 +423,9 @@ class CardQueueService:
             if i > 0 and i < len(queue):  # Don't inject at position 0
                 card = await CardQueueService.get_random_brand_discovery_card(session)
                 if card:
-                    brand_cards.append((i, CardQueueService._brand_discovery_card_to_dict(card)))
+                    brand_cards.append(
+                        (i, CardQueueService._brand_discovery_card_to_dict(card))
+                    )
 
         # Inject cards in reverse order to maintain indices
         for index, brand_card in reversed(brand_cards):
@@ -455,7 +464,9 @@ class CardQueueService:
         if not force_regenerate:
             cached_queue = await get_card_queue(user_id)
             if cached_queue and len(cached_queue) > 0:
-                logger.debug(f"Returning cached queue for user {user_id}: {len(cached_queue)} cards")
+                logger.debug(
+                    f"Returning cached queue for user {user_id}: {len(cached_queue)} cards"
+                )
                 return cached_queue
 
         # Generate new queue
@@ -469,12 +480,16 @@ class CardQueueService:
         )
 
         if not queue:
-            logger.warning(f"Generated empty queue for user {user_id}, returning discovery picks")
+            logger.warning(
+                f"Generated empty queue for user {user_id}, returning discovery picks"
+            )
             # Return some discovery cards if generation fails
             stmt = select(Product).where(Product.is_active is True).limit(20)
             result = await session.execute(stmt)
             fallback_products = result.scalars().all()
-            queue = [CardQueueService._product_to_card(p, 0.5) for p in fallback_products]
+            queue = [
+                CardQueueService._product_to_card(p, 0.5) for p in fallback_products
+            ]
 
         # Inject brand discovery cards at regular intervals
         queue = await CardQueueService.inject_brand_discovery_cards(
@@ -485,6 +500,8 @@ class CardQueueService:
 
         # Cache the queue
         await set_card_queue(user_id, queue, ttl=CardQueueService.QUEUE_TTL)
-        logger.info(f"Generated and cached new queue for user {user_id}: {len(queue)} cards")
+        logger.info(
+            f"Generated and cached new queue for user {user_id}: {len(queue)} cards"
+        )
 
         return queue

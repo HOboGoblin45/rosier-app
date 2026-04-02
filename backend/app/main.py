@@ -1,4 +1,5 @@
 """FastAPI application factory with full service wiring."""
+
 import logging
 from contextlib import asynccontextmanager
 
@@ -37,7 +38,7 @@ logger.setLevel(logging.INFO)
 async def lifespan(app: FastAPI):
     """Application lifespan context manager for startup and shutdown."""
     # Startup
-    settings = get_settings()
+    get_settings()
     logger.info("Starting Rosier API", extra={"service": "rosier"})
 
     try:
@@ -56,7 +57,7 @@ async def lifespan(app: FastAPI):
 
         # Initialize Elasticsearch
         try:
-            es_client = await get_elasticsearch()
+            await get_elasticsearch()
             if await es_health_check():
                 await create_products_index()
                 logger.info("Elasticsearch initialized with products index")
@@ -178,7 +179,15 @@ def create_app() -> FastAPI:
             es_status = "unhealthy"
 
         return {
-            "status": "healthy" if all([db_status == "healthy", redis_status == "healthy", es_status == "healthy"]) else "degraded",
+            "status": "healthy"
+            if all(
+                [
+                    db_status == "healthy",
+                    redis_status == "healthy",
+                    es_status == "healthy",
+                ]
+            )
+            else "degraded",
             "service": settings.APP_NAME,
             "environment": settings.ENVIRONMENT,
             "database": db_status,

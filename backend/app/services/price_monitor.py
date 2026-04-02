@@ -1,4 +1,5 @@
 """Price monitoring service for tracking price changes and notifying on drops."""
+
 import logging
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
@@ -33,7 +34,6 @@ class PriceMonitorService:
     RATE_LIMIT_PER_BATCH = 50  # Process max 50 products per call to avoid API hammering
     PRICE_CHECK_INTERVAL_HOURS = 4  # Recheck prices every 4 hours
 
-
     @staticmethod
     async def get_monitored_product_ids(
         session: AsyncSession,
@@ -50,10 +50,7 @@ class PriceMonitorService:
             List of product IDs to monitor
         """
         # Get products in user dressers
-        stmt = (
-            select(DresserItem.product_id.distinct())
-            .select_from(DresserItem)
-        )
+        stmt = select(DresserItem.product_id.distinct()).select_from(DresserItem)
         result = await session.execute(stmt)
         dresser_product_ids = result.scalars().all()
 
@@ -105,7 +102,9 @@ class PriceMonitorService:
             # Prioritize: not checked recently, monitored by users
             monitored_ids = await PriceMonitorService.get_monitored_product_ids(session)
 
-            cutoff_time = datetime.now(timezone.utc) - timedelta(hours=PriceMonitorService.PRICE_CHECK_INTERVAL_HOURS)
+            datetime.now(timezone.utc) - timedelta(
+                hours=PriceMonitorService.PRICE_CHECK_INTERVAL_HOURS
+            )
 
             stmt = (
                 select(Product)
@@ -139,8 +138,8 @@ class PriceMonitorService:
 
             if product.original_price and product.original_price > 0:
                 change_percent = (
-                    (product.original_price - product.current_price) / product.original_price
-                )
+                    product.original_price - product.current_price
+                ) / product.original_price
                 change_info["price_change_percent"] = float(change_percent)
 
                 # Detect significant price drops
@@ -185,7 +184,6 @@ class PriceMonitorService:
             return None
 
         old_price = product.current_price
-        old_original_price = product.original_price
 
         product.current_price = new_price
         if new_original_price is not None:
@@ -206,11 +204,15 @@ class PriceMonitorService:
             "new_price": float(new_price),
             "price_change": float(price_change),
             "price_change_percent": float(price_change_percent),
-            "is_price_drop": price_change < 0 and abs(price_change_percent) >= PriceMonitorService.PRICE_DROP_THRESHOLD,
+            "is_price_drop": price_change < 0
+            and abs(price_change_percent) >= PriceMonitorService.PRICE_DROP_THRESHOLD,
             "is_on_sale": product.is_on_sale,
         }
 
-        if price_change < 0 and abs(price_change_percent) >= PriceMonitorService.PRICE_DROP_THRESHOLD:
+        if (
+            price_change < 0
+            and abs(price_change_percent) >= PriceMonitorService.PRICE_DROP_THRESHOLD
+        ):
             logger.info(
                 f"Price drop detected: {product.name} ${old_price} -> ${new_price} "
                 f"({price_change_percent:.1%} off)"
@@ -307,7 +309,9 @@ class PriceMonitorService:
                             "image_urls": product.image_urls or [],
                             "original_price": float(product.original_price),
                             "current_price": float(product.current_price),
-                            "savings": float(product.original_price - product.current_price),
+                            "savings": float(
+                                product.original_price - product.current_price
+                            ),
                             "savings_percent": float(drop_percent),
                             "updated_at": product.updated_at.isoformat(),
                         }
@@ -372,7 +376,9 @@ class PriceMonitorService:
                             "image_urls": product.image_urls or [],
                             "original_price": float(product.original_price),
                             "current_price": float(product.current_price),
-                            "savings": float(product.original_price - product.current_price),
+                            "savings": float(
+                                product.original_price - product.current_price
+                            ),
                             "savings_percent": float(drop_percent),
                         }
                     )

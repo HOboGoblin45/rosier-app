@@ -1,16 +1,14 @@
 """Product ingestion pipeline service for importing from affiliate networks and retailers."""
-import asyncio
+
 import csv
-import json
 import logging
 import re
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import Optional
-from urllib.parse import quote
 
 import httpx
-from sqlalchemy import and_, func, select
+from sqlalchemy import and_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import Brand, Product, Retailer
@@ -267,10 +265,14 @@ class ProductNormalizer:
                 return None
 
             original_price = None
-            original_price_str = raw_product.get("original_price") or raw_product.get("list_price")
+            original_price_str = raw_product.get("original_price") or raw_product.get(
+                "list_price"
+            )
             if original_price_str:
                 try:
-                    original_price = float(re.sub(r"[^\d.]", "", str(original_price_str)))
+                    original_price = float(
+                        re.sub(r"[^\d.]", "", str(original_price_str))
+                    )
                 except ValueError:
                     pass
 
@@ -294,7 +296,9 @@ class ProductNormalizer:
                 return None
 
             # Brand extraction
-            brand_name = raw_product.get("brand") or ProductNormalizer._extract_brand_from_name(name)
+            brand_name = raw_product.get(
+                "brand"
+            ) or ProductNormalizer._extract_brand_from_name(name)
 
             # Category classification
             description = raw_product.get("description") or ""
@@ -328,7 +332,9 @@ class ProductNormalizer:
                 tags=tags,
             )
         except Exception as e:
-            logger.error(f"Normalization error for product {raw_product.get('id')}: {e}")
+            logger.error(
+                f"Normalization error for product {raw_product.get('id')}: {e}"
+            )
             return None
 
     @staticmethod
@@ -380,7 +386,11 @@ class ProductNormalizer:
     @staticmethod
     def _extract_colors(product: dict) -> Optional[dict]:
         """Extract color information from product attributes."""
-        color_field = product.get("color") or product.get("colors") or product.get("available_colors")
+        color_field = (
+            product.get("color")
+            or product.get("colors")
+            or product.get("available_colors")
+        )
 
         if color_field:
             if isinstance(color_field, dict):
@@ -395,7 +405,11 @@ class ProductNormalizer:
     @staticmethod
     def _extract_sizes(product: dict) -> Optional[dict]:
         """Extract size information from product attributes."""
-        size_field = product.get("sizes") or product.get("available_sizes") or product.get("size")
+        size_field = (
+            product.get("sizes")
+            or product.get("available_sizes")
+            or product.get("size")
+        )
 
         if size_field:
             if isinstance(size_field, dict):
@@ -407,7 +421,9 @@ class ProductNormalizer:
         return None
 
     @staticmethod
-    def _generate_tags(name: str, description: str, category: Optional[str]) -> dict[str, float]:
+    def _generate_tags(
+        name: str, description: str, category: Optional[str]
+    ) -> dict[str, float]:
         """Generate descriptive tags for product."""
         tags = {}
 
@@ -465,8 +481,14 @@ class QualityGate:
             Tuple of (is_valid, error_message)
         """
         # Price range check
-        if product.current_price < QualityGate.PRICE_MIN or product.current_price > QualityGate.PRICE_MAX:
-            return False, f"Price ${product.current_price} outside range ${QualityGate.PRICE_MIN}-${QualityGate.PRICE_MAX}"
+        if (
+            product.current_price < QualityGate.PRICE_MIN
+            or product.current_price > QualityGate.PRICE_MAX
+        ):
+            return (
+                False,
+                f"Price ${product.current_price} outside range ${QualityGate.PRICE_MIN}-${QualityGate.PRICE_MAX}",
+            )
 
         # Image availability check
         if not product.image_urls:
@@ -599,7 +621,9 @@ class IngestionService:
                 normalized_products.append(normalized)
 
         report["products_normalized"] = len(normalized_products)
-        logger.info(f"Normalized {len(normalized_products)} products from {retailer.name}")
+        logger.info(
+            f"Normalized {len(normalized_products)} products from {retailer.name}"
+        )
 
         # QUALITY_GATE: Validate and deduplicate
         valid_products = []
@@ -615,7 +639,9 @@ class IngestionService:
             duplicate_id = await QualityGate.detect_duplicates(session, normalized)
             if duplicate_id:
                 report["duplicates_detected"] += 1
-                logger.debug(f"Duplicate detected: {normalized.name} already exists as {duplicate_id}")
+                logger.debug(
+                    f"Duplicate detected: {normalized.name} already exists as {duplicate_id}"
+                )
                 continue
 
             valid_products.append(normalized)
@@ -696,6 +722,8 @@ class IngestionService:
             queue_key = f"card_queue:{retailer_id}"
             await delete_cache(queue_key)
 
-        logger.info(f"Ingestion complete for {retailer.name}: {report['products_added']} added, {report['products_updated']} updated")
+        logger.info(
+            f"Ingestion complete for {retailer.name}: {report['products_added']} added, {report['products_updated']} updated"
+        )
 
         return report

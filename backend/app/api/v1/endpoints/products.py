@@ -1,4 +1,5 @@
 """Product endpoints."""
+
 from typing import Annotated
 from uuid import UUID
 
@@ -7,8 +8,8 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core import get_db
-from app.models import Product, Brand, Retailer
-from app.schemas import ProductDetail, SimilarProduct
+from app.models import Product
+from app.schemas import ProductDetail
 from app.services import RecommendationService, AffiliateService
 
 router = APIRouter(prefix="/products", tags=["products"])

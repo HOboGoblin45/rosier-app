@@ -1,4 +1,5 @@
 """Services."""
+
 from app.services.affiliate import AffiliateService
 from app.services.ambassador_tracker import AmbassadorTrackerService
 from app.services.brand_discovery import BrandDiscoveryService

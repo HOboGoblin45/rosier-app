@@ -1,5 +1,5 @@
 """WebSocket connection manager for real-time events."""
-import json
+
 import logging
 from typing import Any, Optional
 
@@ -30,7 +30,9 @@ class WebSocketConnectionManager:
             if user_id not in self.active_connections:
                 self.active_connections[user_id] = []
             self.active_connections[user_id].append(websocket)
-        logger.info(f"User {user_id} connected. Active connections: {len(self.active_connections[user_id])}")
+        logger.info(
+            f"User {user_id} connected. Active connections: {len(self.active_connections[user_id])}"
+        )
 
     async def disconnect(self, websocket: WebSocket, user_id: str) -> None:
         """

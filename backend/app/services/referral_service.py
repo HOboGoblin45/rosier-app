@@ -1,4 +1,5 @@
 """Referral system service."""
+
 import logging
 import random
 import string
@@ -155,7 +156,9 @@ class ReferralService:
                 next_threshold = threshold
                 break
 
-        referrals_to_next = next_threshold - successful_referrals if next_threshold else 0
+        referrals_to_next = (
+            next_threshold - successful_referrals if next_threshold else 0
+        )
 
         return {
             "code": referral_code.code,
@@ -194,7 +197,9 @@ class ReferralService:
             return None
 
         # Check expiry
-        if code_record.created_at + timedelta(days=ReferralService.REFERRAL_CODE_VALIDITY_DAYS) < datetime.now(timezone.utc):
+        if code_record.created_at + timedelta(
+            days=ReferralService.REFERRAL_CODE_VALIDITY_DAYS
+        ) < datetime.now(timezone.utc):
             logger.warning(f"Referral code expired: {referral_code}")
             code_record.is_active = False
             await db.commit()
@@ -223,7 +228,9 @@ class ReferralService:
             return None
 
         # Create referral record
-        expires_at = datetime.now(timezone.utc) + timedelta(days=ReferralService.REFERRAL_CODE_VALIDITY_DAYS)
+        expires_at = datetime.now(timezone.utc) + timedelta(
+            days=ReferralService.REFERRAL_CODE_VALIDITY_DAYS
+        )
         referral = Referral(
             referrer_id=referrer_id,
             referred_id=referred_user_id,
@@ -239,7 +246,9 @@ class ReferralService:
         await db.commit()
         await db.refresh(referral)
 
-        logger.info(f"Created referral: {referrer_id} -> {referred_user_id} via {referral_code}")
+        logger.info(
+            f"Created referral: {referrer_id} -> {referred_user_id} via {referral_code}"
+        )
         return referral
 
     @staticmethod
@@ -315,7 +324,10 @@ class ReferralService:
         # Find new milestones reached
         new_reward = None
         for threshold, tier in TIER_THRESHOLDS.items():
-            if successful_referrals >= threshold and threshold not in granted_milestones:
+            if (
+                successful_referrals >= threshold
+                and threshold not in granted_milestones
+            ):
                 reward_type = TIER_TO_REWARD[tier]
                 new_reward = ReferralReward(
                     user_id=user_id,
@@ -337,7 +349,9 @@ class ReferralService:
                     code.current_tier = tier.value
                     code.successful_referrals = successful_referrals
 
-                logger.info(f"Granted reward {reward_type.value} to user {user_id} at {threshold} referrals")
+                logger.info(
+                    f"Granted reward {reward_type.value} to user {user_id} at {threshold} referrals"
+                )
 
         if new_reward:
             await db.commit()
@@ -402,13 +416,15 @@ class ReferralService:
 
             tier = code.current_tier if code else ReferralTier.NONE.value
 
-            leaderboard.append({
-                "rank": rank,
-                "user_id": str(referrer_id),
-                "name": user.display_name,
-                "invites": referral_count,
-                "tier": tier,
-            })
+            leaderboard.append(
+                {
+                    "rank": rank,
+                    "user_id": str(referrer_id),
+                    "name": user.display_name,
+                    "invites": referral_count,
+                    "tier": tier,
+                }
+            )
 
         return leaderboard
 
@@ -494,6 +510,8 @@ class ReferralService:
         completed_today = result.scalar() or 0
 
         allowed = completed_today < ReferralService.MAX_REFERRAL_COMPLETIONS_PER_DAY
-        remaining = max(0, ReferralService.MAX_REFERRAL_COMPLETIONS_PER_DAY - completed_today)
+        remaining = max(
+            0, ReferralService.MAX_REFERRAL_COMPLETIONS_PER_DAY - completed_today
+        )
 
         return allowed, remaining

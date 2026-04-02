@@ -1,4 +1,5 @@
 """Daily drop API endpoints."""
+
 import logging
 import uuid
 from datetime import datetime, timezone
@@ -9,7 +10,7 @@ from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
-from app.models import DailyDrop, Product
+from app.models import DailyDrop
 
 logger = logging.getLogger(__name__)
 

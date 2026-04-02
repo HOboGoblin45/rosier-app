@@ -1,4 +1,5 @@
 """Card feed endpoints."""
+
 from typing import Annotated, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status, Header
@@ -6,10 +7,10 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core import get_db, verify_access_token, extract_bearer_token
-from app.core.redis import get_card_queue, clear_card_queue, remove_from_queue
+from app.core.redis import clear_card_queue, remove_from_queue
 from app.models import User, SwipeEvent
-from app.schemas import SwipeEventBatch, SwipeEventResponse
-from app.services import CardQueueService, RecommendationService
+from app.schemas import SwipeEventBatch
+from app.services import CardQueueService
 
 router = APIRouter(prefix="/cards", tags=["cards"])
 

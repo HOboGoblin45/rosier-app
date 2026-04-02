@@ -1,4 +1,5 @@
 """Admin dashboard API endpoints."""
+
 from typing import Annotated, Optional
 from datetime import datetime, timedelta, timezone
 import uuid
@@ -11,15 +12,13 @@ from app.core import get_db, verify_access_token
 from app.models import Brand, Product, SwipeEvent, BrandCandidate, BrandDiscoveryCard
 from app.models.brand import BrandTier
 from app.models.swipe_event import SwipeAction
-from app.schemas.user import UserResponse
 from app.services import BrandDiscoveryService, AmbassadorTrackerService
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 
 
 async def get_current_admin_user(
-    authorization: str = None,
-    db: AsyncSession = Depends(get_db)
+    authorization: str = None, db: AsyncSession = Depends(get_db)
 ) -> str:
     """Verify admin user from JWT token."""
     if not authorization:
@@ -49,6 +48,7 @@ async def get_current_admin_user(
 
 
 # Brand Candidate Pipeline Management Endpoints
+
 
 @router.get("/brand-candidates", response_model=dict)
 async def list_brand_candidates(
@@ -208,6 +208,7 @@ async def activate_brand_candidate(
 
 # Brand Discovery Card Management
 
+
 @router.get("/brand-discovery-cards", response_model=dict)
 async def list_brand_discovery_cards(
     db: Annotated[AsyncSession, Depends(get_db)] = None,
@@ -222,7 +223,9 @@ async def list_brand_discovery_cards(
     if status_filter:
         query = query.where(BrandDiscoveryCard.status == status_filter)
 
-    query = query.order_by(BrandDiscoveryCard.created_at.desc()).offset(skip).limit(limit)
+    query = (
+        query.order_by(BrandDiscoveryCard.created_at.desc()).offset(skip).limit(limit)
+    )
     result = await db.execute(query)
     cards = result.scalars().all()
 
@@ -242,7 +245,9 @@ async def list_brand_discovery_cards(
                 "likes": c.total_likes,
                 "dislikes": c.total_dislikes,
                 "skips": c.total_skips,
-                "like_rate": (c.total_likes / (c.total_views + 1)) if c.total_views > 0 else 0,
+                "like_rate": (c.total_likes / (c.total_views + 1))
+                if c.total_views > 0
+                else 0,
                 "created_at": c.created_at.isoformat(),
             }
             for c in cards
@@ -264,7 +269,9 @@ async def pause_brand_discovery_card(
 
     card = await db.get(BrandDiscoveryCard, uuid.UUID(card_id))
     if not card:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Card not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Card not found"
+        )
 
     card.is_active = False
     card.status = BrandDiscoveryCardStatus.PAUSED
@@ -284,7 +291,9 @@ async def activate_brand_discovery_card(
 
     card = await db.get(BrandDiscoveryCard, uuid.UUID(card_id))
     if not card:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Card not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Card not found"
+        )
 
     card.is_active = True
     card.status = BrandDiscoveryCardStatus.ACTIVE
@@ -294,6 +303,7 @@ async def activate_brand_discovery_card(
 
 
 # Brand Management Endpoints
+
 
 @router.get("/brands", response_model=dict)
 async def list_brands(
@@ -311,7 +321,7 @@ async def list_brands(
         query = query.where(Brand.tier == tier)
 
     if active_only:
-        query = query.where(Brand.is_active == True)
+        query = query.where(Brand.is_active)
 
     query = query.offset(skip).limit(limit)
     result = await db.execute(query)
@@ -322,7 +332,7 @@ async def list_brands(
     if tier:
         count_query = count_query.where(Brand.tier == tier)
     if active_only:
-        count_query = count_query.where(Brand.is_active == True)
+        count_query = count_query.where(Brand.is_active)
 
     count_result = await db.execute(count_query)
     total = count_result.scalar()
@@ -511,6 +521,7 @@ async def pause_brand(
 
 # Product Curation Endpoints
 
+
 @router.get("/products", response_model=dict)
 async def list_products(
     db: Annotated[AsyncSession, Depends(get_db)] = None,
@@ -527,6 +538,7 @@ async def list_products(
 
     if brand_id:
         import uuid
+
         query = query.where(Product.brand_id == uuid.UUID(brand_id))
 
     if category:
@@ -536,7 +548,7 @@ async def list_products(
         query = query.where(Product.image_quality_score >= min_quality)
 
     if active_only:
-        query = query.where(Product.is_active == True)
+        query = query.where(Product.is_active)
 
     query = query.offset(skip).limit(limit)
     result = await db.execute(query)
@@ -568,13 +580,17 @@ async def get_review_queue(
     limit: int = Query(20, ge=1, le=50),
 ) -> dict:
     """Get products that need manual review (quality score 0.5-0.7)."""
-    stmt = select(Product).where(
-        and_(
-            Product.image_quality_score >= 0.5,
-            Product.image_quality_score <= 0.7,
-            Product.is_active == True
+    stmt = (
+        select(Product)
+        .where(
+            and_(
+                Product.image_quality_score >= 0.5,
+                Product.image_quality_score <= 0.7,
+                Product.is_active,
+            )
         )
-    ).limit(limit)
+        .limit(limit)
+    )
 
     result = await db.execute(stmt)
     products = result.scalars().all()
@@ -707,6 +723,7 @@ async def bury_product(
 
 # Feed Health Endpoints
 
+
 @router.get("/feed/health", response_model=dict)
 async def get_feed_health(
     db: Annotated[AsyncSession, Depends(get_db)] = None,
@@ -715,7 +732,7 @@ async def get_feed_health(
     """Get dashboard data about feed health."""
     # Active products count
     active_count = await db.execute(
-        select(func.count(Product.id)).where(Product.is_active == True)
+        select(func.count(Product.id)).where(Product.is_active)
     )
     total_active = active_count.scalar()
 
@@ -723,7 +740,7 @@ async def get_feed_health(
     one_day_ago = datetime.now(timezone.utc) - timedelta(days=1)
     recent_count = await db.execute(
         select(func.count(Product.id)).where(
-            and_(Product.is_active == True, Product.created_at >= one_day_ago)
+            and_(Product.is_active, Product.created_at >= one_day_ago)
         )
     )
     added_24h = recent_count.scalar()
@@ -732,8 +749,8 @@ async def get_feed_health(
     out_of_stock = await db.execute(
         select(func.count(Product.id)).where(
             and_(
-                Product.is_on_sale == True,
-                Product.sale_end_date < datetime.now(timezone.utc)
+                Product.is_on_sale,
+                Product.sale_end_date < datetime.now(timezone.utc),
             )
         )
     )
@@ -741,31 +758,25 @@ async def get_feed_health(
 
     # Category distribution
     category_dist = await db.execute(
-        select(Product.category, func.count(Product.id)).where(
-            Product.is_active == True
-        ).group_by(Product.category)
+        select(Product.category, func.count(Product.id))
+        .where(Product.is_active)
+        .group_by(Product.category)
     )
     categories = {row[0]: row[1] for row in category_dist}
 
     # Brand distribution
     brand_dist = await db.execute(
-        select(Brand.name, func.count(Product.id)).where(
-            Product.is_active == True
-        ).join(Brand).group_by(Brand.id, Brand.name)
+        select(Brand.name, func.count(Product.id))
+        .where(Product.is_active)
+        .join(Brand)
+        .group_by(Brand.id, Brand.name)
     )
     brands = {row[0]: row[1] for row in brand_dist}
 
     # Price distribution
-    price_buckets = {
-        "under_100": 0,
-        "100_250": 0,
-        "250_500": 0,
-        "500_1000": 0,
-        "over_1000": 0,
-    }
 
-    price_dist = await db.execute(
-        select(func.count(Product.id)).where(Product.is_active == True)
+    await db.execute(
+        select(func.count(Product.id)).where(Product.is_active)
     )
 
     return {
@@ -790,47 +801,56 @@ async def get_feed_alerts(
 
     # Check for categories below threshold
     category_dist = await db.execute(
-        select(Product.category, func.count(Product.id)).where(
-            Product.is_active == True
-        ).group_by(Product.category)
+        select(Product.category, func.count(Product.id))
+        .where(Product.is_active)
+        .group_by(Product.category)
     )
 
     for category, count in category_dist:
         if count < min_category_products:
-            alerts.append({
-                "type": "low_inventory",
-                "category": category,
-                "count": count,
-                "threshold": min_category_products,
-            })
+            alerts.append(
+                {
+                    "type": "low_inventory",
+                    "category": category,
+                    "count": count,
+                    "threshold": min_category_products,
+                }
+            )
 
     # Check for brands with zero products
     brand_count = await db.execute(
-        select(Brand.id, Brand.name).where(Brand.is_active == True)
+        select(Brand.id, Brand.name).where(Brand.is_active)
     )
     brands = brand_count.scalars().all()
 
     for brand in brands:
         product_count = await db.execute(
             select(func.count(Product.id)).where(
-                and_(Product.brand_id == brand.id, Product.is_active == True)
+                and_(Product.brand_id == brand.id, Product.is_active)
             )
         )
         if product_count.scalar() == 0:
-            alerts.append({
-                "type": "brand_no_products",
-                "brand_id": str(brand.id),
-                "brand_name": brand.name,
-            })
+            alerts.append(
+                {
+                    "type": "brand_no_products",
+                    "brand_id": str(brand.id),
+                    "brand_name": brand.name,
+                }
+            )
 
     return {
         "alerts": alerts,
         "alert_count": len(alerts),
-        "severity": "critical" if len(alerts) > 5 else "warning" if len(alerts) > 0 else "none",
+        "severity": "critical"
+        if len(alerts) > 5
+        else "warning"
+        if len(alerts) > 0
+        else "none",
     }
 
 
 # Trend Insights Endpoints
+
 
 @router.get("/trends/brands", response_model=dict)
 async def get_trending_brands(
@@ -842,17 +862,21 @@ async def get_trending_brands(
     # Get likes in the specified period
     period_start = datetime.now(timezone.utc) - timedelta(days=days)
 
-    like_stmt = select(
-        Brand.id, Brand.name, func.count(SwipeEvent.id).label("like_count")
-    ).join(Product).join(SwipeEvent).where(
-        and_(
-            SwipeEvent.action == SwipeAction.LIKE,
-            SwipeEvent.created_at >= period_start,
-            Product.is_active == True
+    like_stmt = (
+        select(Brand.id, Brand.name, func.count(SwipeEvent.id).label("like_count"))
+        .join(Product)
+        .join(SwipeEvent)
+        .where(
+            and_(
+                SwipeEvent.action == SwipeAction.LIKE,
+                SwipeEvent.created_at >= period_start,
+                Product.is_active,
+            )
         )
-    ).group_by(Brand.id, Brand.name).order_by(
-        func.count(SwipeEvent.id).desc()
-    ).limit(10)
+        .group_by(Brand.id, Brand.name)
+        .order_by(func.count(SwipeEvent.id).desc())
+        .limit(10)
+    )
 
     result = await db.execute(like_stmt)
     trends = result.all()
@@ -879,15 +903,12 @@ async def get_trending_categories(
     """Get rising categories by engagement."""
     period_start = datetime.now(timezone.utc) - timedelta(days=days)
 
-    category_stmt = select(
-        Product.category, func.count(SwipeEvent.id).label("engagement")
-    ).join(SwipeEvent).where(
-        and_(
-            SwipeEvent.created_at >= period_start,
-            Product.is_active == True
-        )
-    ).group_by(Product.category).order_by(
-        func.count(SwipeEvent.id).desc()
+    category_stmt = (
+        select(Product.category, func.count(SwipeEvent.id).label("engagement"))
+        .join(SwipeEvent)
+        .where(and_(SwipeEvent.created_at >= period_start, Product.is_active))
+        .group_by(Product.category)
+        .order_by(func.count(SwipeEvent.id).desc())
     )
 
     result = await db.execute(category_stmt)
@@ -917,12 +938,15 @@ async def get_trending_colors(
 
     # Get liked products in period
     liked_products = await db.execute(
-        select(Product.id).join(SwipeEvent).where(
+        select(Product.id)
+        .join(SwipeEvent)
+        .where(
             and_(
                 SwipeEvent.action == SwipeAction.LIKE,
-                SwipeEvent.created_at >= period_start
+                SwipeEvent.created_at >= period_start,
             )
-        ).distinct()
+        )
+        .distinct()
     )
 
     product_ids = liked_products.scalars().all()
@@ -936,18 +960,20 @@ async def get_trending_colors(
             for color in colors:
                 color_counts[color] = color_counts.get(color, 0) + 1
 
-    sorted_colors = sorted(color_counts.items(), key=lambda x: x[1], reverse=True)[:limit]
+    sorted_colors = sorted(color_counts.items(), key=lambda x: x[1], reverse=True)[
+        :limit
+    ]
 
     return {
         "period_days": days,
         "trending_colors": [
-            {"color": color, "count": count}
-            for color, count in sorted_colors
+            {"color": color, "count": count} for color, count in sorted_colors
         ],
     }
 
 
 # Commission & Ambassador Performance Endpoints
+
 
 @router.get("/commissions/brand/{brand_id}", response_model=dict)
 async def get_brand_commission_stats(
@@ -1050,7 +1076,7 @@ async def reject_commission(
 ) -> dict:
     """Reject a commission."""
     try:
-        commission = await AmbassadorTrackerService.reject_commission(
+        await AmbassadorTrackerService.reject_commission(
             db, commission_id, reason=reason
         )
         await db.commit()

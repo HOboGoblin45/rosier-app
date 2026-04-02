@@ -1,4 +1,5 @@
 """Pydantic schemas."""
+
 from app.schemas.auth import (
     AppleSignInRequest,
     EmailLoginRequest,
@@ -17,7 +18,12 @@ from app.schemas.dresser import (
     DresserResponse,
     SharedDrawerResponse,
 )
-from app.schemas.product import ProductCard, ProductDetail, ProductResponse, SimilarProduct
+from app.schemas.product import (
+    ProductCard,
+    ProductDetail,
+    ProductResponse,
+    SimilarProduct,
+)
 from app.schemas.referral import (
     ApplyReferralCodeRequest,
     CompleteReferralRequest,
@@ -32,8 +38,19 @@ from app.schemas.referral import (
     ShareTrackingRequest,
 )
 from app.schemas.style_dna import StyleDNAResponse, StyleDNAShareResponse, StyleDNAStats
-from app.schemas.swipe_event import SwipeEventBatch, SwipeEventCreate, SwipeEventResponse
-from app.schemas.user import QuizSubmission, UserCreate, UserDetail, UserResponse, UserSettings, UserUpdate
+from app.schemas.swipe_event import (
+    SwipeEventBatch,
+    SwipeEventCreate,
+    SwipeEventResponse,
+)
+from app.schemas.user import (
+    QuizSubmission,
+    UserCreate,
+    UserDetail,
+    UserResponse,
+    UserSettings,
+    UserUpdate,
+)
 from app.schemas.wallpaper import (
     WallpaperCurrentResponse,
     WallpaperHouseAnalyticsResponse,

@@ -1,17 +1,16 @@
 """Brand discovery and onboarding service."""
+
 import logging
 from typing import Optional
 import uuid
 
-from sqlalchemy import and_, select, func
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import (
     BrandCandidate,
     BrandCandidateStatus,
     BrandDiscoveryCard,
-    BrandDiscoverySwipe,
-    Product,
     Brand,
 )
 
@@ -57,23 +56,38 @@ class BrandDiscoveryService:
             price_high = brand_candidate.price_range_high
 
             # Ideal range: $50-$500
-            if BrandDiscoveryService.MIN_PRICE <= price_low <= BrandDiscoveryService.MAX_PRICE:
+            if (
+                BrandDiscoveryService.MIN_PRICE
+                <= price_low
+                <= BrandDiscoveryService.MAX_PRICE
+            ):
                 score += 20.0
-            if BrandDiscoveryService.MIN_PRICE <= price_high <= BrandDiscoveryService.MAX_PRICE:
+            if (
+                BrandDiscoveryService.MIN_PRICE
+                <= price_high
+                <= BrandDiscoveryService.MAX_PRICE
+            ):
                 score += 20.0
 
         # Aesthetic alignment (max 30 points)
         if brand_candidate.aesthetic_tags:
             if user_preference_aesthetics:
-                matching_tags = set(brand_candidate.aesthetic_tags) & set(user_preference_aesthetics)
-                tag_score = (len(matching_tags) / len(brand_candidate.aesthetic_tags)) * 30
+                matching_tags = set(brand_candidate.aesthetic_tags) & set(
+                    user_preference_aesthetics
+                )
+                tag_score = (
+                    len(matching_tags) / len(brand_candidate.aesthetic_tags)
+                ) * 30
                 score += min(tag_score, 30.0)
             else:
                 # If no user prefs, give partial credit for having aesthetics defined
                 score += 15.0
 
         # Affiliate network availability (max 20 points)
-        if brand_candidate.affiliate_network and brand_candidate.affiliate_network != "direct":
+        if (
+            brand_candidate.affiliate_network
+            and brand_candidate.affiliate_network != "direct"
+        ):
             score += 20.0
         elif brand_candidate.commission_rate:
             score += 15.0
@@ -147,7 +161,9 @@ class BrandDiscoveryService:
 
         session.add(candidate)
         await session.flush()
-        logger.info(f"Created brand candidate {name} with fit score {candidate.fit_score}")
+        logger.info(
+            f"Created brand candidate {name} with fit score {candidate.fit_score}"
+        )
 
         return candidate
 
@@ -233,7 +249,9 @@ class BrandDiscoveryService:
             raise ValueError(f"Brand candidate {candidate_id} not found")
 
         if candidate.status != BrandCandidateStatus.APPROVED:
-            raise ValueError(f"Brand candidate {candidate.name} must be approved before activation")
+            raise ValueError(
+                f"Brand candidate {candidate.name} must be approved before activation"
+            )
 
         candidate.status = BrandCandidateStatus.ACTIVE
         candidate.activated_at = BrandDiscoveryService._now()
@@ -257,7 +275,9 @@ class BrandDiscoveryService:
 
         session.add(discovery_card)
         await session.flush()
-        logger.info(f"Activated brand candidate {candidate.name}, created discovery card")
+        logger.info(
+            f"Activated brand candidate {candidate.name}, created discovery card"
+        )
 
         return candidate
 
@@ -381,7 +401,9 @@ class BrandDiscoveryService:
 
         like_rate = card.total_likes / total_reactions
         if like_rate > 0.70:
-            logger.info(f"Brand card {card.brand_name} boosted: {like_rate:.1%} like rate")
+            logger.info(
+                f"Brand card {card.brand_name} boosted: {like_rate:.1%} like rate"
+            )
             # This will be used by recommendation service to boost products from this brand
 
         return card

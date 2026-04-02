@@ -1,4 +1,5 @@
 """Brand discovery endpoints."""
+
 from typing import Annotated, Optional
 import uuid
 
@@ -46,7 +47,7 @@ async def get_next_brand_discovery_card(
     db: Annotated[AsyncSession, Depends(get_db)],
 ) -> dict:
     """Fetch next brand discovery card."""
-    user_id = str(user.id)
+    str(user.id)
 
     # Get a random active brand discovery card
     card = await CardQueueService.get_random_brand_discovery_card(db)
@@ -159,7 +160,9 @@ async def get_trending_brands(
         select(BrandDiscoveryCard)
         .where(BrandDiscoveryCard.is_active is True)
         .order_by(
-            (BrandDiscoveryCard.total_likes / (BrandDiscoveryCard.total_views + 1)).desc()
+            (
+                BrandDiscoveryCard.total_likes / (BrandDiscoveryCard.total_views + 1)
+            ).desc()
         )
         .limit(limit)
     )

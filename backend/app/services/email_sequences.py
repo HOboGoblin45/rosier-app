@@ -1,4 +1,5 @@
 """Email sequence service for automated marketing campaigns."""
+
 import logging
 from datetime import datetime
 from typing import Optional

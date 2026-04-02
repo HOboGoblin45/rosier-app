@@ -1,4 +1,5 @@
 """Wallpaper pattern assignment, rotation, and analytics service."""
+
 import logging
 import random
 import uuid
@@ -9,7 +10,12 @@ from sqlalchemy import and_, func, select, desc
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import User
-from app.models.wallpaper import WallpaperHouse, WallpaperPattern, WallpaperImpression, PartnershipStatus
+from app.models.wallpaper import (
+    WallpaperHouse,
+    WallpaperPattern,
+    WallpaperImpression,
+    PartnershipStatus,
+)
 from app.services.style_dna import StyleDNAService
 
 logger = logging.getLogger(__name__)
@@ -68,7 +74,9 @@ class WallpaperService:
             return None
 
         # Try to get cached style DNA or compute it
-        style_dna = await StyleDNAService.get_or_compute_style_dna(session, str(user_id))
+        style_dna = await StyleDNAService.get_or_compute_style_dna(
+            session, str(user_id)
+        )
         archetype = style_dna.get("archetype")
 
         # Determine house(s) to select from
@@ -80,7 +88,9 @@ class WallpaperService:
             preferred_houses = WallpaperService.DISCOVERY_HOUSES
 
         # Get active patterns from preferred houses
-        house_names = preferred_houses if preferred_houses else WallpaperService.DISCOVERY_HOUSES
+        house_names = (
+            preferred_houses if preferred_houses else WallpaperService.DISCOVERY_HOUSES
+        )
         stmt = (
             select(WallpaperPattern)
             .join(WallpaperHouse, WallpaperPattern.house_id == WallpaperHouse.id)
@@ -174,7 +184,9 @@ class WallpaperService:
         available_patterns = result.scalars().all()
 
         if not available_patterns:
-            logger.debug(f"No alternative patterns for house {house_id}, returning current")
+            logger.debug(
+                f"No alternative patterns for house {house_id}, returning current"
+            )
             return current_pattern
 
         # Select next pattern
@@ -277,44 +289,40 @@ class WallpaperService:
             raise ValueError(f"House {house_id} not found")
 
         # Date threshold
-        cutoff_date = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
+        cutoff_date = datetime.now(timezone.utc).replace(
+            hour=0, minute=0, second=0, microsecond=0
+        )
         from datetime import timedelta
+
         cutoff_date = cutoff_date - timedelta(days=days)
 
         # Total impressions in period
-        stmt_impressions = (
-            select(func.count(WallpaperImpression.id))
-            .where(
-                and_(
-                    WallpaperImpression.house_id == house_id,
-                    WallpaperImpression.created_at >= cutoff_date,
-                )
+        stmt_impressions = select(func.count(WallpaperImpression.id)).where(
+            and_(
+                WallpaperImpression.house_id == house_id,
+                WallpaperImpression.created_at >= cutoff_date,
             )
         )
         result = await session.execute(stmt_impressions)
         total_impressions = result.scalar() or 0
 
         # Unique viewers
-        stmt_unique = (
-            select(func.count(func.distinct(WallpaperImpression.user_id)))
-            .where(
-                and_(
-                    WallpaperImpression.house_id == house_id,
-                    WallpaperImpression.created_at >= cutoff_date,
-                )
+        stmt_unique = select(
+            func.count(func.distinct(WallpaperImpression.user_id))
+        ).where(
+            and_(
+                WallpaperImpression.house_id == house_id,
+                WallpaperImpression.created_at >= cutoff_date,
             )
         )
         result = await session.execute(stmt_unique)
         unique_viewers = result.scalar() or 0
 
         # Average dwell time
-        stmt_dwell = (
-            select(func.avg(WallpaperImpression.dwell_ms))
-            .where(
-                and_(
-                    WallpaperImpression.house_id == house_id,
-                    WallpaperImpression.created_at >= cutoff_date,
-                )
+        stmt_dwell = select(func.avg(WallpaperImpression.dwell_ms)).where(
+            and_(
+                WallpaperImpression.house_id == house_id,
+                WallpaperImpression.created_at >= cutoff_date,
             )
         )
         result = await session.execute(stmt_dwell)
@@ -354,44 +362,40 @@ class WallpaperService:
             raise ValueError(f"Pattern {pattern_id} not found")
 
         # Date threshold
-        cutoff_date = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
+        cutoff_date = datetime.now(timezone.utc).replace(
+            hour=0, minute=0, second=0, microsecond=0
+        )
         from datetime import timedelta
+
         cutoff_date = cutoff_date - timedelta(days=days)
 
         # Impressions
-        stmt_impressions = (
-            select(func.count(WallpaperImpression.id))
-            .where(
-                and_(
-                    WallpaperImpression.pattern_id == pattern_id,
-                    WallpaperImpression.created_at >= cutoff_date,
-                )
+        stmt_impressions = select(func.count(WallpaperImpression.id)).where(
+            and_(
+                WallpaperImpression.pattern_id == pattern_id,
+                WallpaperImpression.created_at >= cutoff_date,
             )
         )
         result = await session.execute(stmt_impressions)
         total_impressions = result.scalar() or 0
 
         # Unique viewers
-        stmt_unique = (
-            select(func.count(func.distinct(WallpaperImpression.user_id)))
-            .where(
-                and_(
-                    WallpaperImpression.pattern_id == pattern_id,
-                    WallpaperImpression.created_at >= cutoff_date,
-                )
+        stmt_unique = select(
+            func.count(func.distinct(WallpaperImpression.user_id))
+        ).where(
+            and_(
+                WallpaperImpression.pattern_id == pattern_id,
+                WallpaperImpression.created_at >= cutoff_date,
             )
         )
         result = await session.execute(stmt_unique)
         unique_viewers = result.scalar() or 0
 
         # Average dwell time
-        stmt_dwell = (
-            select(func.avg(WallpaperImpression.dwell_ms))
-            .where(
-                and_(
-                    WallpaperImpression.pattern_id == pattern_id,
-                    WallpaperImpression.created_at >= cutoff_date,
-                )
+        stmt_dwell = select(func.avg(WallpaperImpression.dwell_ms)).where(
+            and_(
+                WallpaperImpression.pattern_id == pattern_id,
+                WallpaperImpression.created_at >= cutoff_date,
             )
         )
         result = await session.execute(stmt_dwell)

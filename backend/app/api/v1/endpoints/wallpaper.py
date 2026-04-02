@@ -1,4 +1,5 @@
 """Wallpaper house and pattern endpoints."""
+
 import logging
 import uuid
 from typing import Annotated, Optional
@@ -9,7 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core import get_db, verify_access_token, extract_bearer_token
 from app.models import User
-from app.models.wallpaper import WallpaperHouse, WallpaperPattern
+from app.models.wallpaper import WallpaperHouse
 from app.schemas.wallpaper import (
     WallpaperCurrentResponse,
     WallpaperHouseCreate,
@@ -120,7 +121,11 @@ async def list_wallpaper_houses(
     return [WallpaperHouseResponse.from_orm(h) for h in houses]
 
 
-@router.post("/admin/houses", response_model=WallpaperHouseResponse, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "/admin/houses",
+    response_model=WallpaperHouseResponse,
+    status_code=status.HTTP_201_CREATED,
+)
 async def create_wallpaper_house(
     house: WallpaperHouseCreate,
     user: Annotated[User, Depends(get_current_user)],
@@ -183,7 +188,9 @@ async def update_wallpaper_house(
     return WallpaperHouseResponse.from_orm(house)
 
 
-@router.get("/admin/analytics/houses/{house_id}", response_model=WallpaperHouseAnalyticsResponse)
+@router.get(
+    "/admin/analytics/houses/{house_id}", response_model=WallpaperHouseAnalyticsResponse
+)
 async def get_house_analytics(
     house_id: uuid.UUID,
     user: Annotated[User, Depends(get_current_user)],
@@ -207,7 +214,10 @@ async def get_house_analytics(
         )
 
 
-@router.get("/admin/analytics/patterns/{pattern_id}", response_model=WallpaperPatternAnalyticsResponse)
+@router.get(
+    "/admin/analytics/patterns/{pattern_id}",
+    response_model=WallpaperPatternAnalyticsResponse,
+)
 async def get_pattern_analytics(
     pattern_id: uuid.UUID,
     user: Annotated[User, Depends(get_current_user)],
@@ -221,7 +231,9 @@ async def get_pattern_analytics(
     # TODO: Add admin role check
 
     try:
-        analytics = await WallpaperService.get_pattern_analytics(db, pattern_id, days=days)
+        analytics = await WallpaperService.get_pattern_analytics(
+            db, pattern_id, days=days
+        )
         return WallpaperPatternAnalyticsResponse(**analytics)
     except ValueError as e:
         raise HTTPException(
@@ -253,7 +265,9 @@ async def get_wallpaper_analytics_summary(
 
     for house in houses:
         try:
-            analytics = await WallpaperService.get_house_analytics(db, house.id, days=days)
+            analytics = await WallpaperService.get_house_analytics(
+                db, house.id, days=days
+            )
             house_analytics.append(analytics)
             total_impressions += analytics["total_impressions"]
             total_unique_viewers += analytics["unique_viewers"]

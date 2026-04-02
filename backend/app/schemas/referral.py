@@ -1,4 +1,5 @@
 """Referral system schemas."""
+
 from datetime import datetime
 from typing import Optional
 
@@ -13,7 +14,9 @@ class ReferralCodeResponse(BaseModel):
     successful_referrals: int = Field(default=0, description="Successful conversions")
     current_tier: str = Field(default="none", description="Current reward tier")
     next_tier: Optional[str] = Field(default=None, description="Next tier to unlock")
-    referrals_to_next: int = Field(default=0, description="Referrals needed for next tier")
+    referrals_to_next: int = Field(
+        default=0, description="Referrals needed for next tier"
+    )
     created_at: datetime
 
     class Config:
@@ -41,7 +44,9 @@ class ApplyReferralCodeRequest(BaseModel):
 class CompleteReferralRequest(BaseModel):
     """Request to mark referral complete."""
 
-    referred_user_id: str = Field(..., description="ID of user who completed onboarding")
+    referred_user_id: str = Field(
+        ..., description="ID of user who completed onboarding"
+    )
 
 
 class ReferralRewardResponse(BaseModel):
@@ -88,7 +93,9 @@ class ReferralLinkResponse(BaseModel):
 class ShareTrackingRequest(BaseModel):
     """Track share event."""
 
-    platform: str = Field(..., description="Platform shared to (instagram, imessage, whatsapp, etc)")
+    platform: str = Field(
+        ..., description="Platform shared to (instagram, imessage, whatsapp, etc)"
+    )
 
 
 class ReferralResponse(BaseModel):

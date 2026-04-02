@@ -1,4 +1,5 @@
 """Scheduled task for product ingestion from affiliate networks (runs hourly)."""
+
 import asyncio
 import logging
 from datetime import datetime, timezone
@@ -70,8 +71,12 @@ async def run_ingestion_task() -> dict:
 
                     report["retailers_processed"] += 1
                     report["total_products_added"] += ingestion_report["products_added"]
-                    report["total_products_updated"] += ingestion_report["products_updated"]
-                    report["total_products_rejected"] += ingestion_report["products_rejected"]
+                    report["total_products_updated"] += ingestion_report[
+                        "products_updated"
+                    ]
+                    report["total_products_rejected"] += ingestion_report[
+                        "products_rejected"
+                    ]
                     report["retailer_reports"].append(ingestion_report)
 
                     logger.info(
@@ -97,8 +102,10 @@ async def run_ingestion_task() -> dict:
         await engine.dispose()
 
     report["completed_at"] = datetime.now(timezone.utc).isoformat()
-    logger.info(f"Ingestion task completed: {report['retailers_processed']} retailers, "
-                f"{report['total_products_added']} products added")
+    logger.info(
+        f"Ingestion task completed: {report['retailers_processed']} retailers, "
+        f"{report['total_products_added']} products added"
+    )
 
     return report
 

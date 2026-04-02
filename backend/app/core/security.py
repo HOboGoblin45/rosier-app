@@ -1,7 +1,7 @@
 """Security utilities for JWT tokens, password hashing, and Apple Sign-In."""
+
 import hashlib
 import hmac
-import json
 import secrets
 from datetime import datetime, timedelta, timezone
 from typing import Optional

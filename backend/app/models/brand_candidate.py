@@ -1,4 +1,5 @@
 """Brand candidate model for brand discovery pipeline."""
+
 import uuid
 from datetime import datetime, timezone
 from enum import Enum
@@ -36,10 +37,14 @@ class BrandCandidate(Base):
 
     __tablename__ = "brand_candidates"
 
-    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
 
     # Basic information
-    name: Mapped[str] = mapped_column(String(255), nullable=False, unique=True, index=True)
+    name: Mapped[str] = mapped_column(
+        String(255), nullable=False, unique=True, index=True
+    )
     website: Mapped[str] = mapped_column(String(512), nullable=True)
     instagram: Mapped[str] = mapped_column(String(255), nullable=True)
     description: Mapped[str] = mapped_column(String(1024), nullable=True)
@@ -55,7 +60,9 @@ class BrandCandidate(Base):
     )
     affiliate_publisher_id: Mapped[str] = mapped_column(String(255), nullable=True)
     affiliate_merchant_id: Mapped[str] = mapped_column(String(255), nullable=True)
-    commission_rate: Mapped[float] = mapped_column(Float, nullable=True)  # As decimal (0.08 = 8%)
+    commission_rate: Mapped[float] = mapped_column(
+        Float, nullable=True
+    )  # As decimal (0.08 = 8%)
 
     # Ambassador program
     has_ambassador_program: Mapped[bool] = mapped_column(Boolean, default=False)
@@ -65,15 +72,23 @@ class BrandCandidate(Base):
     status: Mapped[BrandCandidateStatus] = mapped_column(
         SQLEnum(BrandCandidateStatus), default=BrandCandidateStatus.PENDING, index=True
     )
-    fit_score: Mapped[float] = mapped_column(Float, nullable=True)  # 0-100, auto-calculated
+    fit_score: Mapped[float] = mapped_column(
+        Float, nullable=True
+    )  # 0-100, auto-calculated
     evaluation_notes: Mapped[str] = mapped_column(String(2048), nullable=True)
 
     # Metadata
-    evaluated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
-    activated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
+    evaluated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    activated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
 
     created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        nullable=False,
     )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),

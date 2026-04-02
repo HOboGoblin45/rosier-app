@@ -27,6 +27,7 @@ Supported Networks & Programs:
   * FWRD/Revolve: 6-15%
   * Others via retailers
 """
+
 import logging
 from typing import Optional
 from urllib.parse import quote, urlencode
@@ -169,7 +170,9 @@ class AffiliateService:
         # Get retailer
         retailer = await session.get(Retailer, product.retailer_id)
         if not retailer:
-            logger.warning(f"Retailer {product.retailer_id} not found for product {product_id}")
+            logger.warning(
+                f"Retailer {product.retailer_id} not found for product {product_id}"
+            )
             return None
 
         # Use affiliate_url if set, otherwise product_url
@@ -286,7 +289,9 @@ class AffiliateService:
             params["ref"] = user_id
 
         query_string = urlencode(params)
-        link = f"https://api.impactradius.com/click?click_id={publisher_id}&{query_string}"
+        link = (
+            f"https://api.impactradius.com/click?click_id={publisher_id}&{query_string}"
+        )
         logger.debug(f"Built Impact link for {product_url}")
         return link
 
@@ -426,6 +431,8 @@ class AffiliateService:
                 if link:
                     links[product_id] = link
             except Exception as e:
-                logger.error(f"Error building affiliate link for product {product_id}: {e}")
+                logger.error(
+                    f"Error building affiliate link for product {product_id}: {e}"
+                )
 
         return links

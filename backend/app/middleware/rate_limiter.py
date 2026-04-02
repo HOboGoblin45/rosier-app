@@ -1,5 +1,6 @@
 """Rate limiting middleware."""
-from fastapi import HTTPException, Request
+
+from fastapi import Request
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import Response
 
@@ -33,7 +34,6 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
             return await call_next(request)
 
         # Get client identifier
-        client_ip = request.client.host if request.client else "unknown"
 
         # Try to get user ID from token
         user_id = "anonymous"

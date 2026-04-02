@@ -1,4 +1,5 @@
 """Authentication endpoints."""
+
 from datetime import datetime, timedelta, timezone
 from typing import Annotated, Optional
 
@@ -24,9 +25,7 @@ from app.schemas import (
     EmailLoginRequest,
     EmailRegisterRequest,
     RefreshRequest,
-    SignOutRequest,
     TokenResponse,
-    UserResponse,
 )
 
 router = APIRouter(prefix="/auth", tags=["auth"])

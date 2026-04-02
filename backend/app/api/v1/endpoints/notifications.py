@@ -1,4 +1,5 @@
 """Notifications API endpoints."""
+
 import logging
 import uuid
 from datetime import datetime, timezone

@@ -1,4 +1,5 @@
 """Style DNA schemas."""
+
 from typing import Optional
 from uuid import UUID
 

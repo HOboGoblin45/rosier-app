@@ -1,5 +1,5 @@
 """Product search service using Elasticsearch."""
-import json
+
 import logging
 from typing import Any, Optional
 
@@ -81,9 +81,7 @@ async def search_full_text(
                 }
             )
 
-    results = await search_products(
-        query=es_query, size=size, from_=from_value
-    )
+    results = await search_products(query=es_query, size=size, from_=from_value)
 
     return {
         "hits": [hit["_source"] for hit in results["hits"]["hits"]],
@@ -130,18 +128,12 @@ async def find_similar_by_tags(
 
     es_query = {
         "bool": {
-            "must": [
-                {"terms": {"tags": tag_list}}
-            ],
-            "must_not": [
-                {"term": {"product_id": product_id}}
-            ],
+            "must": [{"terms": {"tags": tag_list}}],
+            "must_not": [{"term": {"product_id": product_id}}],
         }
     }
 
-    results = await search_products(
-        query=es_query, size=count
-    )
+    results = await search_products(query=es_query, size=count)
 
     return {
         "hits": [hit["_source"] for hit in results["hits"]["hits"]],
@@ -218,7 +210,9 @@ async def remove_product(product_id: str) -> None:
     logger.info(f"Removed product from index: {product_id}")
 
 
-async def get_product_by_id(product_id: str, index_name: str = "products") -> Optional[dict]:
+async def get_product_by_id(
+    product_id: str, index_name: str = "products"
+) -> Optional[dict]:
     """
     Get a single product by ID.
 

@@ -1,4 +1,5 @@
 """Core application modules."""
+
 from app.core.config import get_settings
 from app.core.database import Base, get_db, get_engine, get_session_factory, init_db
 from app.core.redis import RedisClient, get_redis

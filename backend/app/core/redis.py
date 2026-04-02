@@ -1,4 +1,5 @@
 """Redis client and cache operations."""
+
 from typing import Any, Optional
 
 import redis.asyncio as redis

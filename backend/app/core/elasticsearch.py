@@ -1,9 +1,9 @@
 """Elasticsearch client and index management."""
-import json
-import logging
-from typing import Any, Optional
 
-from elasticsearch import Elasticsearch, AsyncElasticsearch
+import logging
+from typing import Optional
+
+from elasticsearch import AsyncElasticsearch
 
 from app.core.config import get_settings
 
@@ -201,7 +201,7 @@ async def health_check() -> bool:
     """Check Elasticsearch cluster health."""
     try:
         es = await get_elasticsearch()
-        info = await es.info()
+        await es.info()
         return True
     except Exception as e:
         logger.error(f"Elasticsearch health check failed: {e}")

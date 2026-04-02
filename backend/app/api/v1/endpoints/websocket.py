@@ -1,15 +1,14 @@
 """WebSocket endpoint for real-time events."""
+
 import asyncio
 import json
 import logging
 from typing import Optional
 
-from fastapi import APIRouter, WebSocket, WebSocketDisconnect, status, Depends
-from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi import APIRouter, WebSocket, WebSocketDisconnect, status
 
-from app.core.database import get_db
 from app.core.security import verify_access_token
-from app.core.websocket_manager import get_websocket_manager, WebSocketConnectionManager
+from app.core.websocket_manager import get_websocket_manager
 
 logger = logging.getLogger(__name__)
 
@@ -50,21 +49,30 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
                 if auth_data.get("type") == "auth":
                     token = auth_data.get("token")
             except asyncio.TimeoutError:
-                await websocket.close(code=status.WS_1008_POLICY_VIOLATION, reason="Authentication timeout")
+                await websocket.close(
+                    code=status.WS_1008_POLICY_VIOLATION,
+                    reason="Authentication timeout",
+                )
                 return
             except Exception as e:
                 logger.error(f"Error receiving auth message: {e}")
-                await websocket.close(code=status.WS_1008_POLICY_VIOLATION, reason="Invalid auth message")
+                await websocket.close(
+                    code=status.WS_1008_POLICY_VIOLATION, reason="Invalid auth message"
+                )
                 return
 
         # Verify token
         if not token:
-            await websocket.close(code=status.WS_1008_POLICY_VIOLATION, reason="No token provided")
+            await websocket.close(
+                code=status.WS_1008_POLICY_VIOLATION, reason="No token provided"
+            )
             return
 
         user_id = verify_access_token(token)
         if not user_id:
-            await websocket.close(code=status.WS_1008_POLICY_VIOLATION, reason="Invalid token")
+            await websocket.close(
+                code=status.WS_1008_POLICY_VIOLATION, reason="Invalid token"
+            )
             return
 
         # Accept connection
@@ -82,7 +90,9 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
             while True:
                 # Receive message with timeout
                 try:
-                    data = await asyncio.wait_for(websocket.receive_text(), timeout=60.0)
+                    data = await asyncio.wait_for(
+                        websocket.receive_text(), timeout=60.0
+                    )
                     message = json.loads(data)
 
                     # Handle ping/pong
@@ -90,7 +100,9 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
                         await websocket.send_json({"type": "pong"})
                 except asyncio.TimeoutError:
                     # No message received for 60 seconds, close connection
-                    await websocket.close(code=status.WS_1000_NORMAL_CLOSURE, reason="Idle timeout")
+                    await websocket.close(
+                        code=status.WS_1000_NORMAL_CLOSURE, reason="Idle timeout"
+                    )
                     break
         except WebSocketDisconnect:
             logger.info(f"WebSocket disconnected for user: {user_id}")
@@ -146,7 +158,9 @@ async def broadcast_price_drop(
         "product_name": product_name,
         "old_price": old_price,
         "new_price": new_price,
-        "discount_percent": round(((old_price - new_price) / old_price) * 100, 1) if old_price > 0 else 0,
+        "discount_percent": round(((old_price - new_price) / old_price) * 100, 1)
+        if old_price > 0
+        else 0,
     }
     await manager.send_to_user(user_id, message)
 

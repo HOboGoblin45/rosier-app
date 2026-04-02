@@ -1,4 +1,5 @@
 """User profile endpoints."""
+
 from typing import Annotated, Optional
 import secrets
 
@@ -8,7 +9,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core import get_db, verify_access_token, extract_bearer_token
 from app.models import User, SwipeEvent, SwipeAction
-from app.schemas import UserDetail, UserUpdate, UserSettings, StyleDNAResponse, StyleDNAShareResponse
+from app.schemas import (
+    UserDetail,
+    UserUpdate,
+    UserSettings,
+    StyleDNAResponse,
+    StyleDNAShareResponse,
+)
 from app.services import RecommendationService
 
 router = APIRouter(prefix="/profile", tags=["profile"])
@@ -138,7 +145,9 @@ async def get_style_dna(
             "total_swipes": len(events),
             "likes_count": len(likes) + len(super_likes),
             "avg_price_point": preferences.get("price_point", 50),
-            "top_categories": [cat[0] for cat in preferences.get("preferred_categories", [])][:5],
+            "top_categories": [
+                cat[0] for cat in preferences.get("preferred_categories", [])
+            ][:5],
             "top_colors": top_tags,
         },
     )

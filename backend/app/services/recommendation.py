@@ -1,11 +1,12 @@
 """Recommendation service for personalized suggestions with Phase 1 and Phase 2 scoring."""
+
 import logging
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import Optional
 
 import numpy as np
-from sqlalchemy import and_, func, select
+from sqlalchemy import and_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import Product, SwipeEvent, SwipeAction, Brand
@@ -92,13 +93,21 @@ class RecommendationService:
             score += 1.0
 
         # Price range match (0-1.5)
-        if user_prefs.price_range_low <= product.current_price <= user_prefs.price_range_high:
+        if (
+            user_prefs.price_range_low
+            <= product.current_price
+            <= user_prefs.price_range_high
+        ):
             price_ratio = product.current_price / user_prefs.price_point
             if 0.7 <= price_ratio <= 1.3:
                 score += RecommendationService.PRICE_RANGE_WEIGHT
             else:
                 # Penalize slightly if outside comfortable range
-                score += max(0, RecommendationService.PRICE_RANGE_WEIGHT * (1.0 - abs(price_ratio - 1.0)))
+                score += max(
+                    0,
+                    RecommendationService.PRICE_RANGE_WEIGHT
+                    * (1.0 - abs(price_ratio - 1.0)),
+                )
 
         # Brand affinity (0-2.0)
         if product.brand_id and str(product.brand_id) in user_prefs.brand_affinity:
@@ -110,14 +119,22 @@ class RecommendationService:
             tag_matches = sum(
                 user_prefs.preferred_tags.get(tag, 0) for tag in product.tags.keys()
             )
-            aesthetic_score = min(RecommendationService.AESTHETIC_MATCH_WEIGHT, tag_matches / 10.0)
+            aesthetic_score = min(
+                RecommendationService.AESTHETIC_MATCH_WEIGHT, tag_matches / 10.0
+            )
             score += aesthetic_score
 
         # Color palette match (0-0.5)
         if product.colors and user_prefs.color_palette:
-            product_colors = product.colors.keys() if isinstance(product.colors, dict) else []
-            color_matches = sum(1 for c in product_colors if c in user_prefs.color_palette)
-            color_score = min(RecommendationService.COLOR_PALETTE_WEIGHT, color_matches / 5.0)
+            product_colors = (
+                product.colors.keys() if isinstance(product.colors, dict) else []
+            )
+            color_matches = sum(
+                1 for c in product_colors if c in user_prefs.color_palette
+            )
+            color_score = min(
+                RecommendationService.COLOR_PALETTE_WEIGHT, color_matches / 5.0
+            )
             score += color_score
 
         # Popularity boost (0-0.5)
@@ -180,7 +197,9 @@ class RecommendationService:
                 continue
 
             # Get weight for this swipe action
-            action_weight = RecommendationService.EMBEDDING_WEIGHTS.get(swipe_event.action, 0.0)
+            action_weight = RecommendationService.EMBEDDING_WEIGHTS.get(
+                swipe_event.action, 0.0
+            )
 
             # Apply time decay
             days_ago = (now - swipe_event.created_at).days
@@ -242,7 +261,9 @@ class RecommendationService:
         if norm > 0:
             product_embedding /= norm
 
-        return RecommendationService._cosine_similarity(product_embedding, taste_embedding)
+        return RecommendationService._cosine_similarity(
+            product_embedding, taste_embedding
+        )
 
     @staticmethod
     async def score_product_hybrid(
@@ -459,19 +480,29 @@ class RecommendationService:
                 super_like_swipes += 1
 
             # Collect preferences from liked/super-liked items
-            if swipe_event.action in (SwipeAction.LIKE, SwipeAction.SUPER_LIKE, SwipeAction.SHOP_CLICK):
+            if swipe_event.action in (
+                SwipeAction.LIKE,
+                SwipeAction.SUPER_LIKE,
+                SwipeAction.SHOP_CLICK,
+            ):
                 if product.category:
-                    categories[product.category] = categories.get(product.category, 0) + 1
+                    categories[product.category] = (
+                        categories.get(product.category, 0) + 1
+                    )
 
                 if product.subcategory:
-                    subcategories[product.subcategory] = subcategories.get(product.subcategory, 0) + 1
+                    subcategories[product.subcategory] = (
+                        subcategories.get(product.subcategory, 0) + 1
+                    )
 
                 if product.tags:
                     for tag, weight in product.tags.items():
                         all_tags[tag] = all_tags.get(tag, 0) + float(weight)
 
                 if product.brand_id:
-                    brand_scores[str(product.brand_id)] = brand_scores.get(str(product.brand_id), 0) + 1
+                    brand_scores[str(product.brand_id)] = (
+                        brand_scores.get(str(product.brand_id), 0) + 1
+                    )
 
                 prices.append(product.current_price)
 
@@ -484,7 +515,9 @@ class RecommendationService:
         price_range_high = min(2000.0, avg_price + 1.5 * price_std)
 
         # Get brand names for top brands
-        top_brand_ids = sorted(brand_scores.items(), key=lambda x: x[1], reverse=True)[:5]
+        top_brand_ids = sorted(brand_scores.items(), key=lambda x: x[1], reverse=True)[
+            :5
+        ]
         if top_brand_ids:
             brand_ids = [b[0] for b in top_brand_ids]
             stmt = select(Brand).where(Brand.id.in_(brand_ids))
@@ -492,15 +525,18 @@ class RecommendationService:
             brands = result.scalars().all()
             brand_dict = {str(b.id): b.name for b in brands}
             brand_affinity = {
-                brand_dict.get(bid, bid): score
-                for bid, score in top_brand_ids
+                brand_dict.get(bid, bid): score for bid, score in top_brand_ids
             }
         else:
             brand_affinity = {}
 
         return UserPreferences(
-            preferred_categories=sorted(categories.items(), key=lambda x: x[1], reverse=True)[:5],
-            preferred_subcategories=sorted(subcategories.items(), key=lambda x: x[1], reverse=True)[:5],
+            preferred_categories=sorted(
+                categories.items(), key=lambda x: x[1], reverse=True
+            )[:5],
+            preferred_subcategories=sorted(
+                subcategories.items(), key=lambda x: x[1], reverse=True
+            )[:5],
             preferred_tags=dict(
                 sorted(all_tags.items(), key=lambda x: x[1], reverse=True)[:10]
             ),
@@ -514,5 +550,7 @@ class RecommendationService:
             color_palette=[],  # TODO: Extract from image analysis
             average_rating=0.5,  # TODO: Compute from engagement
             view_detail_rate=detail_swipes / total_swipes if total_swipes > 0 else 0.0,
-            super_like_rate=super_like_swipes / total_swipes if total_swipes > 0 else 0.0,
+            super_like_rate=super_like_swipes / total_swipes
+            if total_swipes > 0
+            else 0.0,
         )

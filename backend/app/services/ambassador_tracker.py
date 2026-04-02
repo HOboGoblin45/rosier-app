@@ -1,7 +1,7 @@
 """Ambassador and affiliate performance tracking service."""
+
 import logging
 from datetime import datetime, timedelta, timezone
-from typing import Optional
 
 from sqlalchemy import and_, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -66,10 +66,16 @@ class AmbassadorTrackerService:
         confirmed_revenue = sum(c.commission_amount for c in confirmed)
 
         # Conversion rate
-        conversion_rate = (confirmed_count / total_commissions * 100) if total_commissions > 0 else 0.0
+        conversion_rate = (
+            (confirmed_count / total_commissions * 100)
+            if total_commissions > 0
+            else 0.0
+        )
 
         # Average commission
-        average_commission = total_revenue / total_commissions if total_commissions > 0 else 0.0
+        average_commission = (
+            total_revenue / total_commissions if total_commissions > 0 else 0.0
+        )
 
         return {
             "brand_id": brand_id,
@@ -113,7 +119,8 @@ class AmbassadorTrackerService:
                 func.count(Commission.id).label("total"),
                 func.sum(Commission.is_confirmed.cast(type_=int)).label("confirmed"),
                 func.sum(Commission.commission_amount).label("total_commission"),
-            ).where(Commission.created_at >= start_date)
+            )
+            .where(Commission.created_at >= start_date)
             .group_by(Commission.brand_id)
         )
 
@@ -129,7 +136,10 @@ class AmbassadorTrackerService:
 
             conversion_rate = confirmed / total
 
-            if conversion_rate < min_conversion_rate or total_commission < min_commission:
+            if (
+                conversion_rate < min_conversion_rate
+                or total_commission < min_commission
+            ):
                 # Get brand name
                 brand = await session.get(Brand, brand_id)
                 underperforming.append(
@@ -176,7 +186,8 @@ class AmbassadorTrackerService:
                 func.count(Commission.id).label("total"),
                 func.sum(Commission.is_confirmed.cast(type_=int)).label("confirmed"),
                 func.sum(Commission.commission_amount).label("total_commission"),
-            ).where(Commission.created_at >= start_date)
+            )
+            .where(Commission.created_at >= start_date)
             .group_by(Commission.brand_id)
             .order_by(func.sum(Commission.commission_amount).desc())
             .limit(limit)
@@ -230,7 +241,8 @@ class AmbassadorTrackerService:
                 func.sum(Commission.is_confirmed.cast(type_=int)).label("confirmed"),
                 func.sum(Commission.commission_amount).label("total_commission"),
                 func.avg(Commission.commission_amount).label("avg_commission"),
-            ).where(Commission.created_at >= start_date)
+            )
+            .where(Commission.created_at >= start_date)
             .group_by(Commission.retailer_id)
             .order_by(func.sum(Commission.commission_amount).desc())
         )
@@ -250,7 +262,9 @@ class AmbassadorTrackerService:
                 {
                     "retailer_id": str(retailer_id),
                     "retailer_name": retailer.name if retailer else "Unknown",
-                    "affiliate_network": retailer.affiliate_network.value if retailer else "Unknown",
+                    "affiliate_network": retailer.affiliate_network.value
+                    if retailer
+                    else "Unknown",
                     "total_clicks": total,
                     "conversions": confirmed,
                     "conversion_rate": round(conversion_rate, 3),

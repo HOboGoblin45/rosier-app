@@ -1,15 +1,16 @@
 """Sale events API endpoints."""
+
 import logging
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel
-from sqlalchemy import select, func, and_
+from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
-from app.models import SaleEvent, Retailer, Product, DresserItem
+from app.models import SaleEvent, Retailer, Product
 
 logger = logging.getLogger(__name__)
 
@@ -70,7 +71,7 @@ async def list_sales(
     # Get active sales
     stmt = (
         select(SaleEvent)
-        .where(SaleEvent.is_active == True)
+        .where(SaleEvent.is_active)
         .order_by(SaleEvent.start_date)
         .offset(offset)
         .limit(size)
@@ -105,7 +106,7 @@ async def list_sales(
         )
 
     # Get total count
-    count_stmt = select(func.count(SaleEvent.id)).where(SaleEvent.is_active == True)
+    count_stmt = select(func.count(SaleEvent.id)).where(SaleEvent.is_active)
     count_result = await db.execute(count_stmt)
     total = count_result.scalar()
 
@@ -150,7 +151,7 @@ async def get_sale_detail(
     # Get products from this retailer (placeholder for filtering by sale)
     products_stmt = select(Product).where(
         Product.retailer_id == sale.retailer_id,
-        Product.is_active == True,
+        Product.is_active,
     )
     products_result = await db.execute(products_stmt)
     products = products_result.scalars().all()

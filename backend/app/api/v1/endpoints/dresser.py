@@ -1,4 +1,5 @@
 """Dresser (closet) endpoints."""
+
 from typing import Annotated, Optional
 from uuid import UUID
 
@@ -70,12 +71,8 @@ async def get_dresser(
     items = items_result.scalars().all()
 
     return DresserResponse(
-        drawers=[
-            DrawerResponse.from_orm(d) for d in drawers
-        ],
-        items=[
-            DresserItemResponse.from_orm(i) for i in items
-        ],
+        drawers=[DrawerResponse.from_orm(d) for d in drawers],
+        items=[DresserItemResponse.from_orm(i) for i in items],
     )
 
 

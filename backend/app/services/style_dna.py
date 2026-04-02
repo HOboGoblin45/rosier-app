@@ -1,4 +1,5 @@
 """Style DNA generation service for user personality profiles."""
+
 import logging
 from datetime import datetime, timezone
 from typing import Optional
@@ -8,7 +9,7 @@ from sqlalchemy import and_, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.redis import get_cache, set_cache
-from app.models import Brand, Product, SwipeEvent, User
+from app.models import Brand, Product, SwipeEvent
 from app.models.swipe_event import SwipeAction
 
 logger = logging.getLogger(__name__)
@@ -138,7 +139,8 @@ class StyleDNAService:
         embeddings = []
         for swipe_event, product in swipes_products:
             if (
-                swipe_event.action in (SwipeAction.LIKE, SwipeAction.SUPER_LIKE, SwipeAction.SHOP_CLICK)
+                swipe_event.action
+                in (SwipeAction.LIKE, SwipeAction.SUPER_LIKE, SwipeAction.SHOP_CLICK)
                 and product.visual_embedding
             ):
                 embeddings.append(np.array(product.visual_embedding))
@@ -154,7 +156,9 @@ class StyleDNAService:
         try:
             from sklearn.cluster import KMeans
 
-            kmeans = KMeans(n_clusters=min(8, len(embeddings_matrix)), random_state=42, n_init=10)
+            kmeans = KMeans(
+                n_clusters=min(8, len(embeddings_matrix)), random_state=42, n_init=10
+            )
             labels = kmeans.fit_predict(embeddings_matrix)
 
             # Get dominant cluster
@@ -162,7 +166,9 @@ class StyleDNAService:
             dominant_cluster = unique[np.argmax(counts)]
 
             # Map cluster to archetype
-            archetype = StyleDNAService.ARCHETYPES[dominant_cluster % len(StyleDNAService.ARCHETYPES)]
+            archetype = StyleDNAService.ARCHETYPES[
+                dominant_cluster % len(StyleDNAService.ARCHETYPES)
+            ]
             logger.debug(f"Computed archetype: {archetype}")
             return archetype
         except ImportError:
@@ -198,7 +204,11 @@ class StyleDNAService:
                 brand_stats[brand_id] = {"likes": 0, "total": 0}
 
             brand_stats[brand_id]["total"] += 1
-            if swipe_event.action in (SwipeAction.LIKE, SwipeAction.SUPER_LIKE, SwipeAction.SHOP_CLICK):
+            if swipe_event.action in (
+                SwipeAction.LIKE,
+                SwipeAction.SUPER_LIKE,
+                SwipeAction.SHOP_CLICK,
+            ):
                 brand_stats[brand_id]["likes"] += 1
 
         # Calculate engagement ratios and sort
@@ -272,7 +282,11 @@ class StyleDNAService:
         prices = []
 
         for swipe_event, product in swipes_products:
-            if swipe_event.action in (SwipeAction.LIKE, SwipeAction.SUPER_LIKE, SwipeAction.SHOP_CLICK):
+            if swipe_event.action in (
+                SwipeAction.LIKE,
+                SwipeAction.SUPER_LIKE,
+                SwipeAction.SHOP_CLICK,
+            ):
                 prices.append(product.current_price)
 
         if not prices:
@@ -290,7 +304,9 @@ class StyleDNAService:
             "mean": float(mean),
         }
 
-        logger.debug(f"Computed price range: ${price_range['low']:.2f} - ${price_range['high']:.2f}")
+        logger.debug(
+            f"Computed price range: ${price_range['low']:.2f} - ${price_range['high']:.2f}"
+        )
         return price_range
 
     @staticmethod
@@ -325,10 +341,14 @@ class StyleDNAService:
                 rejects_count += 1
 
             if product.category:
-                category_counts[product.category] = category_counts.get(product.category, 0) + 1
+                category_counts[product.category] = (
+                    category_counts.get(product.category, 0) + 1
+                )
 
         # Top categories
-        top_categories = sorted(category_counts.items(), key=lambda x: x[1], reverse=True)
+        top_categories = sorted(
+            category_counts.items(), key=lambda x: x[1], reverse=True
+        )
         top_category_names = [cat[0] for cat in top_categories[:3]]
 
         stats = {
@@ -338,7 +358,9 @@ class StyleDNAService:
             "shop_clicks": shop_clicks_count,
             "view_details": view_details_count,
             "rejects": rejects_count,
-            "engagement_rate": (likes_count + super_likes_count) / total_swipes if total_swipes > 0 else 0,
+            "engagement_rate": (likes_count + super_likes_count) / total_swipes
+            if total_swipes > 0
+            else 0,
             "top_categories": top_category_names,
         }
 
@@ -397,20 +419,19 @@ class StyleDNAService:
             return True
 
         # Check swipe count threshold
-        stmt = (
-            select(func.count(SwipeEvent.id))
-            .where(
-                and_(
-                    SwipeEvent.user_id == user_id,
-                    SwipeEvent.created_at > last_computed_at,
-                )
+        stmt = select(func.count(SwipeEvent.id)).where(
+            and_(
+                SwipeEvent.user_id == user_id,
+                SwipeEvent.created_at > last_computed_at,
             )
         )
         result = await session.execute(stmt)
         new_swipes = result.scalar() or 0
 
         if new_swipes >= StyleDNAService.REGENERATION_THRESHOLD:
-            logger.info(f"Style DNA regeneration recommended: {new_swipes} new swipes for user {user_id}")
+            logger.info(
+                f"Style DNA regeneration recommended: {new_swipes} new swipes for user {user_id}"
+            )
             return True
 
         return False

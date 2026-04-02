@@ -1,4 +1,5 @@
 """Brand model."""
+
 import uuid
 from datetime import datetime, timezone
 from enum import Enum
@@ -25,8 +26,12 @@ class Brand(Base):
 
     __tablename__ = "brands"
 
-    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    name: Mapped[str] = mapped_column(String(255), unique=True, nullable=False, index=True)
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    name: Mapped[str] = mapped_column(
+        String(255), unique=True, nullable=False, index=True
+    )
     slug: Mapped[str] = mapped_column(String(255), unique=True, nullable=False)
     tier: Mapped[BrandTier] = mapped_column(SQLEnum(BrandTier), nullable=False)
 
@@ -40,7 +45,9 @@ class Brand(Base):
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
 
     created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        nullable=False,
     )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),

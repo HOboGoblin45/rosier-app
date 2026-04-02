@@ -1,9 +1,19 @@
 """Brand discovery card model."""
+
 import uuid
 from datetime import datetime, timezone
 from enum import Enum
 
-from sqlalchemy import Boolean, DateTime, Enum as SQLEnum, Float, ForeignKey, Index, JSON, String
+from sqlalchemy import (
+    Boolean,
+    DateTime,
+    Enum as SQLEnum,
+    Float,
+    ForeignKey,
+    Index,
+    JSON,
+    String,
+)
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -23,7 +33,9 @@ class BrandDiscoveryCard(Base):
 
     __tablename__ = "brand_discovery_cards"
 
-    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
     brand_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey("brands.id"), nullable=False, index=True
     )
@@ -48,12 +60,16 @@ class BrandDiscoveryCard(Base):
 
     # Status tracking
     status: Mapped[BrandDiscoveryCardStatus] = mapped_column(
-        SQLEnum(BrandDiscoveryCardStatus), default=BrandDiscoveryCardStatus.ACTIVE, index=True
+        SQLEnum(BrandDiscoveryCardStatus),
+        default=BrandDiscoveryCardStatus.ACTIVE,
+        index=True,
     )
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
 
     created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        nullable=False,
     )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
@@ -75,12 +91,17 @@ class BrandDiscoverySwipe(Base):
 
     __tablename__ = "brand_discovery_swipes"
 
-    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
     user_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey("users.id"), nullable=False, index=True
     )
     card_id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), ForeignKey("brand_discovery_cards.id"), nullable=False, index=True
+        UUID(as_uuid=True),
+        ForeignKey("brand_discovery_cards.id"),
+        nullable=False,
+        index=True,
     )
     brand_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey("brands.id"), nullable=False, index=True
@@ -94,7 +115,9 @@ class BrandDiscoverySwipe(Base):
     session_id: Mapped[str] = mapped_column(String(255), nullable=True)
 
     created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        nullable=False,
     )
 
     __table_args__ = (

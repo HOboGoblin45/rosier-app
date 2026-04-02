@@ -1,6 +1,6 @@
 """Onboarding endpoints."""
+
 from typing import Annotated, Optional
-from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status, Header
 from sqlalchemy import select
@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core import get_db, verify_access_token, extract_bearer_token
 from app.models import User
-from app.schemas import QuizSubmission, UserResponse
+from app.schemas import QuizSubmission
 from app.services import CardQueueService
 
 router = APIRouter(prefix="/onboarding", tags=["onboarding"])
@@ -57,7 +57,9 @@ async def submit_quiz(
     # Generate initial card queue
     preferences = {
         "preferred_categories": submission.responses.get("preferred_categories", []),
-        "preferred_subcategories": submission.responses.get("preferred_subcategories", []),
+        "preferred_subcategories": submission.responses.get(
+            "preferred_subcategories", []
+        ),
         "preferred_tags": submission.responses.get("preferred_tags", {}),
         "price_point": submission.responses.get("price_point", 50.0),
     }

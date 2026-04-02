@@ -1,14 +1,14 @@
 """Push notification service for APNs and re-engagement campaigns."""
+
 import json
 import logging
 from dataclasses import dataclass
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timezone
 from enum import Enum
 from typing import Optional
-from uuid import UUID
 
 import httpx
-from sqlalchemy import and_, select
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import get_settings
@@ -223,7 +223,9 @@ class NotificationService:
             Tuple of (success, error_message)
         """
         # Check rate limit
-        allowed, remaining = await NotificationService.check_notification_rate_limit(user_id)
+        allowed, remaining = await NotificationService.check_notification_rate_limit(
+            user_id
+        )
         if not allowed:
             logger.info(f"Rate limit exceeded for user {user_id}")
             return False, f"Rate limited. {remaining} notifications remaining today."
@@ -459,7 +461,9 @@ class NotificationService:
     ) -> None:
         """Track that user tapped/opened notification."""
         analytics_key = f"notif_tap:{user_id}:{notification_type.value}"
-        await set_cache(analytics_key, datetime.now(timezone.utc).isoformat(), ttl=86400)
+        await set_cache(
+            analytics_key, datetime.now(timezone.utc).isoformat(), ttl=86400
+        )
         logger.info(f"User {user_id} tapped {notification_type.value} notification")
 
     @staticmethod
@@ -469,5 +473,7 @@ class NotificationService:
     ) -> None:
         """Track that user dismissed notification."""
         analytics_key = f"notif_dismiss:{user_id}:{notification_type.value}"
-        await set_cache(analytics_key, datetime.now(timezone.utc).isoformat(), ttl=86400)
+        await set_cache(
+            analytics_key, datetime.now(timezone.utc).isoformat(), ttl=86400
+        )
         logger.info(f"User {user_id} dismissed {notification_type.value} notification")
