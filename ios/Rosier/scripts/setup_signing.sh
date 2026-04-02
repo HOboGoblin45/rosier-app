@@ -167,8 +167,15 @@ install_provisioning_profile() {
 
   mkdir -p "$profile_dir"
 
-  # Extract UUID from profile
-  local profile_uuid=$(/usr/libexec/PlistBuddy -c "Print UUID" "$profile_file" 2>/dev/null)
+  # Extract UUID from profile (mobileprovision files are signed CMS - extract plist first)
+  local profile_plist="$TEMP_DIR/profile.plist"
+  security cms -D -i "$profile_file" > "$profile_plist" 2>/dev/null
+  local profile_uuid=$(/usr/libexec/PlistBuddy -c "Print UUID" "$profile_plist" 2>/dev/null)
+
+  if [[ -z "$profile_uuid" ]]; then
+    # Fallback: try grep
+    profile_uuid=$(grep -A1 '<key>UUID</key>' "$profile_plist" 2>/dev/null | grep '<string>' | sed 's/.*<string>//;s/<\/string>.*//')
+  fi
 
   if [[ -z "$profile_uuid" ]]; then
     echo -e "${RED}[ERROR]${NC} Failed to read provisioning profile UUID" >&2
