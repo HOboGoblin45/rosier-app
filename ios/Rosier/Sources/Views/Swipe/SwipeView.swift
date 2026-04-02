@@ -65,7 +65,7 @@ struct SwipeView: View {
                                     .contentShape(Circle())
                             }
                             .padding(.top, 16)
-                            .padding(.right, 20)
+                            .padding(.trailing, 20)
                         }
 
                         Spacer()
