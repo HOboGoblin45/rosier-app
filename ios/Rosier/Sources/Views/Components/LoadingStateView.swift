@@ -1,5 +1,5 @@
 import SwiftUI
-import RosierCore
+
 
 /// Reusable loading state view with animated Rosier logo and optional message.
 /// Used across the app when content is being fetched or processed.

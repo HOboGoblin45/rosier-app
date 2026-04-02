@@ -1,5 +1,5 @@
 import SwiftUI
-import RosierCore
+
 
 /// Sheet view displaying upcoming retail sales with a clean calendar interface.
 /// Shows sale dates, retailer info, and number of matching items in the user's Dresser.

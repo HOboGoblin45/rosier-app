@@ -1,5 +1,5 @@
 import SwiftUI
-import RosierCore
+
 
 /// Full-screen dresser modal with drawer management and item grid.
 struct DresserView: View {
