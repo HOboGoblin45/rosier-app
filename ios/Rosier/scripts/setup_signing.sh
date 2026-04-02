@@ -129,6 +129,16 @@ import_certificate() {
 
   echo -e "${BLUE}[INFO]${NC} Importing certificate into keychain..."
 
+  # Re-encode P12 with legacy algorithms for macOS compatibility
+  # OpenSSL 3.x uses SHA-256 MAC by default, macOS security expects legacy SHA-1/3DES
+  local legacy_cert="${cert_file%.p12}_legacy.p12"
+  if openssl pkcs12 -in "$cert_file" -out "${cert_file}.pem" -nodes -passin pass:"$IOS_CERT_PASSWORD" 2>/dev/null; then
+    openssl pkcs12 -export -in "${cert_file}.pem" -out "$legacy_cert" -passout pass:"$IOS_CERT_PASSWORD" -legacy 2>/dev/null ||     openssl pkcs12 -export -in "${cert_file}.pem" -out "$legacy_cert" -passout pass:"$IOS_CERT_PASSWORD" -certpbe PBE-SHA1-3DES -keypbe PBE-SHA1-3DES -macalg SHA1 2>/dev/null ||     cp "$cert_file" "$legacy_cert"
+    rm -f "${cert_file}.pem"
+    cert_file="$legacy_cert"
+    echo -e "${GREEN}[SUCCESS]${NC} Certificate re-encoded for macOS compatibility"
+  fi
+
   if security import "$cert_file" \
     -k "$KEYCHAIN_NAME" \
     -P "$IOS_CERT_PASSWORD" \
