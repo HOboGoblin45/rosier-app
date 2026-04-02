@@ -57,7 +57,7 @@ final class OfflineSyncService: NSObject, ObservableObject {
         }
 
         do {
-            try await persistenceController.performBackgroundTaskWithSave { context throws in
+            try await persistenceController.performBackgroundTaskWithSave { context in
                 let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CachedSwipeEvent")
                 fetchRequest.predicate = NSPredicate(format: "isSynced == false")
 
@@ -126,7 +126,7 @@ final class OfflineSyncService: NSObject, ObservableObject {
 
         do {
             // Check if we already have enough cached cards
-            let cachedCount = try await getCardQueueCacheCount()
+            let cachedCount = await getCardQueueCacheCount()
             if cachedCount >= minQueueCacheSize {
                 return
             }
@@ -218,8 +218,8 @@ final class OfflineSyncService: NSObject, ObservableObject {
 
     /// Gets offline card queue from cache.
     func getOfflineCardQueue() async -> [Product] {
-        do {
-            return try await persistenceController.performBackgroundTask { context throws in
+        return await persistenceController.performBackgroundTask { context in
+            do {
                 let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CachedCardQueue")
                 fetchRequest.sortDescriptors = [NSSortDescriptor(key: "queuePosition", ascending: true)]
 
@@ -235,10 +235,10 @@ final class OfflineSyncService: NSObject, ObservableObject {
 
                     return try? JSONDecoder().decode(Product.self, from: jsonData)
                 }
+            } catch {
+                print("Failed to fetch offline queue: \(error)")
+                return []
             }
-        } catch {
-            print("Failed to fetch offline queue: \(error)")
-            return []
         }
     }
 
@@ -246,8 +246,8 @@ final class OfflineSyncService: NSObject, ObservableObject {
     func checkDresserPriceDrops() async {
         guard isOnline else { return }
 
-        do {
-            try await persistenceController.performBackgroundTask { context throws in
+        await persistenceController.performBackgroundTask { context in
+            do {
                 let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CachedDresserItem")
                 guard let items = try context.fetch(fetchRequest) as? [NSManagedObject] else {
                     return
@@ -268,9 +268,9 @@ final class OfflineSyncService: NSObject, ObservableObject {
                         print("Price drop detected for item: \(item.value(forKey: "id") ?? "unknown")")
                     }
                 }
+            } catch {
+                print("Failed to check dresser price drops: \(error)")
             }
-        } catch {
-            print("Failed to check dresser price drops: \(error)")
         }
     }
 
@@ -296,10 +296,15 @@ final class OfflineSyncService: NSObject, ObservableObject {
     }
 
     /// Gets the count of cached cards in the queue.
-    private func getCardQueueCacheCount() async throws -> Int {
-        return try await persistenceController.performBackgroundTask { context throws in
-            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CachedCardQueue")
-            return try context.count(for: fetchRequest)
+    private func getCardQueueCacheCount() async -> Int {
+        return await persistenceController.performBackgroundTask { context in
+            do {
+                let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CachedCardQueue")
+                return try context.count(for: fetchRequest)
+            } catch {
+                print("Failed to get card queue cache count: \(error)")
+                return 0
+            }
         }
     }
 

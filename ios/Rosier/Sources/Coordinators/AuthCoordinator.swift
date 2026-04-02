@@ -1,5 +1,12 @@
 import SwiftUI
 
+enum AuthScreen: Hashable {
+    case signIn
+    case signUp
+    case forgotPassword
+    case appleSignIn
+}
+
 /// Coordinator managing authentication flows (Sign In, Sign Up).
 final class AuthCoordinator: BaseCoordinator<AuthScreen, SheetType, FullScreenCoverType> {
     // MARK: - Properties
@@ -9,13 +16,6 @@ final class AuthCoordinator: BaseCoordinator<AuthScreen, SheetType, FullScreenCo
 
     private let authService = AuthService.shared
     private var onSuccess: (() -> Void)?
-
-    enum AuthScreen: Hashable {
-        case signIn
-        case signUp
-        case forgotPassword
-        case appleSignIn
-    }
 
     // MARK: - Initialization
 
@@ -28,13 +28,13 @@ final class AuthCoordinator: BaseCoordinator<AuthScreen, SheetType, FullScreenCo
 
     /// Starts the sign in flow.
     func startSignIn() {
-        navigationPath = NavigationPath(AuthScreen.self)
+        navigationPath = NavigationPath()
         push(.signIn)
     }
 
     /// Starts the sign up flow.
     func startSignUp() {
-        navigationPath = NavigationPath(AuthScreen.self)
+        navigationPath = NavigationPath()
         push(.signUp)
     }
 
@@ -50,14 +50,14 @@ final class AuthCoordinator: BaseCoordinator<AuthScreen, SheetType, FullScreenCo
                 // Merge anonymous session with authenticated user
                 try await authService.mergeSession()
 
-                DispatchQueue.main.async {
+                await MainActor.run {
                     self.isLoading = false
                     self.onSuccess?()
                 }
-            } catch {
-                DispatchQueue.main.async {
+            } catch let authError {
+                await MainActor.run {
                     self.isLoading = false
-                    self.error = error.localizedDescription
+                    self.error = authError.localizedDescription
                 }
             }
         }
@@ -75,14 +75,14 @@ final class AuthCoordinator: BaseCoordinator<AuthScreen, SheetType, FullScreenCo
                 // Merge anonymous session with authenticated user
                 try await authService.mergeSession()
 
-                DispatchQueue.main.async {
+                await MainActor.run {
                     self.isLoading = false
                     self.onSuccess?()
                 }
-            } catch {
-                DispatchQueue.main.async {
+            } catch let authError {
+                await MainActor.run {
                     self.isLoading = false
-                    self.error = error.localizedDescription
+                    self.error = authError.localizedDescription
                 }
             }
         }
@@ -104,14 +104,14 @@ final class AuthCoordinator: BaseCoordinator<AuthScreen, SheetType, FullScreenCo
                 // Merge anonymous session with authenticated user
                 try await authService.mergeSession()
 
-                DispatchQueue.main.async {
+                await MainActor.run {
                     self.isLoading = false
                     self.onSuccess?()
                 }
-            } catch {
-                DispatchQueue.main.async {
+            } catch let authError {
+                await MainActor.run {
                     self.isLoading = false
-                    self.error = error.localizedDescription
+                    self.error = authError.localizedDescription
                 }
             }
         }
@@ -132,15 +132,15 @@ final class AuthCoordinator: BaseCoordinator<AuthScreen, SheetType, FullScreenCo
                     body: request
                 )
 
-                DispatchQueue.main.async {
+                await MainActor.run {
                     self.isLoading = false
                     self.error = nil
                     self.pop() // Return to sign in
                 }
-            } catch {
-                DispatchQueue.main.async {
+            } catch let authError {
+                await MainActor.run {
                     self.isLoading = false
-                    self.error = error.localizedDescription
+                    self.error = authError.localizedDescription
                 }
             }
         }
@@ -148,7 +148,7 @@ final class AuthCoordinator: BaseCoordinator<AuthScreen, SheetType, FullScreenCo
 
     /// Dismisses the auth flow.
     func dismiss() {
-        navigationPath = NavigationPath(AuthScreen.self)
+        navigationPath = NavigationPath()
         dismissFullScreenCover()
     }
 
