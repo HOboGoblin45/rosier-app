@@ -126,7 +126,7 @@ final class AuthCoordinator: BaseCoordinator<AuthScreen, SheetType, FullScreenCo
             do {
                 // Call API to send password reset email
                 let request = PasswordResetRequest(email: email)
-                try await authService.networkService.requestEmpty(
+                try await NetworkService.shared.requestEmpty(
                     "auth/forgot-password",
                     method: .post,
                     body: request
