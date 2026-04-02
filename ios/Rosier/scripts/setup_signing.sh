@@ -167,24 +167,34 @@ install_provisioning_profile() {
 
   mkdir -p "$profile_dir"
 
-  # Extract UUID from profile (mobileprovision files are signed CMS - extract plist first)
-  local profile_plist="$TEMP_DIR/profile.plist"
+  # Extract UUID from provisioning profile
+  # mobileprovision files are CMS-signed containers with an embedded plist
   local profile_uuid=""
+  local profile_plist="$TEMP_DIR/profile.plist"
 
-  # Try security cms to extract the embedded plist
-  if security cms -D -i "$profile_file" > "$profile_plist" 2>/dev/null; then
+  # Method 1: security cms (best approach on macOS)
+  if security cms -D -i "$profile_file" -o "$profile_plist" 2>/dev/null; then
     profile_uuid=$(/usr/libexec/PlistBuddy -c "Print UUID" "$profile_plist" 2>/dev/null || true)
   fi
 
-  # Fallback: grep the raw mobileprovision file for UUID pattern
+  # Method 2: openssl smime to extract the signed content
   if [[ -z "$profile_uuid" ]]; then
-    profile_uuid=$(grep -a -A1 '<key>UUID</key>' "$profile_file" 2>/dev/null | grep '<string>' | sed 's/.*<string>//;s/<\/string>.*//' || true)
+    openssl smime -inform der -verify -noverify -in "$profile_file" -out "$profile_plist" 2>/dev/null || true
+    if [[ -f "$profile_plist" ]]; then
+      profile_uuid=$(/usr/libexec/PlistBuddy -c "Print UUID" "$profile_plist" 2>/dev/null || true)
+    fi
   fi
 
-  # Final fallback: generate a UUID
+  # Method 3: grep the raw binary for UUID pattern
   if [[ -z "$profile_uuid" ]]; then
-    profile_uuid=$(uuidgen)
-    echo -e "${YELLOW}[WARN]${NC} Could not extract UUID, using generated: $profile_uuid"
+    profile_uuid=$(strings "$profile_file" | grep -A1 '<key>UUID</key>' | grep '<string>' | sed 's/.*<string>//;s/<\/string>.*//' || true)
+  fi
+
+  if [[ -z "$profile_uuid" ]]; then
+    echo -e "${RED}[ERROR]${NC} Failed to read provisioning profile UUID" >&2
+    echo -e "${YELLOW}[WARN]${NC} Attempting direct install without UUID..."
+    # Just copy with a fixed name - Xcode will still scan it
+    profile_uuid="rosier-profile"
   fi
 
   cp "$profile_file" "$profile_dir/$profile_uuid.mobileprovision"
