@@ -75,7 +75,7 @@ final class ImageCacheService {
     }
 
     /// Gets a device-appropriate image variant URL based on screen scale.
-    func appropriateImageURL(for url: URL, scale: CGFloat = UIScreen.main.scale) -> URL {
+    func appropriateImageURL(for url: URL, scale: CGFloat = 1.0) -> URL {
         let scaleFactor = Int(scale)
         let filename = url.lastPathComponent
         let ext = url.pathExtension
