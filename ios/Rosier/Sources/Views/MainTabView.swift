@@ -2,7 +2,7 @@ import SwiftUI
 
 /// Main tab navigation shell with Swipe, Dresser, and Profile tabs.
 struct MainTabView: View {
-    @Bindable var coordinator: MainCoordinator
+    @ObservedObject var coordinator: MainCoordinator
 
     var body: some View {
         ZStack {
@@ -76,7 +76,7 @@ struct TabBarItemView: View {
 // MARK: - Swipe Tab Container
 
 struct SwipeTabView: View {
-    @Bindable var coordinator: MainCoordinator
+    @ObservedObject var coordinator: MainCoordinator
 
     var body: some View {
         // This would contain the SwipeView from the existing swipe feature
@@ -106,7 +106,7 @@ struct SwipeTabView: View {
 // MARK: - Dresser Tab Container
 
 struct DresserTabView: View {
-    @Bindable var coordinator: MainCoordinator
+    @ObservedObject var coordinator: MainCoordinator
     @State private var dresserViewModel = DresserViewModel()
     @State private var showDresserModal = true
 
@@ -123,7 +123,7 @@ struct DresserTabView: View {
 // MARK: - Profile Tab Container
 
 struct ProfileTabView: View {
-    @Bindable var coordinator: MainCoordinator
+    @ObservedObject var coordinator: MainCoordinator
     @State private var profileViewModel = ProfileViewModel()
 
     var body: some View {

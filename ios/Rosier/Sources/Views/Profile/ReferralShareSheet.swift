@@ -22,10 +22,10 @@ struct ReferralShareSheet: UIViewControllerRepresentable {
 
         // Exclude certain activity types
         activityViewController.excludedActivityTypes = [
-            .saveToPasteboard,
+            .copyToPasteboard,
             .print,
             .assignToContact,
-            .openInBooks,
+            .openInIBooks,
             .addToReadingList
         ]
 

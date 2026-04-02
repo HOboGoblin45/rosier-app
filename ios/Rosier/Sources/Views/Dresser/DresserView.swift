@@ -311,7 +311,7 @@ struct DresserItemCardView: View {
                     )
 
                 // Price drop badge
-                if let original = item.currentPrice, original > item.currentPrice {
+                if let originalPrice = item.originalPrice, originalPrice > item.currentPrice {
                     HStack(spacing: 4) {
                         Image(systemName: "flame.fill")
                             .font(.system(size: 10, weight: .semibold))

@@ -215,7 +215,7 @@ struct SignInView: View {
                             .frame(maxWidth: .infinity)
                             .frame(height: 50)
                             .background(
-                                viewModel.isSignUpMode ? viewModel.isSignUpFormValid : viewModel.isSignInFormValid ?
+                                (viewModel.isSignUpMode ? viewModel.isSignUpFormValid : viewModel.isSignInFormValid) ?
                                 Color.brandAccent : Color.textTertiary.opacity(0.2)
                             )
                             .foregroundColor(.brandPrimary)

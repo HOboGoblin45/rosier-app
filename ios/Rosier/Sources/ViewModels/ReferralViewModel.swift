@@ -90,10 +90,10 @@ import SwiftUI
 
         // Exclude certain activity types for referral sharing
         activityViewController.excludedActivityTypes = [
-            .saveToPasteboard,
+            .copyToPasteboard,
             .print,
             .assignToContact,
-            .openInBooks
+            .openInIBooks
         ]
 
         // Track share event

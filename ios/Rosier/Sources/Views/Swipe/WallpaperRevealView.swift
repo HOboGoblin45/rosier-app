@@ -219,14 +219,16 @@ final class WallpaperRevealView: UIView {
 
         let pattern: UIImage
         switch archetype {
-        case .deGournay:
+        case .classicRefined:
             pattern = WallpaperPatternGenerator.generateChinoiserie(tintColor: tintColor)
-        case .phillipJeffries:
+        case .relaxedNatural:
             pattern = WallpaperPatternGenerator.generateGrasscloth(tintColor: tintColor)
-        case .schumacher:
+        case .eclecticCreative:
             pattern = WallpaperPatternGenerator.generateBoldPrint(tintColor: tintColor)
-        case .scalamandre:
+        case .boldAvantGarde:
             pattern = WallpaperPatternGenerator.generateZoological(tintColor: tintColor)
+        case .minimalistModern:
+            pattern = WallpaperPatternGenerator.generateGrasscloth(tintColor: tintColor)
         }
 
         return (pattern, tintColor)
@@ -235,14 +237,16 @@ final class WallpaperRevealView: UIView {
     /// Returns light and dark hex colors for each wallpaper house.
     private func wallpaperTintColors(for archetype: StyleArchetype) -> (light: UInt32, dark: UInt32) {
         switch archetype {
-        case .deGournay:
+        case .classicRefined:
             return (light: 0xA8C4B8, dark: 0x7A9E8E)
-        case .phillipJeffries:
+        case .relaxedNatural:
             return (light: 0xD4C5A9, dark: 0xB8A98D)
-        case .schumacher:
+        case .eclecticCreative:
             return (light: 0xD4A092, dark: 0xC48B7D)
-        case .scalamandre:
+        case .boldAvantGarde:
             return (light: 0x8B9EB5, dark: 0x6B7E95)
+        case .minimalistModern:
+            return (light: 0xD4C5A9, dark: 0xB8A98D)
         }
     }
 }

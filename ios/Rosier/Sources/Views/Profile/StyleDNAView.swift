@@ -36,7 +36,11 @@ struct StyleDNAView: View {
 
                         Spacer()
 
-                        Button(action: { viewModel.loadStyleDNA() }) {
+                        Button(action: {
+                            Task {
+                                await viewModel.loadStyleDNA()
+                            }
+                        }) {
                             Image(systemName: "arrow.clockwise")
                                 .font(.system(size: 16, weight: .semibold))
                                 .foregroundColor(.brandAccent)

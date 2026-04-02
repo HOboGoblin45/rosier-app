@@ -1,6 +1,7 @@
 import UIKit
 import UserNotifications
 import BackgroundTasks
+import SwiftUI
 
 /// Application delegate for managing app lifecycle and push notifications.
 class AppDelegate: NSObject, UIApplicationDelegate {

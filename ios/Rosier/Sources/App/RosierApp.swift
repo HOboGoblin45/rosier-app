@@ -24,7 +24,7 @@ struct RosierApp: App {
                     SplashScreenView()
 
                 case .authenticated:
-                    MainTabView(coordinator: appCoordinator)
+                    MainTabView(coordinator: MainCoordinator())
 
                 case .onboarding:
                     OnboardingFlowContainer(coordinator: appCoordinator)

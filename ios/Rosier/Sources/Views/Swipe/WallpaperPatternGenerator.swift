@@ -274,10 +274,10 @@ final class WallpaperPatternGenerator {
 
         // Simple bird shape: body, head, tail
         // Body (ellipse)
-        path.addEllipse(in: CGRect(x: position.x - 8, y: position.y - 4, width: 10, height: 6))
+        path.append(UIBezierPath(ovalIn: CGRect(x: position.x - 8, y: position.y - 4, width: 10, height: 6)))
 
         // Head (small circle)
-        path.addEllipse(in: CGRect(x: position.x + 3, y: position.y - 5, width: 5, height: 5))
+        path.append(UIBezierPath(ovalIn: CGRect(x: position.x + 3, y: position.y - 5, width: 5, height: 5)))
 
         // Tail feathers (curved lines)
         let tailPath = UIBezierPath()

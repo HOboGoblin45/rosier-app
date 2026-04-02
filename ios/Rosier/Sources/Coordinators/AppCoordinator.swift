@@ -6,7 +6,7 @@ final class AppCoordinator: BaseCoordinator<MainScreen, SheetType, FullScreenCov
 
     @Published var authState: AuthState = .checking
     private let authService = AuthService.shared
-    private let deepLinkService = DeepLinkService.shared
+    let deepLinkService = DeepLinkService.shared
 
     // MARK: - Nested Types
 

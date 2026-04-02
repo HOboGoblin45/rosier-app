@@ -22,7 +22,7 @@ final class AuthService: NSObject, ObservableObject {
 
     private var accessToken: String?
     private var refreshToken: String?
-    private var sessionId: String
+    var sessionId: String
 
     private let accessTokenKey = "rosier_access_token"
     private let refreshTokenKey = "rosier_refresh_token"
