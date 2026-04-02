@@ -4,6 +4,8 @@ import SwiftUI
 /// Base protocol for coordinators in the app.
 protocol Coordinator: AnyObject, ObservableObject {
     associatedtype Screen: Hashable
+    associatedtype Sheet: Hashable
+    associatedtype FullScreenCover: Hashable
 
     var navigationPath: NavigationPath { get set }
     var sheet: Sheet? { get set }
