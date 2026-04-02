@@ -10,39 +10,39 @@
     <style>
         /* CSS Variables */
         :root {
-            --color-brand-primary: #1A1A2E;
-            --color-brand-accent: #C4A77D;
-            --color-rose: #E8B4B8;
-            --color-cream: #FFF8F0;
+            --color-brand-primary: #F3CBF0;
+            --color-brand-accent: #1A1A2E;
+            --color-rose: #F3CBF0;
+            --color-cream: #F3F3F3;
             --color-charcoal: #2C2C2C;
-            --color-sage: #A8C4B8;
-            --color-gold: #C4A77D;
+            --color-sage: #1A1A2E;
+            --color-gold: #1A1A2E;
             --color-success: #43A047;
-            --color-destructive: #D32F2F;
+            --color-destructive: #FE6F6F;
             --color-text-primary: #1A1A1A;
             --color-text-secondary: #6B6B6B;
             --color-text-tertiary: #9B9B9B;
             --color-surface-card: #FFFFFF;
-            --color-surface-bg: #F5F5F5;
-            --color-wallpaper-sage: #A8C4B8;
-            --color-wallpaper-sand: #D4C5A9;
-            --color-wallpaper-coral: #D4A092;
-            --color-wallpaper-navy: #8B9EB5;
+            --color-surface-bg: #F3F3F3;
+            --color-wallpaper-sage: #1A1A2E;
+            --color-wallpaper-sand: #1A1A2E;
+            --color-wallpaper-coral: #FE6F6F;
+            --color-wallpaper-navy: #1A1A2E;
         }
 
         @media (prefers-color-scheme: dark) {
             :root {
-                --color-brand-primary: #E8E8F0;
-                --color-brand-accent: #D4B98D;
+                --color-brand-primary: #F3CBF0;
+                --color-brand-accent: #F3CBF0;
                 --color-text-primary: #F5F5F5;
                 --color-text-secondary: #A0A0A0;
                 --color-text-tertiary: #6B6B6B;
                 --color-surface-card: #1C1C1E;
-                --color-surface-bg: #000000;
-                --color-wallpaper-sage: #7A9E8E;
-                --color-wallpaper-sand: #B8A98D;
-                --color-wallpaper-coral: #C48B7D;
-                --color-wallpaper-navy: #6B7E95;
+                --color-surface-bg: #0A0A0A;
+                --color-wallpaper-sage: #2C2C2C;
+                --color-wallpaper-sand: #2C2C2C;
+                --color-wallpaper-coral: #FE6F6F;
+                --color-wallpaper-navy: #2C2C2C;
             }
         }
 
@@ -97,17 +97,14 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #FFF8F0 0%, #E8B4B8 50%, #C4A77D 100%);
+            background: #F3CBF0;
             padding: 40px 20px;
         }
 
         .splash-logo {
             font-size: 64px;
             font-weight: 700;
-            background: linear-gradient(135deg, #E8B4B8, #1A1A2E);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: #1A1A2E;
             margin-bottom: 16px;
             letter-spacing: -1.2px;
         }
@@ -309,11 +306,9 @@
             width: 100%;
             height: 100%;
             pointer-events: none;
-            opacity: 0.07;
+            opacity: 0.05;
             z-index: 0;
-            background: linear-gradient(45deg, var(--color-wallpaper-sage) 0%, var(--color-wallpaper-sand) 25%, var(--color-wallpaper-coral) 50%, var(--color-wallpaper-navy) 75%, var(--color-wallpaper-sage) 100%);
-            background-size: 200% 200%;
-            animation: wallpaperShift 8s ease-in-out infinite;
+            background: #1A1A2E;
         }
 
         @keyframes wallpaperShift {
@@ -354,7 +349,7 @@
         .product-image {
             width: 100%;
             height: 55%;
-            background: linear-gradient(135deg, #E8B4B8 0%, #C4A77D 100%);
+            background: #F3CBF0;
             object-fit: cover;
         }
 
@@ -410,17 +405,14 @@
             justify-content: center !important;
             align-items: center !important;
             text-align: center !important;
-            background: linear-gradient(135deg, var(--color-surface-card) 0%, var(--color-surface-card) 100%) !important;
+            background: #FFFFFF !important;
             border: 2px solid var(--color-brand-accent) !important;
         }
 
         .brand-logo {
             font-size: 48px;
             font-weight: 700;
-            background: linear-gradient(135deg, var(--color-rose), var(--color-gold));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: #1A1A2E;
             margin-bottom: 16px;
             letter-spacing: -1px;
         }
@@ -553,7 +545,7 @@
 
         .drawer-item {
             aspect-ratio: 1;
-            background: linear-gradient(135deg, var(--color-rose), var(--color-gold));
+            background: #F3CBF0;
             border-radius: 12px;
             display: flex;
             align-items: center;
@@ -717,7 +709,7 @@
             width: 80px;
             height: 80px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--color-rose), var(--color-gold));
+            background: #F3CBF0;
             margin: 0 auto 16px;
             display: flex;
             align-items: center;
@@ -1396,13 +1388,7 @@
             }).join(' ');
 
             document.getElementById('radarPolygon').innerHTML = `
-                <polygon points="${polygonPoints}" fill="url(#radarGradient)" opacity="0.4" stroke="#C4A77D" stroke-width="2"/>
-                <defs>
-                    <linearGradient id="radarGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" style="stop-color:#E8B4B8;stop-opacity:0.6" />
-                        <stop offset="100%" style="stop-color:#C4A77D;stop-opacity:0.3" />
-                    </linearGradient>
-                </defs>
+                <polygon points="${polygonPoints}" fill="#F3CBF0" opacity="0.4" stroke="#1A1A2E" stroke-width="2"/>
             `;
 
             document.getElementById('statLikes').textContent = appState.stats.likes;
