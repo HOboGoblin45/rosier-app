@@ -66,7 +66,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          brew install xcodegen swiftlint xcpretty
+          brew install xcodegen swiftlint
+          gem install xcpretty
 
       - name: Generate Xcode project
         run: |
@@ -154,7 +155,9 @@ jobs:
           sudo xcode-select -s "$XCODE_PATH/Contents/Developer"
 
       - name: Install dependencies
-        run: brew install xcodegen xcpretty
+        run: |
+          brew install xcodegen
+          gem install xcpretty
 
       - name: Generate Xcode project
         run: ./scripts/generate_xcodeproj.sh
@@ -202,7 +205,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          brew install xcodegen fastlane xcpretty
+          brew install xcodegen fastlane
+          gem install xcpretty
           gem install fastlane -NV
           fastlane --version
 
@@ -314,7 +318,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          brew install xcodegen fastlane xcpretty
+          brew install xcodegen fastlane
+          gem install xcpretty
           gem install fastlane -NV
 
       - name: Generate Xcode project
