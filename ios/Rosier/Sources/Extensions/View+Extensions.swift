@@ -167,7 +167,7 @@ extension View {
     }
 
     /// Adds haptic feedback on interaction.
-    func hapticFeedback(_ style: UIImpactFeedbackGenerator.ImpactFeedbackStyle = .light) -> some View {
+    func hapticFeedback(_ style: UIImpactFeedbackGenerator.FeedbackStyle = .light) -> some View {
         self.onTapGesture {
             HapticsManager.shared.buttonPress()
         }
