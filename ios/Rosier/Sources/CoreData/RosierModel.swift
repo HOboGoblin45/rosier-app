@@ -72,7 +72,6 @@ struct RosierModel {
             productId, externalId, brandName, productName, category,
             currentPrice, originalPrice, isOnSale, primaryImageData, productJSON, cachedAt
         ]
-        cachedProductEntity.primaryKeyAttributes = ["id"]
 
         // MARK: - CachedSwipeEvent Entity
 
@@ -129,7 +128,6 @@ struct RosierModel {
             eventId, eventProductId, action, dwellTimeMs, sessionPosition,
             expanded, sessionId, createdAt, isSynced
         ]
-        cachedSwipeEventEntity.primaryKeyAttributes = ["id"]
 
         // MARK: - CachedDresserItem Entity
 
@@ -181,7 +179,6 @@ struct RosierModel {
             dresserItemId, dresserProductId, drawerId, drawerName,
             priceAtSave, currentPriceAtSync, dresserProductJSON, savedAt
         ]
-        cachedDresserItemEntity.primaryKeyAttributes = ["id"]
 
         // MARK: - CachedCardQueue Entity
 
@@ -217,7 +214,6 @@ struct RosierModel {
         cachedCardQueueEntity.properties = [
             queueId, queueProductId, queuePosition, queueProductJSON, fetchedAt
         ]
-        cachedCardQueueEntity.primaryKeyAttributes = ["id"]
 
         // MARK: - Set Entities
 
