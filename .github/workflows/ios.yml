@@ -268,78 +268,92 @@ jobs:
           # Generate JWT for App Store Connect API
           pip3 install PyJWT cryptography --break-system-packages -q 2>/dev/null || true
           
-          JWT_TOKEN=$(python3 << 'JWTEOF'
-          import jwt, time, json
+          # Download and install provisioning profile using App Store Connect API
+          python3 << 'PYEOF'
+          import jwt, time, os, json, base64, urllib.request, subprocess, re
           
-          key_id = "${APP_STORE_CONNECT_API_KEY_ID}"
-          issuer_id = "${APP_STORE_CONNECT_API_ISSUER_ID}"
+          key_id = os.environ["APP_STORE_CONNECT_API_KEY_ID"]
+          issuer_id = os.environ["APP_STORE_CONNECT_API_ISSUER_ID"]
+          home = os.environ["HOME"]
           
-          with open("${HOME}/.appstoreconnect/private_keys/AuthKey_${APP_STORE_CONNECT_API_KEY_ID}.p8") as f:
+          key_path = f"{home}/.appstoreconnect/private_keys/AuthKey_{key_id}.p8"
+          with open(key_path) as f:
               private_key = f.read()
           
+          # Generate JWT
           now = int(time.time())
-          payload = {
-              "iss": issuer_id,
-              "iat": now,
-              "exp": now + 1200,
-              "aud": "appstoreconnect-v1"
-          }
+          payload = {"iss": issuer_id, "iat": now, "exp": now + 1200, "aud": "appstoreconnect-v1"}
           token = jwt.encode(payload, private_key, algorithm="ES256", headers={"kid": key_id})
-          print(token)
-          JWTEOF
+          print(f"JWT generated (length: {len(token)})")
+          
+          # Fetch profiles from API
+          req = urllib.request.Request(
+              "https://api.appstoreconnect.apple.com/v1/profiles?filter[profileType]=IOS_APP_STORE",
+              headers={"Authorization": f"Bearer {token}"}
           )
+          resp = json.load(urllib.request.urlopen(req))
+          profiles = resp.get("data", [])
+          print(f"Found {len(profiles)} App Store profiles")
           
-          echo "JWT token generated (length: ${#JWT_TOKEN})"
-          
-          # List App Store provisioning profiles for com.rosier.app
-          PROFILES_JSON=$(curl -s -H "Authorization: Bearer $JWT_TOKEN" \
-            "https://api.appstoreconnect.apple.com/v1/profiles?filter[profileType]=IOS_APP_STORE&include=bundleId")
-          
-          echo "API response status: $(echo "$PROFILES_JSON" | python3 -c "import sys,json; d=json.load(sys.stdin); print(len(d.get('data',[])), 'profiles found')" 2>/dev/null || echo "parse error")"
-          
-          # Download the first matching profile
-          PROFILE_CONTENT=$(echo "$PROFILES_JSON" | python3 << 'DLEOF'
-          import sys, json, base64
-          data = json.load(sys.stdin)
-          profiles = data.get("data", [])
           if not profiles:
-              print("NO_PROFILES", file=sys.stderr)
-              sys.exit(1)
-          # Get the first profile
+              print("ERROR: No App Store profiles found!")
+              # Try all profile types
+              req2 = urllib.request.Request(
+                  "https://api.appstoreconnect.apple.com/v1/profiles",
+                  headers={"Authorization": f"Bearer {token}"}
+              )
+              resp2 = json.load(urllib.request.urlopen(req2))
+              all_profiles = resp2.get("data", [])
+              print(f"Total profiles (all types): {len(all_profiles)}")
+              for p in all_profiles:
+                  attrs = p.get("attributes", {})
+                  print(f"  - {attrs.get('name')} (type={attrs.get('profileType')}, state={attrs.get('profileState')})")
+              if all_profiles:
+                  profiles = all_profiles
+          
+          if not profiles:
+              raise Exception("No provisioning profiles found in Apple Developer account")
+          
+          # Use first profile
           profile = profiles[0]
           attrs = profile.get("attributes", {})
-          print(f"Profile: {attrs.get('name', 'unknown')} (UUID: {attrs.get('uuid', 'unknown')})", file=sys.stderr)
-          # profileContent is base64-encoded
+          profile_name = attrs.get("name", "unknown")
+          profile_uuid = attrs.get("uuid", "")
           content_b64 = attrs.get("profileContent", "")
-          if content_b64:
-              sys.stdout.buffer.write(base64.b64decode(content_b64))
-          else:
-              print("No profileContent in response", file=sys.stderr)
-              sys.exit(1)
-          DLEOF
-          )
+          print(f"Using profile: {profile_name} (UUID: {profile_uuid})")
           
-          if [ $? -eq 0 ] && [ -n "$PROFILE_CONTENT" ]; then
-            mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-            # Extract UUID from downloaded profile
-            PROFILE_UUID=$(echo "$PROFILE_CONTENT" | strings 2>/dev/null | grep -A1 '<key>UUID</key>' | grep '<string>' | head -1 | sed 's/.*<string>//;s/<\/string>.*//' || true)
-            if [ -z "$PROFILE_UUID" ]; then
-              PROFILE_UUID=$(uuidgen | tr '[:upper:]' '[:lower:]')
-            fi
-            echo "$PROFILE_CONTENT" > ~/Library/MobileDevice/Provisioning\ Profiles/${PROFILE_UUID}.mobileprovision
-            echo "Profile installed with UUID: $PROFILE_UUID"
-          else
-            echo "WARNING: Could not download profile from API. Trying with pre-uploaded secret..."
-            # Fallback: install the base64-encoded secret profile
-            mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-            if [ -n "${PROVISIONING_PROFILE_BASE64:-}" ]; then
-              echo "$PROVISIONING_PROFILE_BASE64" | base64 --decode > /tmp/profile.mobileprovision
-              PROFILE_UUID=$(strings /tmp/profile.mobileprovision 2>/dev/null | grep -A1 '<key>UUID</key>' | grep '<string>' | head -1 | sed 's/.*<string>//;s/<\/string>.*//' || true)
-              if [ -z "$PROFILE_UUID" ]; then PROFILE_UUID=$(uuidgen | tr '[:upper:]' '[:lower:]'); fi
-              cp /tmp/profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/${PROFILE_UUID}.mobileprovision
-              echo "Fallback profile installed with UUID: $PROFILE_UUID"
-            fi
-          fi
+          if not content_b64:
+              raise Exception(f"Profile {profile_name} has no content")
+          
+          # Decode and install
+          profile_data = base64.b64decode(content_b64)
+          profiles_dir = f"{home}/Library/MobileDevice/Provisioning Profiles"
+          os.makedirs(profiles_dir, exist_ok=True)
+          
+          profile_path = f"{profiles_dir}/{profile_uuid}.mobileprovision"
+          with open(profile_path, "wb") as f:
+              f.write(profile_data)
+          print(f"Profile installed at: {profile_path} ({len(profile_data)} bytes)")
+          
+          # Verify the profile
+          result = subprocess.run(["security", "cms", "-D", "-i", profile_path], capture_output=True, text=True)
+          if result.returncode == 0:
+              print("Profile verified successfully with security cms")
+              # Extract name from plist
+              plist_result = subprocess.run(["plutil", "-extract", "Name", "raw", "-"], input=result.stdout, capture_output=True, text=True)
+              if plist_result.returncode == 0:
+                  print(f"Verified profile name: {plist_result.stdout.strip()}")
+          else:
+              print(f"Warning: security cms verification failed: {result.stderr[:200]}")
+          
+          # Write env vars for subsequent steps
+          env_file = os.environ.get("GITHUB_ENV", "")
+          if env_file:
+              with open(env_file, "a") as f:
+                  f.write(f"PROFILE_UUID={profile_uuid}\n")
+                  f.write(f"PROFILE_NAME={profile_name}\n")
+              print(f"Exported PROFILE_NAME={profile_name} and PROFILE_UUID={profile_uuid}")
+          PYEOF
 
           # Verify profile installed
           echo "=== Installed profiles ==="
