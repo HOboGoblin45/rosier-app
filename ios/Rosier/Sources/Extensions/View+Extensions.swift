@@ -1,4 +1,17 @@
 import SwiftUI
+import UIKit
+
+// MARK: - Spacing Enum
+
+enum ViewSpacing: CGFloat {
+    case xxSmall = 4
+    case xSmall = 8
+    case small = 12
+    case medium = 16
+    case large = 24
+    case xLarge = 32
+    case xxLarge = 48
+}
 
 // MARK: - Conditional Modifiers
 
@@ -60,23 +73,12 @@ extension View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
-    /// Applies a consistent padding based on design system spacing.
-    enum Spacing: CGFloat {
-        case xxSmall = 4
-        case xSmall = 8
-        case small = 12
-        case medium = 16
-        case large = 24
-        case xLarge = 32
-        case xxLarge = 48
-    }
-
-    func designSystemPadding(_ amount: Spacing = .medium) -> some View {
+    func designSystemPadding(_ amount: ViewSpacing = .medium) -> some View {
         padding(amount.rawValue)
     }
 
     /// Applies padding only to specific edges.
-    func paddingEdges(_ edges: Edge.Set, _ amount: Spacing = .medium) -> some View {
+    func paddingEdges(_ edges: Edge.Set, _ amount: ViewSpacing = .medium) -> some View {
         padding(edges, amount.rawValue)
     }
 }
