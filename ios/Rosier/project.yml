@@ -12,8 +12,6 @@ attributes:
 
 settings:
   PRODUCT_BUNDLE_IDENTIFIER: com.rosier.app
-  PRODUCT_NAME: Rosier
-  EXECUTABLE_NAME: Rosier
   CURRENT_PROJECT_VERSION: 1
   MARKETING_VERSION: 1.0.0
   IPHONEOS_DEPLOYMENT_TARGET: '17.0'
@@ -66,6 +64,7 @@ targets:
     deploymentTarget: '17.0'
     settings:
       DEFINES_MODULE: 'YES'
+      PRODUCT_NAME: RosierCore
     sources:
       - path: Sources
         includes:
@@ -98,6 +97,7 @@ targets:
     deploymentTarget: '17.0'
     settings:
       DEFINES_MODULE: 'YES'
+      PRODUCT_NAME: RosierUI
     sources:
       - path: Sources
         includes:
@@ -143,8 +143,7 @@ targets:
       path: Sources/App/Rosier.entitlements
     settings:
       PRODUCT_BUNDLE_IDENTIFIER: com.rosier.app
-      EXECUTABLE_NAME: Rosier
-      CURRENT_PROJECT_VERSION: 1
+          CURRENT_PROJECT_VERSION: 1
       MARKETING_VERSION: 1.0.0
     capabilities:
       pushNotifications:
