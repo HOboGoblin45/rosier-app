@@ -379,10 +379,6 @@ jobs:
           APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
           APP_STORE_CONNECT_API_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
         run: |
-          # Use Manual signing with the downloaded profile
-          PROFILE_SPEC="${PROFILE_NAME:-}"
-          echo "Using provisioning profile: $PROFILE_SPEC"
-
           xcodebuild archive \
             -project Rosier.xcodeproj \
             -scheme Rosier \
@@ -395,11 +391,8 @@ jobs:
             -authenticationKeyID "$APP_STORE_CONNECT_API_KEY_ID" \
             -authenticationKeyIssuerID "$APP_STORE_CONNECT_API_ISSUER_ID" \
             DEVELOPMENT_TEAM='${{ secrets.APPLE_DEVELOPER_ID }}' \
-            CODE_SIGN_IDENTITY='Apple Distribution' \
-            CODE_SIGN_STYLE=Manual \
             CODE_SIGNING_REQUIRED=YES \
-            CODE_SIGNING_ALLOWED=YES \
-            PROVISIONING_PROFILE_SPECIFIER="$PROFILE_SPEC"
+            CODE_SIGNING_ALLOWED=YES
 
           echo '=== Archive contents ==='
           ls -la build/Rosier.xcarchive/ 2>/dev/null || echo 'Archive not found'
