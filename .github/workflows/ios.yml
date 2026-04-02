@@ -236,7 +236,7 @@ jobs:
             -derivedDataPath build/DerivedData \
             DEVELOPMENT_TEAM='${{ secrets.APPLE_DEVELOPER_ID }}' \
             CODE_SIGN_IDENTITY='Apple Distribution' \
-            PROVISIONING_PROFILE_SPECIFIER='Rosier Distribution' \
+            CODE_SIGN_STYLE=Automatic \
             
 
           echo '=== Archive contents ==='
@@ -391,6 +391,7 @@ jobs:
             -derivedDataPath build/DerivedData \
             DEVELOPMENT_TEAM='${{ secrets.APPLE_DEVELOPER_ID }}' \
             CODE_SIGN_IDENTITY='Apple Distribution' \
+            CODE_SIGN_STYLE=Automatic \
             
 
           echo '=== Archive contents ==='
