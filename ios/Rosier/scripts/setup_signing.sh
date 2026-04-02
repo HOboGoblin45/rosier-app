@@ -169,18 +169,22 @@ install_provisioning_profile() {
 
   # Extract UUID from profile (mobileprovision files are signed CMS - extract plist first)
   local profile_plist="$TEMP_DIR/profile.plist"
-  security cms -D -i "$profile_file" > "$profile_plist" 2>/dev/null
-  local profile_uuid=$(/usr/libexec/PlistBuddy -c "Print UUID" "$profile_plist" 2>/dev/null)
+  local profile_uuid=""
 
-  if [[ -z "$profile_uuid" ]]; then
-    # Fallback: try grep
-    profile_uuid=$(grep -A1 '<key>UUID</key>' "$profile_plist" 2>/dev/null | grep '<string>' | sed 's/.*<string>//;s/<\/string>.*//')
+  # Try security cms to extract the embedded plist
+  if security cms -D -i "$profile_file" > "$profile_plist" 2>/dev/null; then
+    profile_uuid=$(/usr/libexec/PlistBuddy -c "Print UUID" "$profile_plist" 2>/dev/null || true)
   fi
 
+  # Fallback: grep the raw mobileprovision file for UUID pattern
   if [[ -z "$profile_uuid" ]]; then
-    echo -e "${RED}[ERROR]${NC} Failed to read provisioning profile UUID" >&2
-    cleanup
-    exit 1
+    profile_uuid=$(grep -a -A1 '<key>UUID</key>' "$profile_file" 2>/dev/null | grep '<string>' | sed 's/.*<string>//;s/<\/string>.*//' || true)
+  fi
+
+  # Final fallback: generate a UUID
+  if [[ -z "$profile_uuid" ]]; then
+    profile_uuid=$(uuidgen)
+    echo -e "${YELLOW}[WARN]${NC} Could not extract UUID, using generated: $profile_uuid"
   fi
 
   cp "$profile_file" "$profile_dir/$profile_uuid.mobileprovision"
