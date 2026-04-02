@@ -4,6 +4,8 @@ on:
   push:
     branches: [main, develop]
     paths: ['ios/**']
+    tags:
+      - 'v*'
   pull_request:
     branches: [develop]
     paths: ['ios/**']
@@ -18,9 +20,6 @@ on:
           - debug
           - testflight
           - appstore
-  create:
-    tags:
-      - 'v*'
 
 env:
   PROJECT_PATH: ios/Rosier
@@ -190,7 +189,7 @@ jobs:
     runs-on: macos-14
     needs: [build-and-test, snapshot-tests]
     timeout-minutes: 90
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: always() && (startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && github.event.inputs.build_type == 'testflight'))
     defaults:
       run:
         working-directory: ios/Rosier
