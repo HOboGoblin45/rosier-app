@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 
 /// Represents a user swipe interaction event for analytics and recommendations.
 struct SwipeEvent: Codable {
@@ -121,19 +122,12 @@ enum NetworkType: String, Codable {
 
     /// Detects the current network type.
     static var current: NetworkType {
-        #if os(iOS)
-        import Network
-        // Note: This is a simplified version. For production, use Network framework properly.
+        // Simplified version - returns .wifi
         return .wifi
-        #else
-        return .unknown
-        #endif
     }
 }
 
 // MARK: - Extension for Device Information
-
-import UIKit
 
 extension UIDevice {
     /// Machine identifier string (e.g., "iPhone15,2").
