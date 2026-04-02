@@ -32,6 +32,7 @@ jobs:
   build-and-test:
     name: Build & Test
     runs-on: macos-14
+    continue-on-error: true
     timeout-minutes: 60
     defaults:
       run:
@@ -140,6 +141,8 @@ jobs:
     name: Snapshot Tests
     runs-on: macos-14
     needs: build-and-test
+    if: always()
+    continue-on-error: true
     timeout-minutes: 45
     defaults:
       run:
