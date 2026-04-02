@@ -143,7 +143,8 @@ targets:
       path: Sources/App/Rosier.entitlements
     settings:
       PRODUCT_BUNDLE_IDENTIFIER: com.rosier.app
-          CURRENT_PROJECT_VERSION: 1
+      EXECUTABLE_NAME: Rosier
+      CURRENT_PROJECT_VERSION: 1
       MARKETING_VERSION: 1.0.0
     capabilities:
       pushNotifications:
