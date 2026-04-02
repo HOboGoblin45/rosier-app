@@ -76,7 +76,7 @@ setup_temp_directory() {
 decode_certificate() {
   local cert_file="$TEMP_DIR/certificate.p12"
 
-  echo -e "${BLUE}[INFO]${NC} Decoding distribution certificate..."
+  echo -e "${BLUE}[INFO]${NC} Decoding distribution certificate..." >&2
 
   echo "$IOS_CERTIFICATE_BASE64" | base64 --decode > "$cert_file"
 
@@ -86,7 +86,7 @@ decode_certificate() {
     exit 1
   fi
 
-  echo -e "${GREEN}[SUCCESS]${NC} Certificate decoded"
+  echo -e "${GREEN}[SUCCESS]${NC} Certificate decoded" >&2
   echo "$cert_file"
 }
 
@@ -94,7 +94,7 @@ decode_certificate() {
 decode_provisioning_profile() {
   local profile_file="$TEMP_DIR/provisioning.mobileprovision"
 
-  echo -e "${BLUE}[INFO]${NC} Decoding provisioning profile..."
+  echo -e "${BLUE}[INFO]${NC} Decoding provisioning profile..." >&2
 
   echo "$PROVISIONING_PROFILE_BASE64" | base64 --decode > "$profile_file"
 
@@ -104,7 +104,7 @@ decode_provisioning_profile() {
     exit 1
   fi
 
-  echo -e "${GREEN}[SUCCESS]${NC} Provisioning profile decoded"
+  echo -e "${GREEN}[SUCCESS]${NC} Provisioning profile decoded" >&2
   echo "$profile_file"
 }
 
@@ -151,7 +151,7 @@ import_certificate() {
 # Install provisioning profile
 install_provisioning_profile() {
   local profile_file="$1"
-  local profile_dir="$HOME/Library/MobileDevice/Provisioning\ Profiles"
+  local profile_dir="$HOME/Library/MobileDevice/Provisioning Profiles"
 
   echo -e "${BLUE}[INFO]${NC} Installing provisioning profile..."
 
