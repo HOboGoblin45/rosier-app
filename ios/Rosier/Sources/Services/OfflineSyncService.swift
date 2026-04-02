@@ -51,7 +51,7 @@ final class OfflineSyncService: NSObject, ObservableObject {
         }
 
         defer {
-            MainActor.run {
+            Task { @MainActor in
                 isSyncing = false
             }
         }
@@ -86,7 +86,7 @@ final class OfflineSyncService: NSObject, ObservableObject {
 
                     // Note: Creating a minimal SwipeEvent for upload
                     // In production, store full event data or reconstruct from JSON
-                    var event = SwipeEvent(
+                    let event = SwipeEvent(
                         action: action,
                         productId: productId,
                         externalProductId: "",
@@ -96,7 +96,7 @@ final class OfflineSyncService: NSObject, ObservableObject {
                         dwellTimeMs: dwellTime,
                         expanded: expanded
                     )
-                    event.id = id
+                    // Note: event.id is generated fresh; cached id from Core Data differs
                     return event
                 }
 
