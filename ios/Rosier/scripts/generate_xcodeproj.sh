@@ -142,7 +142,7 @@ generate_xcode_project() {
 
   cd "$PROJECT_DIR"
 
-  if xcodegen generate --verbose; then
+  if xcodegen generate; then
     log_success "Xcode project generated successfully"
   else
     log_error "Failed to generate Xcode project"
